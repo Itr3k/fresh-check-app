@@ -1,5 +1,7 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import PopularFoods from "../components/PopularFoods";
@@ -17,6 +19,12 @@ const Index = () => {
 
   return (
     <PageTransition>
+      <Helmet>
+        <title>StillGood - Check If Your Food Is Still Fresh</title>
+        <meta name="description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item with StillGood." />
+        <link rel="canonical" href="https://stillgood.app/" />
+      </Helmet>
+      
       <div className="min-h-screen">
         <Header />
         

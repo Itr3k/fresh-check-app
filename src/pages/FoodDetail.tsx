@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info } from "lucide-react";
 import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
@@ -158,8 +159,51 @@ const FoodDetail = () => {
     );
   }
 
+  const pageTitle = `How Long Does ${food.name} Last? - StillGood`;
+  const pageDescription = `Learn if your ${food.name.toLowerCase()} is still good to eat. Check storage times, expiration guidelines, and freshness indicators.`;
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `How long does ${food.name.toLowerCase()} last in the refrigerator?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `${food.name} lasts ${food.storageOptions[0].unopened.minDays}-${food.storageOptions[0].unopened.maxDays} days unopened and ${food.storageOptions[0].opened.minDays}-${food.storageOptions[0].opened.maxDays} days after opening when stored in the refrigerator.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `How long does ${food.name.toLowerCase()} last in the freezer?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `${food.name} lasts ${food.storageOptions[1].unopened.minDays}-${food.storageOptions[1].unopened.maxDays} days unopened and ${food.storageOptions[1].opened.minDays}-${food.storageOptions[1].opened.maxDays} days after opening when stored in the freezer.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `How can I tell if ${food.name.toLowerCase()} has gone bad?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `Signs that ${food.name.toLowerCase()} has gone bad include: ${food.spoilageIndicators.visual.join(", ")} (visual); ${food.spoilageIndicators.smell.join(", ")} (smell); and ${food.spoilageIndicators.texture.join(", ")} (texture).`
+        }
+      }
+    ]
+  };
+
   return (
     <PageTransition>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={`https://stillgood.app/food/${id}`} />
+        <link rel="canonical" href={`https://stillgood.app/food/${id}`} />
+        <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
+      </Helmet>
+
       <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
         <div className="mb-4">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
@@ -177,11 +221,11 @@ const FoodDetail = () => {
           <div className="h-56 w-full rounded-xl overflow-hidden relative mb-4">
             <img 
               src={food.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"} 
-              alt={food.name} 
+              alt={`Fresh ${food.name.toLowerCase()} - storage and expiration guide`} 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <h1 className="absolute bottom-4 left-4 text-3xl font-semibold text-white">{food.name}</h1>
+            <h1 className="absolute bottom-4 left-4 text-3xl font-semibold text-white">How Long Does {food.name} Last?</h1>
           </div>
         </motion.div>
 
@@ -207,7 +251,7 @@ const FoodDetail = () => {
                   }`}
                 >
                   <Refrigerator size={18} />
-                  <span>Fridge</span>
+                  <span>{food.name} in the Refrigerator</span>
                 </button>
                 <button
                   onClick={() => setStorageType("freezer")}
@@ -218,7 +262,7 @@ const FoodDetail = () => {
                   }`}
                 >
                   <Snowflake size={18} />
-                  <span>Freezer</span>
+                  <span>{food.name} in the Freezer</span>
                 </button>
                 <button
                   onClick={() => setStorageType("pantry")}
@@ -229,7 +273,7 @@ const FoodDetail = () => {
                   }`}
                 >
                   <Home size={18} />
-                  <span>Pantry</span>
+                  <span>{food.name} in the Pantry</span>
                 </button>
               </div>
 
@@ -278,7 +322,7 @@ const FoodDetail = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Info size={18} className="text-muted-foreground" />
-                <h2 className="text-xl font-semibold">How to Tell If It's Bad</h2>
+                <h2 className="text-xl font-semibold">How to Tell if {food.name} Has Gone Bad</h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
