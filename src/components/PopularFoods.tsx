@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import FoodCard from "./FoodCard";
 
-// Mock data for popular foods
+// Updated data for popular foods with fixed images
 const popularFoods = [
   {
     id: "chicken",
