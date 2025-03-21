@@ -20,9 +20,9 @@ const Index = () => {
   return (
     <PageTransition>
       <Helmet>
-        <title>StillGood - Check If Your Food Is Still Fresh</title>
-        <meta name="description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item with StillGood." />
-        <link rel="canonical" href="https://stillgood.app/" />
+        <title>Fresh Check - Check If Your Food Is Still Fresh</title>
+        <meta name="description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item with Fresh Check." />
+        <link rel="canonical" href="https://freshcheck.app/" />
       </Helmet>
       
       <div className="min-h-screen">
@@ -103,7 +103,7 @@ const Index = () => {
         <footer className="bg-white py-8 border-t">
           <div className="max-w-6xl mx-auto px-4 text-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} StillGood. All rights reserved.
+              © {new Date().getFullYear()} Fresh Check. All rights reserved.
             </p>
           </div>
         </footer>

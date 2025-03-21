@@ -7,9 +7,7 @@ import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 
-// Mock data for food details
 const getFoodDetails = (id: string) => {
-  // This would be replaced with an API call
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
@@ -82,7 +80,6 @@ const FoodDetail = () => {
   const [daysText, setDaysText] = useState("");
 
   useEffect(() => {
-    // Simulate loading data
     setTimeout(() => {
       if (id) {
         setFood(getFoodDetails(id));
@@ -159,34 +156,34 @@ const FoodDetail = () => {
     );
   }
 
-  const pageTitle = `How Long Does ${food.name} Last? - StillGood`;
-  const pageDescription = `Learn if your ${food.name.toLowerCase()} is still good to eat. Check storage times, expiration guidelines, and freshness indicators.`;
+  const pageTitle = `How Long Does ${food?.name} Last? - Fresh Check`;
+  const pageDescription = `Learn if your ${food?.name?.toLowerCase()} is still good to eat. Check storage times, expiration guidelines, and freshness indicators.`;
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
         "@type": "Question",
-        "name": `How long does ${food.name.toLowerCase()} last in the refrigerator?`,
+        "name": `How long does ${food?.name?.toLowerCase()} last in the refrigerator?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${food.name} lasts ${food.storageOptions[0].unopened.minDays}-${food.storageOptions[0].unopened.maxDays} days unopened and ${food.storageOptions[0].opened.minDays}-${food.storageOptions[0].opened.maxDays} days after opening when stored in the refrigerator.`
+          "text": `${food?.name} lasts ${food?.storageOptions[0].unopened.minDays}-${food?.storageOptions[0].unopened.maxDays} days unopened and ${food?.storageOptions[0].opened.minDays}-${food?.storageOptions[0].opened.maxDays} days after opening when stored in the refrigerator.`
         }
       },
       {
         "@type": "Question",
-        "name": `How long does ${food.name.toLowerCase()} last in the freezer?`,
+        "name": `How long does ${food?.name?.toLowerCase()} last in the freezer?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `${food.name} lasts ${food.storageOptions[1].unopened.minDays}-${food.storageOptions[1].unopened.maxDays} days unopened and ${food.storageOptions[1].opened.minDays}-${food.storageOptions[1].opened.maxDays} days after opening when stored in the freezer.`
+          "text": `${food?.name} lasts ${food?.storageOptions[1].unopened.minDays}-${food?.storageOptions[1].unopened.maxDays} days unopened and ${food?.storageOptions[1].opened.minDays}-${food?.storageOptions[1].opened.maxDays} days after opening when stored in the freezer.`
         }
       },
       {
         "@type": "Question",
-        "name": `How can I tell if ${food.name.toLowerCase()} has gone bad?`,
+        "name": `How can I tell if ${food?.name?.toLowerCase()} has gone bad?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `Signs that ${food.name.toLowerCase()} has gone bad include: ${food.spoilageIndicators.visual.join(", ")} (visual); ${food.spoilageIndicators.smell.join(", ")} (smell); and ${food.spoilageIndicators.texture.join(", ")} (texture).`
+          "text": `Signs that ${food?.name?.toLowerCase()} has gone bad include: ${food?.spoilageIndicators.visual.join(", ")} (visual); ${food?.spoilageIndicators.smell.join(", ")} (smell); and ${food?.spoilageIndicators.texture.join(", ")} (texture).`
         }
       }
     ]
@@ -199,8 +196,8 @@ const FoodDetail = () => {
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content={`https://stillgood.app/food/${id}`} />
-        <link rel="canonical" href={`https://stillgood.app/food/${id}`} />
+        <meta property="og:url" content={`https://freshcheck.app/food/${id}`} />
+        <link rel="canonical" href={`https://freshcheck.app/food/${id}`} />
         <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
       </Helmet>
 

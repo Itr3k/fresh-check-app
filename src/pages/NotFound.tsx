@@ -17,8 +17,8 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <Helmet>
-        <title>Page Not Found - StillGood</title>
-        <meta name="description" content="The page you're looking for doesn't exist. Return to StillGood to check if your food is still fresh." />
+        <title>Page Not Found - Fresh Check</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Return to Fresh Check to check if your food is still fresh." />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
       

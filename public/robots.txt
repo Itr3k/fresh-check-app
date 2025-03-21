@@ -2,7 +2,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://stillgood.app/sitemap.xml
+Sitemap: https://freshcheck.app/sitemap.xml
 
 Disallow: /assets/
 Disallow: /api/
+

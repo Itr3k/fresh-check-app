@@ -8,9 +8,9 @@ const Header = () => {
       <div className="glass px-6 py-4 mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">SG</span>
+            <span className="text-white font-semibold text-sm">FC</span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">StillGood</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Fresh Check</h1>
         </Link>
         <div className="flex items-center space-x-4">
           <Link 
