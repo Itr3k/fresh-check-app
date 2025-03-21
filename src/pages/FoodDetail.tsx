@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info } from "lucide-react";
 import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
+import AdUnit from "../components/AdUnit";
 
 // Mock data for food details
 const getFoodDetails = (id: string) => {
@@ -185,6 +185,8 @@ const FoodDetail = () => {
           </div>
         </motion.div>
 
+        <AdUnit slotId="food-detail-top" className="mb-6" format="leaderboard" />
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -338,7 +340,7 @@ const FoodDetail = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24 mb-6">
               <div className="flex items-center space-x-2 mb-6">
                 <Calendar size={18} className="text-muted-foreground" />
                 <h2 className="text-xl font-semibold">Expiration Calculator</h2>
@@ -358,6 +360,8 @@ const FoodDetail = () => {
                 <StatusIndicator status={status} daysText={daysText} />
               </div>
             </div>
+            
+            <AdUnit slotId="food-detail-sidebar" format="rectangle" />
           </motion.div>
         </div>
       </div>

@@ -1,11 +1,10 @@
-
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import PopularFoods from "../components/PopularFoods";
 import PageTransition from "../components/PageTransition";
+import AdUnit from "../components/AdUnit";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -50,6 +49,8 @@ const Index = () => {
             <SearchBar onSearch={handleSearch} />
           </div>
           
+          <AdUnit slotId="home-top" className="mb-10" format="leaderboard" />
+          
           <div className="mb-12">
             <PopularFoods />
           </div>
@@ -58,7 +59,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-white rounded-xl shadow-sm overflow-hidden"
+            className="bg-white rounded-xl shadow-sm overflow-hidden mb-10"
           >
             <div className="p-6 sm:p-8">
               <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
@@ -87,6 +88,8 @@ const Index = () => {
               </div>
             </div>
           </motion.div>
+          
+          <AdUnit slotId="home-bottom" className="mb-10" />
         </div>
         
         <footer className="bg-white py-8 border-t">
