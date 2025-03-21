@@ -17,14 +17,12 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/food/:id" element={<FoodDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/food/:id" element={<FoodDetail />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
