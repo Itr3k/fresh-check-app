@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Search, Camera } from "lucide-react";
 import { motion } from "framer-motion";
-import CameraCapture from "./CameraCapture";
+import CameraCapture from "./camera/CameraCapture";
 import { toast } from "../hooks/use-toast";
 import { ImageProcessingService, FoodInfo } from "../utils/imageProcessingService";
 import FoodInfoResult from "./FoodInfoResult";
