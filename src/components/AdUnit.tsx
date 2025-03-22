@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
@@ -29,6 +28,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [adSenseAttempted, setAdSenseAttempted] = useState(false);
   const initializedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { toast } = useToast();
@@ -95,8 +95,12 @@ const AdUnit: React.FC<AdUnitProps> = ({
       return;
     }
     
-    // Safe ad blocker detection
-    const safeCheckAdBlocker = () => {
+    // Always show the placeholder immediately to prevent white screen
+    // We'll keep it visible until AdSense loads successfully
+    setAdLoaded(true);
+    
+    // Safety check for ad blockers and AdSense availability
+    const checkAdSenseAvailability = () => {
       try {
         // Create a bait element that ad blockers typically hide
         const bait = document.createElement('div');
@@ -111,8 +115,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
         timeoutRef.current = setTimeout(() => {
           try {
             const isBlocked = bait.offsetHeight === 0 || 
-                            window.getComputedStyle(bait).display === 'none' ||
-                            !window.adsbygoogle;
+                              window.getComputedStyle(bait).display === 'none' ||
+                              !window.adsbygoogle;
             
             // Clean up bait element
             if (document.body.contains(bait)) {
@@ -126,7 +130,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
             if (isBlocked) {
               console.log(`AdUnit (${slotId}): Ad blocker or AdSense unavailable detected`);
               setIsError(true);
-              setAdLoaded(true); // Consider the ad "loaded" so we show fallback content
+              // No need to set adLoaded since we've already set it to true initially
               
               // Only show toast in production, not dev/preview
               if (!isDevelopment) {
@@ -138,62 +142,48 @@ const AdUnit: React.FC<AdUnitProps> = ({
               }
             } else {
               // Only attempt to load ads if no ad blocker detected
-              safeTryLoadAd();
+              attemptLoadAdSense();
             }
           } catch (e) {
             console.log("Error in ad blocker check:", e);
-            setAdLoaded(true); // Consider the ad "loaded" so we don't show loading indefinitely
             setIsError(true);
           }
         }, 100);
       } catch (e) {
         console.log("Error setting up ad blocker check:", e);
-        setAdLoaded(true);
         setIsError(true);
       }
     };
     
-    const safeTryLoadAd = () => {
+    const attemptLoadAdSense = () => {
       try {
+        // Mark that we attempted to load AdSense
+        setAdSenseAttempted(true);
+        
         // Safety checks
         if (!adRef.current) {
           console.log(`AdUnit (${slotId}): No ref available, skipping ad load`);
-          setAdLoaded(true);
-          setIsError(true); // Show fallback
+          setIsError(true);
           return;
         }
         
         if (!document.body.contains(adRef.current)) {
           console.log(`AdUnit (${slotId}): Container not in DOM, skipping ad load`);
-          setAdLoaded(true);
-          setIsError(true); // Show fallback
+          setIsError(true);
           return;
         }
-        
-        // Clear any existing content
-        if (adRef.current) {
-          try {
-            // Safely clear content
-            while (adRef.current.firstChild) {
-              adRef.current.removeChild(adRef.current.firstChild);
-            }
-          } catch (e) {
-            console.log("Error clearing ad container:", e);
-          }
-        }
-        
-        // Set a timeout to check if the ad loaded successfully
-        const adLoadTimeout = setTimeout(() => {
-          console.log(`AdUnit (${slotId}): Ad load timeout triggered`);
-          if (!adLoaded) {
-            setAdLoaded(true);
-            setIsError(true); // Show fallback if ad takes too long
-          }
-        }, 3000);
         
         // Only proceed if window.adsbygoogle is available
         if (typeof window !== 'undefined' && window.adsbygoogle) {
           try {
+            // Create a new div for AdSense to target
+            const adContainer = document.createElement('div');
+            adContainer.className = 'adsense-container';
+            adContainer.style.width = '100%';
+            adContainer.style.height = '100%';
+            adContainer.style.position = 'relative';
+            adContainer.style.zIndex = '1'; // Lower z-index than the placeholder
+            
             // Create the ad element
             const adElement = document.createElement('ins');
             adElement.className = 'adsbygoogle';
@@ -205,9 +195,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
             adElement.setAttribute('data-ad-format', 'auto');
             adElement.setAttribute('data-full-width-responsive', 'true');
             
+            // Add AdSense element to the container
+            adContainer.appendChild(adElement);
+            
             // Double-check DOM connection again before appending
             if (adRef.current && document.body.contains(adRef.current)) {
-              adRef.current.appendChild(adElement);
+              // Add the ad container but don't remove the placeholder yet
+              adRef.current.appendChild(adContainer);
               
               // Push to adsbygoogle with error handling
               try {
@@ -216,67 +210,49 @@ const AdUnit: React.FC<AdUnitProps> = ({
                 
                 // Add an event listener to track when AdSense loads
                 const checkAdLoaded = setInterval(() => {
-                  const adIframe = adRef.current?.querySelector('iframe');
-                  if (adIframe) {
-                    clearInterval(checkAdLoaded);
-                    clearTimeout(adLoadTimeout);
-                    setAdLoaded(true);
-                    setIsError(false);
-                    console.log(`AdUnit (${slotId}): Ad successfully loaded`);
+                  try {
+                    const adIframe = adContainer.querySelector('iframe');
+                    if (adIframe) {
+                      clearInterval(checkAdLoaded);
+                      // Only hide the placeholder once AdSense loads successfully
+                      setIsError(false);
+                      console.log(`AdUnit (${slotId}): Ad successfully loaded`);
+                    }
+                  } catch (error) {
+                    console.error(`Error checking ad loaded: ${error}`);
                   }
                 }, 300);
                 
                 // Clear interval after 5 seconds to prevent memory leaks
+                // If AdSense hasn't loaded by then, keep showing the placeholder
                 setTimeout(() => {
                   clearInterval(checkAdLoaded);
-                  if (!adLoaded) {
-                    setAdLoaded(true);
-                    setIsError(true); // Show fallback if no iframe detected
-                  }
+                  // We don't set isError here because we're leaving the placeholder visible regardless
                 }, 5000);
                 
               } catch (error) {
                 console.error('Error pushing ad to adsbygoogle:', error);
-                clearTimeout(adLoadTimeout);
-                setAdLoaded(true);
                 setIsError(true);
               }
             } else {
-              clearTimeout(adLoadTimeout);
-              setAdLoaded(true);
               setIsError(true);
             }
           } catch (e) {
             console.log("Error creating ad element:", e);
-            clearTimeout(adLoadTimeout);
-            setAdLoaded(true);
             setIsError(true);
           }
         } else {
           console.log('AdSense not available (window.adsbygoogle undefined)');
-          clearTimeout(adLoadTimeout);
-          setAdLoaded(true);
           setIsError(true);
         }
       } catch (error) {
         console.error('Error initializing AdSense ad:', error);
-        setAdLoaded(true);
         setIsError(true);
       }
     };
     
     // Start the ad blocker check after a short delay
-    // Use shorter timeout to prevent lengthy white screens
-    timeoutRef.current = setTimeout(safeCheckAdBlocker, 500);
-    
-    // Fallback timeout to ensure we always show something after a maximum wait time
-    const fallbackTimeout = setTimeout(() => {
-      if (!adLoaded) {
-        console.log(`AdUnit (${slotId}): Fallback timeout reached, showing error state`);
-        setAdLoaded(true);
-        setIsError(true);
-      }
-    }, 3000);
+    timeoutRef.current = setTimeout(checkAdSenseAvailability, 500);
     
     // Cleanup function
     return () => {
@@ -284,9 +260,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
-      clearTimeout(fallbackTimeout);
     };
-  }, [isVisible, slotId, isDevelopment, toast, adLoaded]);
+  }, [isVisible, slotId, isDevelopment, toast]);
   
   // Clean up on unmount
   useEffect(() => {
@@ -302,9 +277,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // Always render placeholder for development or error states
   const renderPlaceholder = () => (
-    <div className="text-center p-4 h-full w-full flex flex-col items-center justify-center">
+    <div className="text-center p-4 h-full w-full flex flex-col items-center justify-center bg-secondary/30 rounded-lg">
       <p className="text-xs text-muted-foreground mb-2 font-semibold">
         {isDevelopment ? "Advertisement Placeholder" : "Advertisement"}
       </p>
@@ -315,20 +289,33 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </div>
   );
 
-  // Wrap in a ScrollArea to prevent any scroll issues
   return (
     <ScrollArea className={`overflow-hidden ${sizeClass} ${className}`}>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isVisible ? 1 : 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
-        className={`bg-secondary/30 border border-border rounded-lg overflow-hidden h-full`}
-        id={`ad-container-${slotId}`}
-        ref={adRef}
-      >
-        {/* Show placeholder when ad isn't loaded yet or when there's an error */}
-        {(!adLoaded || isError || isDevelopment) && renderPlaceholder()}
-      </motion.div>
+      <div className="relative h-full w-full">
+        {/* Always render placeholder initially and when there's an error */}
+        {(isError || !adSenseAttempted || isDevelopment) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.2 }}
+            className="absolute inset-0 z-10"
+          >
+            {renderPlaceholder()}
+          </motion.div>
+        )}
+        
+        {/* This is the container for AdSense */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isVisible ? 1 : 0 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className={`bg-secondary/30 border border-border rounded-lg overflow-hidden h-full w-full`}
+          id={`ad-container-${slotId}`}
+          ref={adRef}
+        >
+          {/* AdSense content will be dynamically inserted here */}
+        </motion.div>
+      </div>
     </ScrollArea>
   );
 };
