@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Drumstick, Milk, Apple, Croissant } from 'lucide-react';
 
-const categories = [
+export const categories = [
   {
     id: 'meat',
     name: 'Meat & Poultry',

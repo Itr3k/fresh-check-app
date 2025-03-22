@@ -1,69 +1,50 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import FoodCard from "../components/FoodCard";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
-
-// Mock search results data
-const mockSearchData = [
-  {
-    id: "chicken",
-    name: "Chicken",
-    imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop",
-    category: "Meat"
-  },
-  {
-    id: "milk",
-    name: "Milk",
-    imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&h=300&fit=crop",
-    category: "Dairy"
-  },
-  {
-    id: "eggs",
-    name: "Eggs",
-    imageUrl: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=500&h=300&fit=crop",
-    category: "Dairy"
-  },
-  {
-    id: "bread",
-    name: "Bread",
-    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=300&fit=crop",
-    category: "Bakery"
-  }
-];
+import { searchFoods, FoodItem } from "../data/foodData";
 
 const SearchPage = () => {
-  const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<typeof mockSearchData>([]);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  
+  const [query, setQuery] = useState<string>(initialQuery);
+  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
+  const [hasSearched, setHasSearched] = useState<boolean>(!!initialQuery);
+
+  // Initialize search results if there's a query parameter
+  useEffect(() => {
+    if (initialQuery) {
+      const results = searchFoods(initialQuery);
+      setSearchResults(results);
+      setHasSearched(true);
+    }
+  }, [initialQuery]);
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
     setHasSearched(true);
+    setSearchParams(searchQuery ? { q: searchQuery } : {});
 
-    // Filter mock data based on search query
-    // In a real app, this would be an API call
-    const results = mockSearchData.filter(food => 
-      food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      food.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    
+    // Search foods based on query
+    const results = searchFoods(searchQuery);
     setSearchResults(results);
   };
 
   return (
     <PageTransition>
       <Helmet>
-        <title>Search Foods - Fresh Check</title>
+        <title>{query ? `"${query}" - Search Foods` : "Search Foods"} - Fresh Check</title>
         <meta name="description" content="Search for any food to check if it's still fresh and good to eat. Get expiration dates, storage tips, and freshness indicators." />
-        <meta property="og:title" content="Search Foods - Fresh Check" />
+        <meta property="og:title" content={`${query ? `${query} - ` : ""}Search Foods - Fresh Check`} />
         <meta property="og:description" content="Search for any food to check if it's still fresh and good to eat." />
-        <link rel="canonical" href="https://freshcheck.app/search" />
+        <link rel="canonical" href={`https://freshcheck.app/search${query ? `?q=${encodeURIComponent(query)}` : ""}`} />
       </Helmet>
 
       <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
@@ -81,7 +62,11 @@ const SearchPage = () => {
           className="mb-8"
         >
           <h1 className="text-2xl font-semibold mb-6 text-center">Search Foods</h1>
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar 
+            onSearch={handleSearch} 
+            initialValue={query}
+            placeholder="Search for any food (e.g., apple, duck, cheese)"
+          />
         </motion.div>
 
         <AdUnit slotId="search-top" className="mb-8" format="leaderboard" />
@@ -126,6 +111,7 @@ const SearchPage = () => {
           {!hasSearched && (
             <div className="text-center text-muted-foreground">
               <p>Search for any food to check its shelf life and freshness.</p>
+              <p className="mt-2 text-sm">Try searching for: apple, duck, milk, cheese, etc.</p>
             </div>
           )}
         </div>

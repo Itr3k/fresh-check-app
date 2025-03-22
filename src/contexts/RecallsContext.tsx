@@ -77,9 +77,30 @@ export const RecallsProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   };
 
-  // Search function
-  const searchRecalls = (query: string) => {
-    return webhookService.searchRecalls(query);
+  // Enhanced search function with better matching
+  const searchRecalls = (query: string): RecallData[] => {
+    if (!query.trim()) {
+      // Return all recalls if empty query
+      return webhookService.getAllRecalls();
+    }
+    
+    const searchTerms = query.toLowerCase().trim().split(/\s+/);
+    return webhookService.getAllRecalls().filter(recall => {
+      const searchableFields = [
+        recall.product_name,
+        recall.brand,
+        recall.category,
+        recall.reason,
+        recall.details,
+        recall.affected_products?.join(' '),
+        recall.source_agency
+      ].filter(Boolean).map(field => field?.toLowerCase() || '');
+      
+      // Check if ANY search term is contained in ANY field
+      return searchTerms.some(term => 
+        searchableFields.some(field => field.includes(term))
+      );
+    });
   };
 
   // Get recall by ID
