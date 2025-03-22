@@ -61,8 +61,14 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
       console.log('Camera access granted!', mediaStream);
       
       setStream(mediaStream);
+      
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Ensure the video is visible and able to play
+        videoRef.current.style.display = 'block';
+        videoRef.current.play().catch(err => {
+          console.error('Error playing video:', err);
+        });
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
@@ -156,14 +162,17 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
                   ref={videoRef} 
                   autoPlay 
                   playsInline 
-                  className="absolute inset-0 w-full h-full object-cover"
-                  onLoadedData={() => setIsLoading(false)}
+                  className="h-full w-full object-cover"
+                  onLoadedData={() => {
+                    setIsLoading(false);
+                    console.log("Video loaded and ready to display");
+                  }}
                 />
               )}
             </div>
             
             {/* Camera Controls - Fixed positioning for better mobile support */}
-            <div className="fixed bottom-20 left-0 right-0 flex justify-center items-center">
+            <div className="fixed bottom-20 left-0 right-0 flex justify-center items-center z-10">
               <button 
                 onClick={handleCapture}
                 disabled={isLoading}
