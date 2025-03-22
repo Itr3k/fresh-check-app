@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -1350,7 +1349,7 @@ const FoodDetail = () => {
           
           {/* Right column - Additional info and related foods */}
           <div className="md:col-span-2">
-            {!isMobile && <AdUnit adId="detail-sidebar" className="mb-6" />}
+            {!isMobile && <AdUnit slotId="detail-sidebar" className="mb-6" />}
             
             <div className="bg-card rounded-lg border shadow-sm mb-6">
               <div className="p-4 border-b">
