@@ -4,6 +4,13 @@ import FoodCard from "./FoodCard";
 import { foodData } from "../data/foodData";
 
 const PopularFoods = () => {
+  // Select a diverse set of popular foods to display
+  const popularFoods = foodData.filter(food => 
+    ["chicken-raw", "milk", "eggs", "bread", "apple", "bananas", "lettuce", 
+     "tomatoes", "cheddar-cheese", "salmon", "rice", "pizza", "ice-cream", 
+     "orange-juice", "bacon", "tofu"].includes(food.id)
+  );
+
   return (
     <div className="mt-8">
       <motion.h2 
@@ -15,7 +22,7 @@ const PopularFoods = () => {
         Popular Foods
       </motion.h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {foodData.slice(0, 8).map((food, index) => (
+        {popularFoods.map((food, index) => (
           <FoodCard
             key={food.id}
             id={food.id}
