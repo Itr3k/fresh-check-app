@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -33,6 +34,13 @@ const getFoodDetails = (id: string) => {
     tomatoes: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&h=400&fit=crop",
     avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
     apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=400&fit=crop",
+    tofu: "https://images.unsplash.com/photo-1626711934535-9749ea933616?w=500&h=300&fit=crop",
+    bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
+    cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
+    yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
+    oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
+    peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
+    onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
     default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
   };
 
@@ -257,6 +265,271 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
+    if (id === "bacon") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 7,
+            maxDays: 14,
+            notes: "Keep in original sealed packaging"
+          },
+          opened: {
+            minDays: 5,
+            maxDays: 7,
+            notes: "Store in airtight container or tightly wrapped"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 30,
+            maxDays: 90,
+            notes: "Freeze in original packaging"
+          },
+          opened: {
+            minDays: 30,
+            maxDays: 90,
+            notes: "Wrap tightly in plastic wrap, then aluminum foil"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          }
+        }
+      ];
+    }
+    
+    if (id === "eggs") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 21,
+            maxDays: 35,
+            notes: "Store in original carton on interior shelf, not door"
+          },
+          opened: {
+            minDays: 2,
+            maxDays: 4,
+            notes: "For cracked eggs, store in covered container"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Whole eggs in shells cannot be frozen"
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 365,
+            notes: "Freeze beaten eggs in airtight container"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended in the US - requires refrigeration"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          }
+        }
+      ];
+    }
+    
+    if (id === "milk") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 5,
+            maxDays: 10,
+            notes: "Keep refrigerated at 40°F or below"
+          },
+          opened: {
+            minDays: 3,
+            maxDays: 7,
+            notes: "Store tightly sealed on interior shelf, not door"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze in airtight container with room for expansion"
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Texture may change after thawing, best for cooking"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Only shelf-stable UHT milk can be stored unopened"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration after opening"
+          }
+        }
+      ];
+    }
+    
+    if (id === "cheese") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 14,
+            maxDays: 28,
+            notes: "Keep in original packaging until ready to use"
+          },
+          opened: {
+            minDays: 5,
+            maxDays: 14,
+            notes: "Wrap in wax paper, then loosely in plastic wrap"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 60,
+            maxDays: 180,
+            notes: "Texture may change, best for cooking after freezing"
+          },
+          opened: {
+            minDays: 60,
+            maxDays: 180,
+            notes: "Grate hard cheese before freezing for best results"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          }
+        }
+      ];
+    }
+    
+    if (id === "chicken") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 1,
+            maxDays: 2,
+            notes: "Keep in original packaging on bottom shelf"
+          },
+          opened: {
+            minDays: 1,
+            maxDays: 2,
+            notes: "Store in airtight container on bottom shelf"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 270,
+            notes: "Freeze in original packaging for short-term storage"
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 270,
+            notes: "Wrap tightly in freezer paper or vacuum seal"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          }
+        }
+      ];
+    }
+    
+    if (id === "bread") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 7,
+            maxDays: 14,
+            notes: "Can slow mold growth but accelerates staling"
+          },
+          opened: {
+            minDays: 7,
+            maxDays: 14,
+            notes: "Keep tightly wrapped to prevent drying out"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze in original packaging or freezer bag"
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Slice before freezing for easier portioning"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 3,
+            maxDays: 7,
+            notes: "Store in bread box or paper bag, not plastic"
+          },
+          opened: {
+            minDays: 2,
+            maxDays: 5,
+            notes: "Keep tightly wrapped in cool, dry place"
+          }
+        }
+      ];
+    }
+    
+    // Default generic storage options as fallback
     return [
       {
         storageType: "refrigerator",
@@ -325,6 +598,55 @@ const getFoodDetails = (id: string) => {
       };
     }
     
+    if (id === "bacon") {
+      return {
+        visual: ["Discoloration (gray, green, or brown)", "Slimy film", "Mold spots"],
+        smell: ["Sour or rotting smell", "Rancid or fishy odor"],
+        texture: ["Sticky or tacky surface", "Unusually soft or mushy"]
+      };
+    }
+    
+    if (id === "eggs") {
+      return {
+        visual: ["Cracks in shell", "Powdery residue on shell", "Cloudy whites or pink/green yolks"],
+        smell: ["Sulfur or rotten odor", "Strong unpleasant smell when cracked"],
+        texture: ["Watery whites", "Yolk breaks easily when fresh", "Stuck to shell"]
+      };
+    }
+    
+    if (id === "milk") {
+      return {
+        visual: ["Chunky texture", "Separation of solids", "Yellow tinge"],
+        smell: ["Sour or rancid odor", "Unpleasant sharp smell"],
+        texture: ["Lumpy or curdled", "Slimy or unusually thick consistency"]
+      };
+    }
+    
+    if (id === "cheese") {
+      return {
+        visual: ["Mold (except for blue cheese)", "Unusual discoloration", "Dried, cracked edges"],
+        smell: ["Ammonia-like odor", "Rancid smell (different from normal cheese odor)"],
+        texture: ["Slimy surface", "Excessively hard or dry", "Unusual softening"]
+      };
+    }
+    
+    if (id === "chicken") {
+      return {
+        visual: ["Grayish-green color", "Mold spots", "Excessive sliminess"],
+        smell: ["Strong sour odor", "Ammonia-like smell", "Rotten egg odor"],
+        texture: ["Sticky or tacky surface", "Unusually soft flesh"]
+      };
+    }
+    
+    if (id === "bread") {
+      return {
+        visual: ["Mold spots (white, green, black, or pink)", "Unusual discoloration"],
+        smell: ["Musty or sour odor", "Alcohol-like smell"],
+        texture: ["Unusually hard and dry", "Slimy or wet spots"]
+      };
+    }
+    
+    // Default generic spoilage indicators as fallback
     return {
       visual: ["Discoloration", "Mold growth"],
       smell: ["Sour odor", "Ammonia-like smell"],
@@ -454,6 +776,14 @@ const getFoodContentDetails = (id: string) => {
     tofu: {
       about: "Tofu is a protein-rich food made from condensed soy milk that's been pressed into solid white blocks. It's an excellent source of plant-based protein, containing all nine essential amino acids. Tofu is also rich in iron, calcium (especially if calcium-sulfate is used in processing), manganese, and phosphorus. It's low in calories and contains no cholesterol, making it a popular protein alternative for many dietary patterns.",
       safety: "Fresh tofu requires refrigeration at all times at temperatures below 40°F (4°C). Store unopened tofu in its original packaging until the expiration date. Once opened, keep tofu submerged in fresh, clean water in an airtight container, changing the water daily to prevent bacterial growth. Tofu can spoil quickly when not properly stored. Firm and extra-firm varieties tend to last longer than silken or soft tofu. Freezing changes tofu's texture, making it more porous and chewier after thawing."
+    },
+    bacon: {
+      about: "Bacon is a cured meat prepared from pork belly or back cuts. It's known for its distinctive smoky flavor and high fat content. While not considered a health food due to its saturated fat and sodium levels, bacon contains protein, B vitamins (especially B12), zinc, and selenium. Modern processing methods have reduced nitrate and nitrite levels in many commercial bacon products.",
+      safety: "Always store bacon in the refrigerator at 40°F (4°C) or below and use by the package 'use-by' date. Once opened, bacon should be tightly wrapped or stored in an airtight container and used within 7 days. Cooked bacon can be refrigerated for up to 4-5 days. Bacon can be frozen for 1-3 months for best quality. Always cook bacon thoroughly to an internal temperature of 145°F (63°C) with a rest time of 3 minutes to kill potential pathogens."
+    },
+    cheese: {
+      about: "Cheese is a dairy product made from the milk of cows, goats, sheep, or other mammals. It's rich in calcium, protein, phosphorus, zinc, and vitamins A and B12. The nutritional profile varies widely between types - from high-fat, creamy varieties to harder, aged cheeses with higher protein content. Cheese contains beneficial compounds like conjugated linoleic acid (CLA) and provides probiotics in some varieties.",
+      safety: "Different cheese varieties have different storage requirements. Soft cheeses should be refrigerated at 35-40°F (1.6-4.4°C) and consumed relatively quickly, while hard, aged cheeses can last longer. For most cheeses, wrap in cheese paper, parchment, or wax paper rather than plastic wrap to allow them to breathe. Remove cheese from refrigeration 30-60 minutes before serving for best flavor. Discard any cheese with unusual mold growth (except for blue cheeses, where mold is part of the aging process)."
     },
     default: {
       about: "This food item is part of a balanced diet and provides essential nutrients your body needs. Proper storage is key to maintaining its freshness, flavor, and nutritional value. Always check packaging for specific storage instructions from the manufacturer.",
