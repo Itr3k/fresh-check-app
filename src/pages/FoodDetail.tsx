@@ -12,10 +12,7 @@ import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
 
 const getFoodDetails = (id: string) => {
-  // Try to get food from the foodData database first
   const foodFromDatabase = getFoodById(id);
-  
-  // Default food images as fallback
   const foodImages: Record<string, string> = {
     chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
     milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
@@ -29,9 +26,7 @@ const getFoodDetails = (id: string) => {
     default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
   };
 
-  // Get storage data based on food type and category
   const getStorageOptions = (id: string, category?: string) => {
-    // Fruits usually have similar storage characteristics
     if (category === "Fruits") {
       return [
         {
@@ -76,7 +71,6 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
-    // Dairy products
     if (category === "Dairy") {
       return [
         {
@@ -121,7 +115,6 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
-    // Vegetables
     if (category === "Vegetables") {
       return [
         {
@@ -166,7 +159,6 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
-    // Specific storage for apples
     if (id === "apples") {
       return [
         {
@@ -211,7 +203,6 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
-    // Default storage options
     return [
       {
         storageType: "refrigerator",
@@ -255,9 +246,7 @@ const getFoodDetails = (id: string) => {
     ];
   };
 
-  // Get spoilage indicators based on food type and category
   const getSpoilageIndicators = (id: string, category?: string) => {
-    // Fruits
     if (category === "Fruits") {
       return {
         visual: ["Mold spots", "Unusual discoloration", "Wrinkled or soft skin"],
@@ -266,7 +255,6 @@ const getFoodDetails = (id: string) => {
       };
     }
     
-    // Specific spoilage indicators for apples
     if (id === "apples") {
       return {
         visual: ["Brown or soft spots", "Wrinkled skin", "Mold growth"],
@@ -275,7 +263,6 @@ const getFoodDetails = (id: string) => {
       };
     }
     
-    // Default spoilage indicators
     return {
       visual: ["Discoloration", "Mold growth"],
       smell: ["Sour odor", "Ammonia-like smell"],
@@ -283,7 +270,6 @@ const getFoodDetails = (id: string) => {
     };
   };
 
-  // If we have a food from the database, use its information
   if (foodFromDatabase) {
     return {
       id,
@@ -300,7 +286,6 @@ const getFoodDetails = (id: string) => {
     };
   }
 
-  // Fallback to a default object
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
@@ -318,9 +303,7 @@ const getFoodDetails = (id: string) => {
 
 type StorageType = "refrigerator" | "freezer" | "pantry";
 
-// Function to get related foods based on the current food
 const getRelatedFoods = (currentFoodId: string) => {
-  // Map foods to their related foods
   const relatedFoodsMap: Record<string, {id: string, name: string, imageUrl: string}[]> = {
     chicken: [
       { id: "turkey", name: "Turkey", imageUrl: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=300&h=200&fit=crop" },
@@ -362,7 +345,6 @@ const getRelatedFoods = (currentFoodId: string) => {
       { id: "limes", name: "Limes", imageUrl: "https://images.unsplash.com/photo-1622957435923-ae8f70cb0ea3?w=300&h=200&fit=crop" },
       { id: "onions", name: "Onions", imageUrl: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=300&h=200&fit=crop" }
     ],
-    // Default related foods for any food not explicitly mapped
     default: [
       { id: "chicken", name: "Chicken", imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=300&h=200&fit=crop" },
       { id: "milk", name: "Milk", imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=200&fit=crop" },
@@ -373,7 +355,6 @@ const getRelatedFoods = (currentFoodId: string) => {
   return relatedFoodsMap[currentFoodId] || relatedFoodsMap.default;
 };
 
-// Function to get food descriptions and safety information
 const getFoodContentDetails = (id: string) => {
   const contentMap: Record<string, { about: string, safety: string }> = {
     chicken: {
@@ -435,7 +416,6 @@ const FoodDetail = () => {
   useEffect(() => {
     console.log("Loading food details for:", id);
     
-    // Check if food is saved in localStorage
     if (id && localStorage.getItem(`saved-food-${id}`)) {
       setIsSaved(true);
     }
@@ -470,24 +450,19 @@ const FoodDetail = () => {
     const today = new Date();
     const daysSincePurchase = Math.round((today.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24));
     
-    // Calculate remaining fresh days
     const minFreshDays = daysData.minDays - daysSincePurchase;
     const maxFreshDays = daysData.maxDays - daysSincePurchase;
     
     if (daysSincePurchase < 0) {
-      // Purchase date is in the future (error case)
       setStatus("fresh");
       setDaysText("Invalid purchase date");
     } else if (maxFreshDays <= 0) {
-      // Past the maximum days (expired)
       setStatus("expired");
       setDaysText(`${Math.abs(maxFreshDays)} days past expiration`);
     } else if (minFreshDays <= 0) {
-      // Between min and max days (use soon)
       setStatus("use-soon");
       setDaysText(`Use within ${maxFreshDays} days`);
     } else {
-      // Within minimum days (fresh)
       setStatus("fresh");
       setDaysText(`${minFreshDays} days until best use`);
     }
@@ -536,22 +511,16 @@ const FoodDetail = () => {
     );
   }
 
-  // Create the spoilage indicators text for schema
   const spoilageIndicatorsText = `Signs that ${food.name.toLowerCase()} has gone bad include: ${food.spoilageIndicators.visual.join(", ")} (visual); ${food.spoilageIndicators.smell.join(", ")} (smell); and ${food.spoilageIndicators.texture.join(", ")} (texture).`;
   
-  // Create storage requirements text for schema
   const storageRequirementsText = `${food.name} should be stored in the ${storageType}. ${food.storageOptions.find((s: any) => s.storageType === storageType)?.opened.notes}. Shelf life: ${food.storageOptions.find((s: any) => s.storageType === storageType)?.opened.minDays}-${food.storageOptions.find((s: any) => s.storageType === storageType)?.opened.maxDays} days when opened.`;
   
-  // Create storage tips text for schema
   const storageTipsText = food.tips.join(" ");
   
-  // Refrigerator shelf life text for schema
   const refrigeratorShelfLifeText = `${food.name} lasts ${food.storageOptions[0].unopened.minDays}-${food.storageOptions[0].unopened.maxDays} days unopened and ${food.storageOptions[0].opened.minDays}-${food.storageOptions[0].opened.maxDays} days after opening when stored in the refrigerator. ${food.storageOptions[0].opened.notes}.`;
   
-  // Freezer shelf life text for schema
   const freezerShelfLifeText = `${food.name} lasts ${food.storageOptions[1].unopened.minDays}-${food.storageOptions[1].unopened.maxDays} days unopened and ${food.storageOptions[1].opened.minDays}-${food.storageOptions[1].opened.maxDays} days after opening when stored in the freezer. ${food.storageOptions[1].opened.notes}.`;
 
-  // Enhanced schema markup with HowTo schema
   const howToSchema = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -576,6 +545,343 @@ const FoodDetail = () => {
     ]
   };
 
-  // Enhanced FAQ schema
   const faqSchema = {
-    "@context
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `How long does ${food.name} last in the refrigerator?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": refrigeratorShelfLifeText
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `How long does ${food.name} last in the freezer?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": freezerShelfLifeText
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `How can I tell if ${food.name} has gone bad?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": spoilageIndicatorsText
+        }
+      }
+    ]
+  };
+
+  const handleSaveFood = () => {
+    if (id) {
+      if (isSaved) {
+        localStorage.removeItem(`saved-food-${id}`);
+        setIsSaved(false);
+        toast.success(`${food.name} removed from saved foods`);
+      } else {
+        localStorage.setItem(`saved-food-${id}`, JSON.stringify({
+          id,
+          name: food.name,
+          imageUrl: food.imageUrl,
+          category: food.category,
+          savedAt: new Date().toISOString()
+        }));
+        setIsSaved(true);
+        toast.success(`${food.name} saved for quick access`);
+      }
+    }
+  };
+
+  const handlePrintMode = () => {
+    setIsPrintMode(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrintMode(false);
+    }, 100);
+  };
+
+  return (
+    <PageTransition>
+      <Helmet>
+        <title>{`How Long Does ${food.name} Last? | Food Storage Guide`}</title>
+        <meta name="description" content={`Learn how long ${food.name} lasts in the refrigerator, freezer, or pantry, and how to tell if it's gone bad.`} />
+        <script type="application/ld+json">
+          {JSON.stringify(howToSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
+
+      <div className={`container mx-auto px-4 py-6 ${isPrintMode ? 'print-mode' : ''}`}>
+        <div className="mb-6 flex items-center justify-between">
+          <Link to="/" className="flex items-center text-muted-foreground hover:text-primary transition-colors">
+            <ArrowLeft size={20} className="mr-2" />
+            <span>Back to Home</span>
+          </Link>
+          <div className="flex space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleSaveFood}
+              className="print:hidden"
+            >
+              <Save size={16} className="mr-2" />
+              {isSaved ? 'Saved' : 'Save'}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handlePrintMode}
+              className="print:hidden"
+            >
+              <Printer size={16} className="mr-2" />
+              Print
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-xl overflow-hidden shadow-md"
+            >
+              <div className="relative aspect-video">
+                <img 
+                  src={food.imageUrl} 
+                  alt={food.name} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                  <h1 className="text-3xl md:text-4xl font-bold text-white">{food.name}</h1>
+                  <div className="flex items-center mt-2">
+                    <span className="px-3 py-1 bg-primary/90 text-white text-sm rounded-full">{food.category}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                    <Calendar className="mr-2 text-primary" />
+                    Storage Calculator
+                  </h2>
+                  <div className="bg-muted p-4 rounded-lg">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Storage Location</label>
+                        <div className="flex rounded-lg overflow-hidden border">
+                          <button 
+                            className={`flex-1 py-2 px-3 text-sm flex items-center justify-center ${storageType === 'refrigerator' ? 'bg-primary text-white' : 'bg-background'}`}
+                            onClick={() => setStorageType('refrigerator')}
+                          >
+                            <Refrigerator size={16} className="mr-1" />
+                            Fridge
+                          </button>
+                          <button 
+                            className={`flex-1 py-2 px-3 text-sm flex items-center justify-center ${storageType === 'freezer' ? 'bg-primary text-white' : 'bg-background'}`}
+                            onClick={() => setStorageType('freezer')}
+                          >
+                            <Snowflake size={16} className="mr-1" />
+                            Freezer
+                          </button>
+                          <button 
+                            className={`flex-1 py-2 px-3 text-sm flex items-center justify-center ${storageType === 'pantry' ? 'bg-primary text-white' : 'bg-background'}`}
+                            onClick={() => setStorageType('pantry')}
+                          >
+                            <Home size={16} className="mr-1" />
+                            Pantry
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Package Status</label>
+                        <div className="flex rounded-lg overflow-hidden border">
+                          <button 
+                            className={`flex-1 py-2 px-3 text-sm ${!isOpened ? 'bg-primary text-white' : 'bg-background'}`}
+                            onClick={() => setIsOpened(false)}
+                          >
+                            Unopened
+                          </button>
+                          <button 
+                            className={`flex-1 py-2 px-3 text-sm ${isOpened ? 'bg-primary text-white' : 'bg-background'}`}
+                            onClick={() => setIsOpened(true)}
+                          >
+                            Opened
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Purchase Date</label>
+                        <input
+                          type="date"
+                          value={formatDate(purchaseDate)}
+                          onChange={handleDateChange}
+                          className="w-full px-3 py-2 border rounded-lg"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="bg-background p-4 rounded-lg border">
+                      <div className="flex flex-col items-center sm:flex-row sm:justify-between">
+                        <div className="mb-3 sm:mb-0">
+                          <h3 className="font-medium">Current Status:</h3>
+                          <p className="text-sm text-muted-foreground">Based on your settings</p>
+                        </div>
+                        <div className="flex items-center">
+                          <StatusIndicator status={status} size="large" />
+                          <div className="ml-3">
+                            <p className="font-semibold">
+                              {status === 'fresh' ? 'Fresh' : status === 'use-soon' ? 'Use Soon' : 'Expired'}
+                            </p>
+                            <p className="text-sm">{daysText}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-sm text-muted-foreground">
+                    <p>
+                      {isOpened 
+                        ? `Opened ${food.name.toLowerCase()} lasts ${food.storageOptions.find((s: any) => s.storageType === storageType)?.opened.minDays}-${food.storageOptions.find((s: any) => s.storageType === storageType)?.opened.maxDays} days when stored in the ${storageType}.`
+                        : `Unopened ${food.name.toLowerCase()} lasts ${food.storageOptions.find((s: any) => s.storageType === storageType)?.unopened.minDays}-${food.storageOptions.find((s: any) => s.storageType === storageType)?.unopened.maxDays} days when stored in the ${storageType}.`
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                    <ShieldAlert className="mr-2 text-primary" />
+                    Signs of Spoilage
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-muted p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">Visual Signs</h3>
+                      <ul className="list-disc list-inside text-sm space-y-1">
+                        {food.spoilageIndicators.visual.map((sign: string, index: number) => (
+                          <li key={index}>{sign}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">Smell</h3>
+                      <ul className="list-disc list-inside text-sm space-y-1">
+                        {food.spoilageIndicators.smell.map((sign: string, index: number) => (
+                          <li key={index}>{sign}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">Texture</h3>
+                      <ul className="list-disc list-inside text-sm space-y-1">
+                        {food.spoilageIndicators.texture.map((sign: string, index: number) => (
+                          <li key={index}>{sign}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {contentDetails && (
+                  <>
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                        <Info className="mr-2 text-primary" />
+                        About {food.name}
+                      </h2>
+                      <div className="bg-muted p-4 rounded-lg">
+                        <p className="text-sm leading-relaxed">{contentDetails.about}</p>
+                      </div>
+                    </div>
+
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-semibold mb-4 flex items-center">
+                        <BookOpen className="mr-2 text-primary" />
+                        Safety Information
+                      </h2>
+                      <div className="bg-muted p-4 rounded-lg">
+                        <p className="text-sm leading-relaxed">{contentDetails.safety}</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4">Storage Tips</h2>
+                  <ul className="space-y-2">
+                    {food.tips.map((tip: string, index: number) => (
+                      <li key={index} className="bg-muted p-3 rounded-lg text-sm flex items-start">
+                        <span className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary h-5 w-5 text-xs mr-2 mt-0.5">
+                          {index + 1}
+                        </span>
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="lg:col-span-1 print:hidden">
+            <div className="sticky top-24">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <AdUnit />
+                
+                <div className="mt-8">
+                  <h2 className="text-xl font-semibold mb-4">Related Foods</h2>
+                  <div className="space-y-4">
+                    {relatedFoods.map((relatedFood) => (
+                      <Link 
+                        key={relatedFood.id} 
+                        to={`/food/${relatedFood.id}`} 
+                        className="flex items-center bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <img 
+                          src={relatedFood.imageUrl} 
+                          alt={relatedFood.name} 
+                          className="w-16 h-12 object-cover rounded-md mr-3"
+                        />
+                        <div>
+                          <h3 className="font-medium">{relatedFood.name}</h3>
+                          <p className="text-xs text-muted-foreground">View storage info</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="mt-8 bg-muted p-4 rounded-lg text-center text-sm">
+                  <p className="mb-2">Want to learn more about food safety?</p>
+                  <a 
+                    href="https://www.fda.gov/food/consumers/food-safety-education-consumers" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline flex items-center justify-center"
+                  >
+                    Visit FDA Food Safety <ExternalLink size={14} className="ml-1" />
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageTransition>
+  );
+};
+
+export default FoodDetail;
