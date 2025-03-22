@@ -6,6 +6,7 @@ import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info } from "lucide
 import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
+import { useIsMobile } from "../hooks/use-mobile";
 
 const getFoodDetails = (id: string) => {
   const foodImages: Record<string, string> = {
@@ -90,6 +91,7 @@ const FoodDetail = () => {
   const [purchaseDate, setPurchaseDate] = useState<Date>(new Date());
   const [status, setStatus] = useState<"fresh" | "use-soon" | "expired">("fresh");
   const [daysText, setDaysText] = useState("");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     console.log("Loading food details for:", id);
@@ -259,10 +261,10 @@ const FoodDetail = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">Storage Options</h2>
               
-              <div className="flex space-x-2 mb-6">
+              <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'space-x-2'} mb-6`}>
                 <button
                   onClick={() => setStorageType("refrigerator")}
-                  className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
+                  className={`${isMobile ? 'w-full' : 'flex-1'} py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
                     storageType === "refrigerator"
                       ? "bg-primary text-white"
                       : "bg-secondary text-muted-foreground hover:bg-secondary/80"
@@ -273,7 +275,7 @@ const FoodDetail = () => {
                 </button>
                 <button
                   onClick={() => setStorageType("freezer")}
-                  className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
+                  className={`${isMobile ? 'w-full' : 'flex-1'} py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
                     storageType === "freezer"
                       ? "bg-primary text-white"
                       : "bg-secondary text-muted-foreground hover:bg-secondary/80"
@@ -284,7 +286,7 @@ const FoodDetail = () => {
                 </button>
                 <button
                   onClick={() => setStorageType("pantry")}
-                  className={`flex-1 py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
+                  className={`${isMobile ? 'w-full' : 'flex-1'} py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
                     storageType === "pantry"
                       ? "bg-primary text-white"
                       : "bg-secondary text-muted-foreground hover:bg-secondary/80"
