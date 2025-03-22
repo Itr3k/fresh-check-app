@@ -12,7 +12,10 @@ export const useCameraStream = () => {
 
   const stopCamera = useCallback(() => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(track => {
+        track.stop();
+        console.log('Track stopped:', track.kind);
+      });
       setStream(null);
     }
   }, [stream]);
@@ -54,7 +57,7 @@ export const useCameraStream = () => {
         videoElement.style.position = 'absolute';
         videoElement.style.top = '0';
         videoElement.style.left = '0';
-        videoElement.style.zIndex = '1'; // Ensure video appears above background
+        videoElement.style.zIndex = '0'; // Behind the spinner
         
         console.log("Starting video playback");
         
@@ -65,6 +68,7 @@ export const useCameraStream = () => {
         });
       } else {
         console.error('Video element reference not available');
+        setError('Camera initialization failed. Please try again.');
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
@@ -74,10 +78,9 @@ export const useCameraStream = () => {
         description: 'Could not access your camera. Please check permissions.',
         variant: 'destructive',
       });
-    } finally {
-      // We'll let the onLoadedData event set isLoading to false
-      // rather than setting it here, to ensure the video is actually visible
     }
+    // Note: We don't set isLoading to false here
+    // It will be set by the onLoadedData event in CameraView
   }, [facingMode, stopCamera]);
 
   const switchCamera = useCallback(() => {

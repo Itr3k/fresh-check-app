@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useCameraStream } from './useCameraStream';
 import CameraView from './CameraView';
@@ -15,6 +15,7 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isMobile = useIsMobile();
+  const [cameraReady, setCameraReady] = useState(false);
   
   const {
     stream,
@@ -30,18 +31,20 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
 
   useEffect(() => {
     console.log("CameraCapture mounted, starting camera...");
+    let mounted = true;
     
     // Start the camera with a short delay to ensure DOM is ready
     const timeoutId = setTimeout(() => {
-      if (videoRef.current) {
+      if (mounted && videoRef.current) {
         startCamera(videoRef);
       }
-    }, 100);
+    }, 300);
     
     // Ensure the body doesn't scroll while camera is open
     document.body.style.overflow = 'hidden';
     
     return () => {
+      mounted = false;
       clearTimeout(timeoutId);
       stopCamera();
       document.body.style.overflow = '';
@@ -86,6 +89,7 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
 
   const handleVideoLoaded = () => {
     console.log("Video loaded and ready to display");
+    setCameraReady(true);
     setIsLoading(false);
   };
 
