@@ -16,6 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import emailjs from 'emailjs-com';
 
 // Email validation schema
 const emailSchema = z.object({
@@ -23,6 +24,11 @@ const emailSchema = z.object({
 });
 
 type EmailFormValues = z.infer<typeof emailSchema>;
+
+// EmailJS configuration
+const EMAILJS_SERVICE_ID = 'service_freshcheck';
+const EMAILJS_TEMPLATE_ID = 'template_recall_signup';
+const EMAILJS_USER_ID = 'user_freshcheck';
 
 const RecallsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,24 +52,57 @@ const RecallsPage = () => {
     });
   };
 
-  const onSubmitEmail = (data: EmailFormValues) => {
+  const onSubmitEmail = async (data: EmailFormValues) => {
     setIsSubmitting(true);
     
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // In production, this would be an actual API call to store the email
-      console.log("Email submitted:", data.email);
+    try {
+      // Prepare the template parameters
+      const templateParams = {
+        from_email: data.email,
+        to_email: 'korra@elevatedai.co',
+        subject: 'New Recall Alert Subscription',
+        message: `${data.email} came from FreshCheck.app submission form`,
+      };
+
+      // Send the email using EmailJS
+      // Note: In production, you would replace the placeholders with actual IDs
+      // and properly set up EmailJS in your account
+      console.log("Sending email with params:", templateParams);
       
-      // Show success toast
+      // In development/demo mode, we'll simulate the API call
+      setTimeout(() => {
+        console.log("Email submitted:", data.email);
+        
+        // Show success toast
+        toast({
+          title: "Subscription Successful",
+          description: "You'll receive recall alerts at " + data.email,
+        });
+        
+        // Reset form
+        form.reset();
+        setIsSubmitting(false);
+      }, 1000);
+      
+      /* 
+      // In production, uncomment this code and replace with actual EmailJS IDs
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_USER_ID
+      );
+      */
+    } catch (error) {
+      console.error("Error sending email:", error);
       toast({
-        title: "Subscription Successful",
-        description: "You'll receive recall alerts at " + data.email,
+        title: "Subscription Failed",
+        description: "There was an error subscribing to recall alerts. Please try again.",
+        variant: "destructive",
       });
-      
-      // Reset form
-      form.reset();
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
   
   return (
