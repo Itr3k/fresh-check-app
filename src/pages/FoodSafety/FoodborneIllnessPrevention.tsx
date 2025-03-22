@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -11,7 +10,8 @@ import {
   XCircle,
   Printer, 
   FileDown,
-  ExternalLink
+  ExternalLink,
+  UserRound
 } from "lucide-react";
 import PageTransition from "../../components/PageTransition";
 import { Button } from "@/components/ui/button";
@@ -559,28 +559,28 @@ const FoodborneIllnessPrevention = () => {
               
               <ul className="space-y-3 my-4">
                 <li className="flex items-start">
-                  <Users size={18} className="text-primary mr-2 mt-0.5" />
+                  <UserRound size={18} className="text-primary mr-2 mt-0.5" />
                   <div>
                     <span className="font-medium">Pregnant women</span> - More susceptible to Listeria, which can cause miscarriage, 
                     premature delivery, or infection in newborns
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <Users size={18} className="text-primary mr-2 mt-0.5" />
+                  <UserRound size={18} className="text-primary mr-2 mt-0.5" />
                   <div>
                     <span className="font-medium">Adults aged 65 and older</span> - Weakened immune systems and organs make it 
                     harder to fight off infection
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <Users size={18} className="text-primary mr-2 mt-0.5" />
+                  <UserRound size={18} className="text-primary mr-2 mt-0.5" />
                   <div>
                     <span className="font-medium">Children under 5</span> - Developing immune systems and lower body weight 
                     make infections more severe
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <Users size={18} className="text-primary mr-2 mt-0.5" />
+                  <UserRound size={18} className="text-primary mr-2 mt-0.5" />
                   <div>
                     <span className="font-medium">People with weakened immune systems</span> - Including those with diabetes, 
                     liver or kidney disease, alcoholism, or receiving chemotherapy
