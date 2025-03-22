@@ -60,9 +60,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
     try {
       // Check if AdSense is loaded
       if (adRef.current && (window as any).adsbygoogle) {
-        // Clear existing ad content if any
-        adRef.current.innerHTML = '';
-        
         // Create new ins element for AdSense
         const adElement = document.createElement('ins');
         adElement.className = 'adsbygoogle';
@@ -74,15 +71,23 @@ const AdUnit: React.FC<AdUnitProps> = ({
         adElement.setAttribute('data-ad-format', 'auto');
         adElement.setAttribute('data-full-width-responsive', 'true');
         
-        // Append the ad element to our container
-        adRef.current.appendChild(adElement);
-        
-        // Push the ad to AdSense for display
-        const adsbygoogle = (window as any).adsbygoogle || [];
-        adsbygoogle.push({});
-        
-        console.log(`AdSense ad ${slotId} initialized`);
-        setAdLoaded(true);
+        // Clear and append only if the element is still in the DOM
+        if (adRef.current && adRef.current.isConnected) {
+          // Safely clear the container
+          while (adRef.current.firstChild) {
+            adRef.current.removeChild(adRef.current.firstChild);
+          }
+          
+          // Append the ad element
+          adRef.current.appendChild(adElement);
+          
+          // Push the ad to AdSense for display
+          const adsbygoogle = (window as any).adsbygoogle || [];
+          adsbygoogle.push({});
+          
+          console.log(`AdSense ad ${slotId} initialized`);
+          setAdLoaded(true);
+        }
       } else {
         console.log('AdSense not available yet, will retry on next render');
       }
@@ -94,12 +99,19 @@ const AdUnit: React.FC<AdUnitProps> = ({
   // Cleanup on unmount or slot change
   useEffect(() => {
     return () => {
-      if (adRef.current && adLoaded) {
-        adRef.current.innerHTML = '';
+      try {
+        if (adRef.current && adRef.current.isConnected) {
+          // Safely clear the container instead of setting innerHTML
+          while (adRef.current.firstChild) {
+            adRef.current.removeChild(adRef.current.firstChild);
+          }
+        }
         setAdLoaded(false);
+      } catch (error) {
+        console.error('Error cleaning up ad unit:', error);
       }
     };
-  }, [slotId, adLoaded]);
+  }, [slotId]);
   
   return (
     <motion.div 
