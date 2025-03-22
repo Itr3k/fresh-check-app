@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Drumstick, Milk, Apple, Bread } from 'lucide-react';
+import { Drumstick, Milk, Apple, Croissant } from 'lucide-react';
 
 const categories = [
   {
@@ -30,7 +30,7 @@ const categories = [
     id: 'baked-goods',
     name: 'Baked Goods',
     description: 'Storage guide for bread, pastries, and more',
-    icon: Bread,
+    icon: Croissant,
     color: 'bg-yellow-100'
   }
 ];
