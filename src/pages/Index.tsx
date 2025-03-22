@@ -56,13 +56,17 @@ const Index = () => {
             </Link>
           </div>
 
-          <AdUnit slotId="home-top" className="mb-8" format="leaderboard" />
+          {/* Moved Popular Foods up */}
+          <PopularFoods />
 
-          <SavedFoods />
+          {/* Moved AdUnit after Popular Foods */}
+          <AdUnit slotId="home-top" className="my-8" format="leaderboard" />
 
+          {/* Moved CategoryCards below AdUnit */}
           <CategoryCards />
 
-          <PopularFoods />
+          {/* SavedFoods remains after CategoryCards */}
+          <SavedFoods />
 
           <AdUnit slotId="home-bottom" className="mt-8" format="leaderboard" lazyLoad={true} />
 
