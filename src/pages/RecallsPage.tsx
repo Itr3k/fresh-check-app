@@ -71,6 +71,15 @@ const RecallsPage = () => {
             Check if products in your kitchen have been affected.
           </p>
           
+          {/* Coming Soon Banner */}
+          <div className="max-w-3xl mx-auto mb-8 bg-primary/10 border-2 border-primary/30 rounded-lg p-4 text-center">
+            <h2 className="text-2xl font-bold text-primary mb-2">Coming Soon</h2>
+            <p className="text-muted-foreground">
+              We're working hard to bring you comprehensive food recall information.
+              The full functionality of this page will be available shortly.
+            </p>
+          </div>
+          
           <div className="max-w-3xl mx-auto mb-8">
             <div className="flex flex-col gap-4 sm:flex-row items-center">
               <div className="relative w-full">
