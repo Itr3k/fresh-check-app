@@ -19,6 +19,7 @@ export interface FoodInfo {
     carbs?: number;
     fat?: number;
   };
+  storageInstructions?: string[];
 }
 
 interface FoodInfoResultProps {
@@ -35,6 +36,60 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
   const hasExpiryDate = !!foodInfo.expiryDate;
   const hasBarcode = !!foodInfo.barcode;
   const hasNutrition = !!foodInfo.nutritionInfo;
+  const hasStorageInstructions = !!foodInfo.storageInstructions && foodInfo.storageInstructions.length > 0;
+  
+  // Generate structured data for HowTo storage instructions if available
+  const generateHowToSchema = () => {
+    if (!hasStorageInstructions) return null;
+    
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": `How to Store ${foodInfo.name} Properly`,
+      "description": `Learn the proper way to store ${foodInfo.name} to maintain freshness and safety.`,
+      "step": foodInfo.storageInstructions?.map((instruction, index) => ({
+        "@type": "HowToStep",
+        "position": index + 1,
+        "text": instruction
+      }))
+    };
+    
+    return schema;
+  };
+  
+  // Generate FoodEntity schema
+  const generateFoodEntitySchema = () => {
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "FoodEntity",
+      "name": foodInfo.name,
+      "description": `Information about ${foodInfo.name} including storage guidelines and freshness indicators.`
+    };
+    
+    if (foodInfo.nutritionInfo) {
+      schema["nutrition"] = {
+        "@type": "NutritionInformation"
+      };
+      
+      if (foodInfo.nutritionInfo.calories !== undefined) {
+        schema["nutrition"]["calories"] = `${foodInfo.nutritionInfo.calories} calories`;
+      }
+      
+      if (foodInfo.nutritionInfo.protein !== undefined) {
+        schema["nutrition"]["proteinContent"] = `${foodInfo.nutritionInfo.protein}g`;
+      }
+      
+      if (foodInfo.nutritionInfo.carbs !== undefined) {
+        schema["nutrition"]["carbohydrateContent"] = `${foodInfo.nutritionInfo.carbs}g`;
+      }
+      
+      if (foodInfo.nutritionInfo.fat !== undefined) {
+        schema["nutrition"]["fatContent"] = `${foodInfo.nutritionInfo.fat}g`;
+      }
+    }
+    
+    return schema;
+  };
   
   return (
     <motion.div
@@ -43,6 +98,17 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
       transition={{ duration: 0.4 }}
       className="w-full max-w-md mx-auto"
     >
+      {/* Add structured data */}
+      {hasStorageInstructions && (
+        <script type="application/ld+json">
+          {JSON.stringify(generateHowToSchema())}
+        </script>
+      )}
+      
+      <script type="application/ld+json">
+        {JSON.stringify(generateFoodEntitySchema())}
+      </script>
+      
       <Card className="overflow-hidden">
         {foodInfo.imageUrl && (
           <div className="relative h-48 w-full overflow-hidden">
@@ -50,6 +116,7 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
               src={foodInfo.imageUrl} 
               alt={foodInfo.name}
               className="object-cover w-full h-full"
+              loading="lazy" // Add lazy loading for images
             />
           </div>
         )}
@@ -96,6 +163,23 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
                     <div>Fat: {foodInfo.nutritionInfo.fat}g</div>
                   )}
                 </div>
+              </div>
+            </>
+          )}
+          
+          {hasStorageInstructions && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium flex items-center gap-2">
+                  <Info size={16} className="text-muted-foreground" />
+                  Storage Instructions
+                </h3>
+                <ul className="text-sm list-disc pl-5 space-y-1">
+                  {foodInfo.storageInstructions?.map((instruction, index) => (
+                    <li key={index}>{instruction}</li>
+                  ))}
+                </ul>
               </div>
             </>
           )}

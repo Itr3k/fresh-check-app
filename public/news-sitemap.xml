@@ -1,0 +1,50 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <!-- Recent Food Recalls -->
+  <url>
+    <loc>https://freshcheck.app/recalls/current</loc>
+    <news:news>
+      <news:publication>
+        <news:name>FreshCheck</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2023-09-01T00:00:00+00:00</news:publication_date>
+      <news:title>Current Food Recalls &amp; Safety Alerts</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/recalls/chicken-recall-2023</loc>
+    <news:news>
+      <news:publication>
+        <news:name>FreshCheck</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2023-08-15T00:00:00+00:00</news:publication_date>
+      <news:title>Chicken Products Recall Due to Potential Contamination</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/recalls/lettuce-recall-2023</loc>
+    <news:news>
+      <news:publication>
+        <news:name>FreshCheck</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2023-08-10T00:00:00+00:00</news:publication_date>
+      <news:title>Romaine Lettuce Recall Expanded to Additional States</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/recalls/peanut-butter-recall-2023</loc>
+    <news:news>
+      <news:publication>
+        <news:name>FreshCheck</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2023-07-25T00:00:00+00:00</news:publication_date>
+      <news:title>Peanut Butter Products Recalled Due to Potential Salmonella</news:title>
+    </news:news>
+  </url>
+</urlset>

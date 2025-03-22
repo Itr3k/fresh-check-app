@@ -9,6 +9,7 @@ import FoodCard from "../components/FoodCard";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 import { searchFoods, FoodItem } from "../data/foodData";
+import BreadcrumbNav from "../components/BreadcrumbNav";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,16 @@ const SearchPage = () => {
   const [query, setQuery] = useState<string>(initialQuery);
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [hasSearched, setHasSearched] = useState<boolean>(!!initialQuery);
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Search", current: query ? false : true },
+  ];
+
+  if (query) {
+    breadcrumbItems.push({ label: query, current: true });
+  }
 
   // Initialize search results if there's a query parameter
   useEffect(() => {
@@ -37,6 +48,25 @@ const SearchPage = () => {
     setSearchResults(results);
   };
 
+  // Generate structured data for the search results
+  const generateSearchResultsSchema = () => {
+    if (!hasSearched || searchResults.length === 0) return null;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": searchResults.map((food, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "FoodEntity",
+          "name": food.name,
+          "url": `https://freshcheck.app/food/${food.id}`
+        }
+      }))
+    };
+  };
+
   return (
     <PageTransition>
       <Helmet>
@@ -47,12 +77,22 @@ const SearchPage = () => {
         <link rel="canonical" href={`https://freshcheck.app/search${query ? `?q=${encodeURIComponent(query)}` : ""}`} />
       </Helmet>
 
+      {hasSearched && searchResults.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify(generateSearchResultsSchema())}
+        </script>
+      )}
+
       <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
         <div className="mb-4">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft size={18} className="mr-1" />
             <span>Back</span>
           </Link>
+        </div>
+
+        <div className="mb-4">
+          <BreadcrumbNav items={breadcrumbItems} />
         </div>
 
         <motion.div 

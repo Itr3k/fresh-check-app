@@ -29,6 +29,63 @@ const Index = () => {
     }
   };
 
+  // FAQ schema for the homepage
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does food last in the refrigerator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Food storage times vary by type. Most raw meats last 1-3 days, vegetables 3-7 days, and leftovers 3-4 days when properly stored below 40°F (4°C)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I tell if food has gone bad?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Look for visible mold, discoloration, sliminess, or off smells. When in doubt, remember the food safety rule: 'When in doubt, throw it out.'"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the temperature danger zone for food?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The temperature danger zone is between 40°F and 140°F (4°C to 60°C). Bacteria multiply rapidly in this range, so food should not be left at these temperatures for more than 2 hours."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long can I freeze food?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most foods remain safe indefinitely in the freezer, but quality deteriorates over time. Meat and poultry can maintain quality for 3-12 months, while fruits and vegetables typically last 8-12 months when properly wrapped."
+        }
+      }
+    ]
+  };
+
+  // Website schema for organization information
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://freshcheck.app/",
+    "name": "FreshCheck",
+    "description": "Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://freshcheck.app/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <PageTransition>
       <Helmet>
@@ -47,6 +104,15 @@ const Index = () => {
         />
         <link rel="canonical" href="https://freshcheck.app/" />
       </Helmet>
+
+      {/* Add structured data */}
+      <script type="application/ld+json">
+        {JSON.stringify(faqSchema)}
+      </script>
+      
+      <script type="application/ld+json">
+        {JSON.stringify(websiteSchema)}
+      </script>
 
       <div className="min-h-screen bg-background flex flex-col">
         <Header />

@@ -9,8 +9,8 @@ import AdUnit from "../components/AdUnit";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRecalls } from "../contexts/RecallsContext";
+import BreadcrumbNav from "../components/BreadcrumbNav";
 
-// Helper to render severity icon and color
 const getSeverityData = (severity: string) => {
   switch(severity) {
     case "high":
@@ -40,7 +40,6 @@ const getSeverityData = (severity: string) => {
   }
 };
 
-// Helper to format date
 const formatDate = (dateString: string) => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
@@ -50,7 +49,6 @@ const RecallDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { getRecallById, loading } = useRecalls();
   
-  // Find the recall with the matching ID
   const recall = id ? getRecallById(id) : undefined;
   
   if (loading) {
@@ -90,6 +88,12 @@ const RecallDetailPage = () => {
   }
   
   const severityData = getSeverityData(recall.severity);
+
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Recalls", href: "/recalls" },
+    { label: recall.product_name, current: true }
+  ];
   
   return (
     <PageTransition>
@@ -131,11 +135,15 @@ const RecallDetailPage = () => {
         
         <main className="container mx-auto px-4 py-8 pt-24">
           <div className="max-w-3xl mx-auto">
-            <div className="mb-6">
+            <div className="mb-2">
               <Link to="/recalls" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
                 <ArrowLeft size={16} className="mr-1" />
                 Back to All Recalls
               </Link>
+            </div>
+            
+            <div className="mb-6">
+              <BreadcrumbNav items={breadcrumbItems} />
             </div>
             
             <div className={`p-4 border rounded-lg mb-6 ${severityData.color}`}>
