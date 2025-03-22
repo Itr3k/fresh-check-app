@@ -5,6 +5,7 @@ import { AlertOctagon, AlertCircle, AlertTriangle, ChevronRight } from "lucide-r
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import { useRecalls } from "../contexts/RecallsContext";
 
 // Helper to render severity icon

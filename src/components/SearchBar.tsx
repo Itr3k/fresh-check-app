@@ -2,21 +2,38 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
-import { toast } from "../hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   id?: string;
+  initialValue?: string;
+  placeholder?: string;
 }
 
-const SearchBar = ({ onSearch, id = "search-bar" }: SearchBarProps) => {
-  const [query, setQuery] = useState("");
+const SearchBar = ({ 
+  onSearch, 
+  id = "search-bar", 
+  initialValue = "",
+  placeholder = "Search for any food..."
+}: SearchBarProps) => {
+  const [query, setQuery] = useState(initialValue);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSearch && query.trim()) {
+    if (onSearch) {
       onSearch(query);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    
+    // Call onSearch on every change to provide real-time filtering
+    if (onSearch) {
+      onSearch(newQuery);
     }
   };
 
@@ -42,10 +59,10 @@ const SearchBar = ({ onSearch, id = "search-bar" }: SearchBarProps) => {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder="Search for any food..."
+          placeholder={placeholder}
           className="w-full py-4 px-12 bg-transparent focus:outline-none text-base"
         />
       </form>
