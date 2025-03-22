@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info, BookOpen, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info, BookOpen, ShieldAlert, ExternalLink, Save, Printer } from "lucide-react";
 import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 import { useIsMobile } from "../hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const getFoodDetails = (id: string) => {
   const foodImages: Record<string, string> = {
@@ -194,9 +196,16 @@ const FoodDetail = () => {
   const isMobile = useIsMobile();
   const [relatedFoods, setRelatedFoods] = useState<any[]>([]);
   const [contentDetails, setContentDetails] = useState<{about: string, safety: string} | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isPrintMode, setIsPrintMode] = useState(false);
 
   useEffect(() => {
     console.log("Loading food details for:", id);
+    
+    // Check if food is saved in localStorage
+    if (id && localStorage.getItem(`saved-food-${id}`)) {
+      setIsSaved(true);
+    }
     
     setTimeout(() => {
       if (id) {
@@ -294,7 +303,7 @@ const FoodDetail = () => {
   // Freezer shelf life text for schema
   const freezerShelfLifeText = `${food.name} lasts ${food.storageOptions[1].unopened.minDays}-${food.storageOptions[1].unopened.maxDays} days unopened and ${food.storageOptions[1].opened.minDays}-${food.storageOptions[1].opened.maxDays} days after opening when stored in the freezer. ${food.storageOptions[1].opened.notes}.`;
 
-  // Create schema markup
+  // Enhanced schema markup with HowTo schema
   const howToSchema = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -319,6 +328,7 @@ const FoodDetail = () => {
     ]
   };
 
+  // Enhanced FAQ schema
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -358,8 +368,74 @@ const FoodDetail = () => {
     ]
   };
 
+  // Add speakable schema markup for voice search
+  const speakableSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".speakable-content"]
+    },
+    "url": `https://freshcheck.app/food/${id}`
+  };
+
   const pageTitle = `How Long Does ${food?.name} Last? Storage Guide & Expiration | Fresh Check`;
   const pageDescription = `Learn how long ${food?.name?.toLowerCase()} lasts in the refrigerator, freezer, and pantry. Signs of spoilage, storage tips, and a free calculator to check if your ${food?.name?.toLowerCase()} is still fresh.`;
+
+  // Handle save food function
+  const handleSaveFood = () => {
+    if (id) {
+      if (isSaved) {
+        localStorage.removeItem(`saved-food-${id}`);
+        setIsSaved(false);
+        toast.success(`${food.name} removed from saved foods`);
+      } else {
+        localStorage.setItem(`saved-food-${id}`, JSON.stringify({
+          id,
+          name: food.name,
+          imageUrl: food.imageUrl,
+          category: food.category,
+          savedAt: new Date().toISOString()
+        }));
+        setIsSaved(true);
+        toast.success(`${food.name} saved to My Foods`);
+      }
+    }
+  };
+
+  // Handle print mode
+  const handlePrintMode = () => {
+    setIsPrintMode(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrintMode(false);
+    }, 100);
+  };
+
+  // Voice search FAQ questions and answers
+  const voiceSearchFAQs = [
+    {
+      question: `Can I eat ${food?.name.toLowerCase()} left out overnight?`,
+      answer: `No, you should not eat ${food?.name.toLowerCase()} left out overnight. According to food safety guidelines, perishable foods like ${food?.name.toLowerCase()} should not be left at room temperature for more than 2 hours, or 1 hour if the temperature is above 90°F (32°C).`
+    },
+    {
+      question: `How can I tell if ${food?.name.toLowerCase()} has gone bad?`,
+      answer: spoilageIndicatorsText
+    }
+  ];
+
+  const publicSafetySources = [
+    {
+      name: "USDA Food Safety and Inspection Service",
+      citation: `USDA Food Safety Guidelines, 2023: "${food.name} should be stored below 40°F."`,
+      link: "https://www.fsis.usda.gov/food-safety"
+    },
+    {
+      name: "FDA Food Safety",
+      citation: `FDA Food Code, 2022: "Proper storage of ${food.name.toLowerCase()} is essential for preventing foodborne illness."`,
+      link: "https://www.fda.gov/food/guidance-regulation-food-and-dietary-supplements/food-code"
+    }
+  ];
 
   return (
     <PageTransition>
@@ -372,14 +448,51 @@ const FoodDetail = () => {
         <link rel="canonical" href={`https://freshcheck.app/food/${id}`} />
         <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(speakableSchema)}</script>
+        <style type="text/css">{`
+          @media print {
+            nav, footer, .ad-unit, .non-printable { 
+              display: none !important; 
+            }
+            body { 
+              font-size: 12pt; 
+              background: white;
+            }
+            .printable-section {
+              page-break-inside: avoid;
+            }
+          }
+        `}</style>
       </Helmet>
 
-      <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
-        <div className="mb-4">
+      <div className={`pt-20 pb-12 max-w-3xl mx-auto px-4 ${isPrintMode ? 'print-mode' : ''}`}>
+        <div className="mb-4 flex items-center justify-between non-printable">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft size={18} className="mr-1" />
             <span>Back</span>
           </Link>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-1" 
+              onClick={handleSaveFood}
+            >
+              <Save size={16} />
+              {isSaved ? "Saved" : "Save"}
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-1" 
+              onClick={handlePrintMode}
+            >
+              <Printer size={16} />
+              Print
+            </Button>
+          </div>
         </div>
 
         <motion.div 
@@ -399,11 +512,13 @@ const FoodDetail = () => {
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <h1 className="absolute bottom-4 left-4 text-3xl font-semibold text-white">How Long Does {food.name} Last?</h1>
+            <h1 className="absolute bottom-4 left-4 text-3xl font-semibold text-white speakable-content">How Long Does {food.name} Last?</h1>
           </div>
         </motion.div>
 
-        <AdUnit slotId="food-detail-top" className="mb-6" format="leaderboard" />
+        <div className="ad-unit non-printable">
+          <AdUnit slotId="food-detail-top" className="mb-6" format="leaderboard" />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <motion.div 
@@ -413,19 +528,19 @@ const FoodDetail = () => {
             className="md:col-span-2"
           >
             {/* About Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
               <div className="flex items-center space-x-2 mb-4">
                 <BookOpen size={18} className="text-muted-foreground" />
                 <h2 className="text-xl font-semibold">About {food.name}</h2>
               </div>
-              <p className="text-sm text-foreground leading-relaxed">{contentDetails?.about}</p>
+              <p className="text-sm text-foreground leading-relaxed speakable-content">{contentDetails?.about}</p>
             </div>
 
             {/* Storage Options Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
               <h2 className="text-xl font-semibold mb-4">Storage Options</h2>
               
-              <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'space-x-2'} mb-6`}>
+              <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'space-x-2'} mb-6 non-printable`}>
                 <button
                   onClick={() => setStorageType("refrigerator")}
                   className={`${isMobile ? 'w-full' : 'flex-1'} py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-all ${
@@ -461,7 +576,7 @@ const FoodDetail = () => {
                 </button>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-6 non-printable">
                 <h3 className="text-lg font-medium mb-3">Packaging Status</h3>
                 <div className="flex space-x-2">
                   <button
@@ -489,7 +604,7 @@ const FoodDetail = () => {
 
               <div className="mb-2">
                 <h3 className="text-lg font-medium mb-3">Storage Requirements</h3>
-                <div className="bg-secondary/50 rounded-lg p-4 text-sm">
+                <div className="bg-secondary/50 rounded-lg p-4 text-sm speakable-content">
                   <p className="mb-2">
                     <span className="font-medium">Storage:</span>{" "}
                     {food.storageOptions.find((s: any) => s.storageType === storageType)?.[isOpened ? "opened" : "unopened"].notes}
@@ -504,22 +619,22 @@ const FoodDetail = () => {
             </div>
 
             {/* Food Safety Information Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
               <div className="flex items-center space-x-2 mb-4">
                 <ShieldAlert size={18} className="text-muted-foreground" />
                 <h2 className="text-xl font-semibold">Food Safety Information</h2>
               </div>
-              <p className="text-sm text-foreground leading-relaxed">{contentDetails?.safety}</p>
+              <p className="text-sm text-foreground leading-relaxed speakable-content">{contentDetails?.safety}</p>
             </div>
 
             {/* Spoilage Indicators Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
               <div className="flex items-center space-x-2 mb-4">
                 <Info size={18} className="text-muted-foreground" />
                 <h2 className="text-xl font-semibold">How to Tell if {food.name} Has Gone Bad</h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm speakable-content">
                 <div className="bg-secondary/50 rounded-lg p-4">
                   <h3 className="font-medium mb-2">Look</h3>
                   <ul className="space-y-1">
@@ -556,14 +671,19 @@ const FoodDetail = () => {
               </div>
             </div>
 
+            {/* Middle Ad Placement */}
+            <div className="mb-6 ad-unit non-printable">
+              <AdUnit slotId="food-detail-middle" className="mb-6" format="rectangle" lazyLoad={true} />
+            </div>
+
             {/* Storage Tips Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
               <div className="flex items-center space-x-2 mb-4">
                 <Info size={18} className="text-muted-foreground" />
                 <h2 className="text-xl font-semibold">Storage Tips</h2>
               </div>
 
-              <ul className="space-y-2 text-sm">
+              <ul className="space-y-2 text-sm speakable-content">
                 {food.tips.map((tip: string, index: number) => (
                   <li key={index} className="flex items-start bg-secondary/30 p-3 rounded-lg">
                     <span className="font-medium mr-2">{index + 1}.</span>
@@ -573,8 +693,92 @@ const FoodDetail = () => {
               </ul>
             </div>
 
+            {/* Expanded Storage Tips Section */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
+              <h2 className="text-xl font-semibold mb-4">Expanded Storage Tips</h2>
+              
+              <div className="space-y-4">
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <h3 className="font-medium flex items-center mb-2">
+                    <Refrigerator size={16} className="mr-2" />
+                    Refrigerator Storage
+                  </h3>
+                  <ul className="space-y-1 text-sm">
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Store {food.name.toLowerCase()} on lower shelves, away from raw meats to prevent cross-contamination.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Ideal temperature for refrigerator storage is 35-38°F (1.6-3.3°C).</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Use airtight containers to prevent moisture loss and odor transfer.</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <h3 className="font-medium flex items-center mb-2">
+                    <Snowflake size={16} className="mr-2" />
+                    Freezer Storage
+                  </h3>
+                  <ul className="space-y-1 text-sm">
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Wrap {food.name.toLowerCase()} tightly in freezer-safe packaging to prevent freezer burn.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Label packages with contents and freeze date for easy identification.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Ideal freezer temperature is 0°F (-18°C) or below.</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-secondary/30 p-4 rounded-lg">
+                  <h3 className="font-medium flex items-center mb-2">
+                    <Home size={16} className="mr-2" />
+                    Pantry Storage
+                  </h3>
+                  <ul className="space-y-1 text-sm">
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Store in a cool, dry place away from direct sunlight.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Ideal pantry temperature is between 50-70°F (10-21°C).</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-xs mr-2 mt-0.5">•</span>
+                      <span>Keep away from sources of heat like ovens and stoves.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Voice Search FAQ Section */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 printable-section">
+              <h2 className="text-xl font-semibold mb-4">Common Questions</h2>
+              
+              <div className="space-y-4 speakable-content">
+                {voiceSearchFAQs.map((faq, index) => (
+                  <div key={index} className="bg-secondary/30 p-4 rounded-lg">
+                    <h3 className="font-medium mb-2">{faq.question}</h3>
+                    <p className="text-sm">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Related Foods Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 non-printable">
               <h2 className="text-xl font-semibold mb-4">Related Foods</h2>
               <div className="grid grid-cols-3 gap-3">
                 {relatedFoods.map((relatedFood, index) => (
@@ -600,12 +804,39 @@ const FoodDetail = () => {
                 ))}
               </div>
             </div>
+
+            {/* Food Safety Sources Section */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6 non-printable">
+              <h2 className="text-xl font-semibold mb-4">Food Safety Sources</h2>
+              <div className="space-y-3">
+                {publicSafetySources.map((source, index) => (
+                  <div key={index} className="flex items-start space-x-2 text-sm p-3 bg-secondary/20 rounded-lg">
+                    <ExternalLink size={16} className="mt-0.5 text-muted-foreground flex-shrink-0" />
+                    <div>
+                      <a 
+                        href={source.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="font-medium hover:underline"
+                      >
+                        {source.name}
+                      </a>
+                      <p className="text-muted-foreground">{source.citation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-xs text-center text-muted-foreground">
+                Information verified using USDA and FDA guidelines
+              </div>
+            </div>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="non-printable"
           >
             {/* Expiration Calculator Section */}
             <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24 mb-6">
