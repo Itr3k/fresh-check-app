@@ -18,6 +18,7 @@ import WebhookReceiver from "./components/WebhookReceiver";
 
 // Import Food Safety Educational Pages
 import TemperatureDangerZone from "./pages/FoodSafety/TemperatureDangerZone";
+import FoodborneIllnessPrevention from "./pages/FoodSafety/FoodborneIllnessPrevention";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
               
               {/* Food Safety Educational Pages */}
               <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+              <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
