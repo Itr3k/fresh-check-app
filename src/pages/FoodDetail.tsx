@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -9,7 +8,6 @@ import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 
 const getFoodDetails = (id: string) => {
-  // Map of reliable food images
   const foodImages: Record<string, string> = {
     chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
     milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
@@ -19,7 +17,6 @@ const getFoodDetails = (id: string) => {
     lettuce: "https://images.unsplash.com/photo-1621262331122-118f92d4d795?w=800&h=400&fit=crop",
     tomatoes: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&h=400&fit=crop",
     avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
-    // Default image for any other food
     default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
   };
 
@@ -95,9 +92,14 @@ const FoodDetail = () => {
   const [daysText, setDaysText] = useState("");
 
   useEffect(() => {
+    console.log("Loading food details for:", id);
+    
     setTimeout(() => {
       if (id) {
-        setFood(getFoodDetails(id));
+        const details = getFoodDetails(id);
+        console.log("Food details loaded:", details);
+        console.log("Image URL:", details.imageUrl);
+        setFood(details);
         setLoading(false);
       }
     }, 500);
@@ -232,9 +234,13 @@ const FoodDetail = () => {
         >
           <div className="h-56 w-full rounded-xl overflow-hidden relative mb-4">
             <img 
-              src={food.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"} 
+              src={food.imageUrl} 
               alt={`Fresh ${food.name.toLowerCase()} - storage and expiration guide`} 
               className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error("Image failed to load:", food.imageUrl);
+                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <h1 className="absolute bottom-4 left-4 text-3xl font-semibold text-white">How Long Does {food.name} Last?</h1>

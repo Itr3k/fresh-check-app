@@ -55,6 +55,8 @@ const popularFoods = [
 ];
 
 const PopularFoods = () => {
+  console.log("Rendering popular foods with images:", popularFoods);
+  
   return (
     <div className="mt-8">
       <motion.h2 
