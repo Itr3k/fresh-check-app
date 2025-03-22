@@ -11,6 +11,7 @@ import CategoryCards from "../components/CategoryCards";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 import FoodSafetyFacts from "../components/FoodSafetyFacts";
+import FoodSafetyEducation from "../components/FoodSafetyEducation";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -79,6 +80,9 @@ const Index = () => {
 
           {/* CategoryCards below AdUnit */}
           <CategoryCards />
+          
+          {/* Food Safety Education section - NEW */}
+          <FoodSafetyEducation />
 
           {/* Food Safety Facts section */}
           <FoodSafetyFacts />
