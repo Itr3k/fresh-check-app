@@ -18,8 +18,9 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
   // Fixed fallback images for specific troublesome foods
   const getFixedFallbackImage = (foodId: string): string | null => {
     const fixedFallbacks: Record<string, string> = {
-      "tofu": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop", // Green salad as fallback for tofu
-      "eggs": "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500&h=300&fit=crop", // Muffins (which often contain eggs)
+      "tofu": "https://images.unsplash.com/photo-1660669497660-c8faca7507a8?w=500&h=300&fit=crop", // Soybeans for tofu
+      "eggs": "https://images.unsplash.com/photo-1608039790184-f458be1ce499?w=500&h=300&fit=crop", // Eggs Benedict
+      "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop", // Bacon frying in a pan
     };
     
     return fixedFallbacks[foodId] || null;
