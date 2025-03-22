@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
 import Header from "../components/Header";
@@ -9,9 +9,16 @@ import SavedFoods from "../components/SavedFoods";
 import CategoryCards from "../components/CategoryCards";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
+import FoodSafetyFacts from "../components/FoodSafetyFacts";
 import { Link } from "react-router-dom";
 
 const Index = () => {
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSearch = () => {
+    searchRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <PageTransition>
       <Helmet>
@@ -44,7 +51,7 @@ const Index = () => {
           </p>
 
           <div className="max-w-xl mx-auto mb-8">
-            <SearchBar />
+            <SearchBar id="search-bar" />
           </div>
 
           <div className="flex justify-center mb-6">
@@ -56,21 +63,27 @@ const Index = () => {
             </Link>
           </div>
 
-          {/* Moved Popular Foods up */}
+          {/* Popular Foods section */}
           <PopularFoods />
 
-          {/* Moved AdUnit after Popular Foods */}
+          {/* AdUnit after Popular Foods */}
           <AdUnit slotId="home-top" className="my-8" format="leaderboard" />
 
-          {/* Moved CategoryCards below AdUnit */}
+          {/* CategoryCards below AdUnit */}
           <CategoryCards />
 
-          {/* SavedFoods remains after CategoryCards */}
+          {/* Food Safety Facts section */}
+          <FoodSafetyFacts />
+          
+          {/* SavedFoods after Food Safety Facts */}
           <SavedFoods />
 
           <AdUnit slotId="home-bottom" className="mt-8" format="leaderboard" lazyLoad={true} />
 
-          <div className="mt-8 p-4 bg-secondary/30 rounded-lg">
+          <div 
+            className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
+            onClick={scrollToSearch}
+          >
             <div className="flex items-start gap-3">
               <div className="bg-primary/20 p-2 rounded-lg">
                 <Search size={20} className="text-primary" />
