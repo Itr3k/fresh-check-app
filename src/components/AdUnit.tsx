@@ -41,7 +41,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
     sizeClass = "h-[600px] w-[160px] md:w-[300px]";
   }
 
-  // Determine if we're in development mode
+  // Determine if we're in development mode or if the host is a lovable preview
   const isDevelopment = process.env.NODE_ENV === 'development' || 
                          window.location.hostname === 'localhost' ||
                          window.location.hostname.includes('lovableproject.com');
@@ -67,23 +67,62 @@ const AdUnit: React.FC<AdUnitProps> = ({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
-  // Load ad script safely
+  // Check for ad blockers with a more gentle approach
   useEffect(() => {
-    // Only run this effect if the component is visible and not already initialized
     if (!isVisible || initializedRef.current) return;
     
     // Mark as initialized to prevent multiple attempts
     initializedRef.current = true;
     
-    // If we're in development, don't actually try to load ads
+    // If we're in development or on lovable preview, show placeholder
     if (isDevelopment) {
       console.log(`AdUnit (${slotId}): Development mode - showing placeholder`);
-      // Simulate ad loading with a delay to mimic real behavior
       timeoutRef.current = setTimeout(() => {
         setAdLoaded(true);
       }, 1000);
       return;
     }
+    
+    // Detect ad blockers without causing white screens
+    const checkAdBlocker = () => {
+      // Create a bait element that ad blockers typically hide
+      const bait = document.createElement('div');
+      bait.className = 'ad-placement ad-banner adsbox';
+      bait.style.position = 'absolute';
+      bait.style.opacity = '0';
+      bait.style.height = '1px';
+      bait.style.width = '1px';
+      document.body.appendChild(bait);
+      
+      // Check if the bait was hidden by an ad blocker
+      setTimeout(() => {
+        const isBlocked = bait.offsetHeight === 0 || 
+                         window.getComputedStyle(bait).display === 'none' ||
+                         !window.adsbygoogle;
+        
+        // Clean up bait element
+        if (document.body.contains(bait)) {
+          document.body.removeChild(bait);
+        }
+        
+        if (isBlocked) {
+          console.log(`AdUnit (${slotId}): Ad blocker detected`);
+          setIsError(true);
+          
+          // Only show toast in production, not dev/preview
+          if (!isDevelopment) {
+            toast({
+              title: "Ad blocker detected",
+              description: "Some content may not display correctly with ad blockers enabled",
+              variant: "destructive"
+            });
+          }
+        } else {
+          // Only attempt to load ads if no ad blocker detected
+          loadAd();
+        }
+      }, 100);
+    };
     
     const loadAd = () => {
       try {
@@ -136,11 +175,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
         } else {
           console.log('AdSense not available (window.adsbygoogle undefined)');
           setIsError(true);
-          toast({
-            title: "Ad blocker detected",
-            description: "You may be using an ad blocker that prevents ads from loading",
-            variant: "destructive"
-          });
         }
       } catch (error) {
         console.error('Error initializing AdSense ad:', error);
@@ -148,9 +182,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
       }
     };
     
-    // Add a significant delay to ensure the component is fully mounted and stable
-    // This helps avoid race conditions with React's rendering lifecycle
-    timeoutRef.current = setTimeout(loadAd, 2500);
+    // Start the ad blocker check after a short delay
+    timeoutRef.current = setTimeout(checkAdBlocker, 1000);
     
     // Cleanup function
     return () => {
@@ -211,11 +244,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
         </div>
       )}
       
-      {/* Error state */}
+      {/* Error state - More friendly message for ad blockers */}
       {isError && (
         <div className="text-center p-4 h-full flex flex-col items-center justify-center">
-          <p className="text-xs text-muted-foreground">Ad failed to load</p>
-          <p className="text-sm text-muted-foreground opacity-70">Please check console for details</p>
+          <p className="text-xs text-muted-foreground">Advertisement space</p>
+          <p className="text-xs text-muted-foreground mt-1 opacity-70">
+            You may be using an ad blocker
+          </p>
         </div>
       )}
     </motion.div>
