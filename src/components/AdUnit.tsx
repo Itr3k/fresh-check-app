@@ -18,6 +18,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [adInitialized, setAdInitialized] = useState(false);
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
@@ -28,9 +29,9 @@ const AdUnit: React.FC<AdUnitProps> = ({
     sizeClass = "h-[600px] w-[160px] md:w-[300px]";
   }
   
-  // Handle lazy loading
+  // Handle intersection observer for lazy loading
   useEffect(() => {
-    if (typeof window === "undefined" || !lazyLoad || isVisible) return;
+    if (!lazyLoad || isVisible) return;
     
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -49,24 +50,26 @@ const AdUnit: React.FC<AdUnitProps> = ({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
-  // Initialize the ad - using a declarative approach
+  // Initialize ad safely
   useEffect(() => {
-    // Only run if the ad is visible and hasn't been loaded yet
-    if (typeof window === "undefined" || !isVisible || adLoaded || !adRef.current) return;
+    if (!isVisible || adInitialized || !adRef.current) return;
     
-    // Safety function to avoid manipulating disconnected DOM nodes
-    const safelyInitAd = () => {
+    const initializeAd = () => {
+      // Set flag to prevent multiple initializations
+      setAdInitialized(true);
+      
+      // Safety check to ensure component is still mounted
+      if (!adRef.current || !document.body.contains(adRef.current)) return;
+      
       try {
-        if (!adRef.current || !document.body.contains(adRef.current)) return;
+        // Create a clean slate - safely clear the container
+        if (adRef.current.firstChild) {
+          adRef.current.textContent = '';
+        }
         
-        // Check if AdSense is loaded
+        // Check if AdSense is available
         if (window.hasOwnProperty('adsbygoogle')) {
-          // Create a clean slate
-          if (adRef.current.children.length > 0) {
-            adRef.current.innerHTML = '';
-          }
-          
-          // Create new ins element for AdSense
+          // Create new ins element
           const adElement = document.createElement('ins');
           adElement.className = 'adsbygoogle';
           adElement.style.display = 'block';
@@ -77,52 +80,46 @@ const AdUnit: React.FC<AdUnitProps> = ({
           adElement.setAttribute('data-ad-format', 'auto');
           adElement.setAttribute('data-full-width-responsive', 'true');
           
-          // Safely append to DOM only if ref is still in document
+          // Final safety check before appending to DOM
           if (adRef.current && document.body.contains(adRef.current)) {
             adRef.current.appendChild(adElement);
             
+            // Push to adsbygoogle
             try {
               (window.adsbygoogle = window.adsbygoogle || []).push({});
               console.log(`AdSense ad ${slotId} initialized`);
               setAdLoaded(true);
-            } catch (e) {
-              console.error('Error initializing AdSense:', e);
+            } catch (error) {
+              console.error('Error initializing AdSense:', error);
             }
           }
         } else {
-          console.log('AdSense not available yet');
+          console.log('AdSense not available');
         }
       } catch (error) {
         console.error('Error setting up AdSense ad:', error);
       }
     };
-
-    // Small timeout to ensure DOM stability
-    const timerId = setTimeout(safelyInitAd, 50);
-    return () => clearTimeout(timerId);
-  }, [slotId, isVisible, adLoaded]);
+    
+    // Delay initialization slightly to ensure DOM stability
+    const timer = setTimeout(initializeAd, 100);
+    return () => clearTimeout(timer);
+  }, [slotId, isVisible, adInitialized]);
   
-  // Clean up effect - without direct node removal
+  // Component unmount cleanup
   useEffect(() => {
     return () => {
       try {
-        // Only manipulate DOM if the element is still connected to the document
-        if (adRef.current && document.body.contains(adRef.current)) {
-          // Set innerHTML to empty string instead of removing children
-          adRef.current.innerHTML = '';
-        }
+        // Avoid direct DOM manipulation during cleanup
+        // Just set flag to prevent any further operations
+        setAdInitialized(false);
+        setAdLoaded(false);
       } catch (error) {
         console.error('Error during ad unit cleanup:', error);
       }
     };
   }, []);
 
-  // Add window type definition to prevent TypeScript errors
-  useEffect(() => {
-    // This is just to ensure the types are available
-    // The actual functionality is implemented in the hooks above
-  }, []);
-  
   return (
     <motion.div 
       initial={{ opacity: 0 }}

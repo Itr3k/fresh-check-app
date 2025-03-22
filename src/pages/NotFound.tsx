@@ -31,10 +31,14 @@ const NotFound = () => {
       </div>
       
       {/* First Ad Unit */}
-      <AdUnit slotId="404-main" className="max-w-md w-full mb-8" />
+      <div className="max-w-md w-full mb-8">
+        <AdUnit slotId="404-main" />
+      </div>
       
       {/* Second Ad Unit */}
-      <AdUnit slotId="404-bottom" className="max-w-md w-full" format="leaderboard" />
+      <div className="max-w-md w-full">
+        <AdUnit slotId="404-bottom" format="leaderboard" />
+      </div>
     </div>
   );
 };
