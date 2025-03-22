@@ -18,6 +18,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [adElementCreated, setAdElementCreated] = useState(false);
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
@@ -55,14 +56,14 @@ const AdUnit: React.FC<AdUnitProps> = ({
   // Initialize the ad - with additional safety checks
   useEffect(() => {
     // Only run if the ad is visible and hasn't been loaded yet
-    if (typeof window === "undefined" || !isVisible || adLoaded) return;
-    
-    // Reference to the current adRef element for cleanup
-    const currentAdRef = adRef.current;
+    if (typeof window === "undefined" || !isVisible || adLoaded || adElementCreated) return;
     
     try {
-      // Check if AdSense is loaded
-      if (currentAdRef && (window as any).adsbygoogle) {
+      // Check if AdSense is loaded and reference is valid
+      if (adRef.current && (window as any).adsbygoogle) {
+        // Flag that we're in the process of creating the ad
+        setAdElementCreated(true);
+        
         // Create new ins element for AdSense
         const adElement = document.createElement('ins');
         adElement.className = 'adsbygoogle';
@@ -74,68 +75,53 @@ const AdUnit: React.FC<AdUnitProps> = ({
         adElement.setAttribute('data-ad-format', 'auto');
         adElement.setAttribute('data-full-width-responsive', 'true');
         
-        // Double check element is still in DOM before manipulating it
-        if (currentAdRef && document.body.contains(currentAdRef)) {
-          // Safely clear the container
-          while (currentAdRef.firstChild) {
-            try {
-              currentAdRef.firstChild.remove();
-            } catch (e) {
-              console.warn('Error removing child:', e);
-              break; // Prevent infinite loop if removal fails
-            }
-          }
+        // Safely clear the container first
+        if (adRef.current.isConnected) {
+          // Use textContent = '' as a safer way to clear children
+          adRef.current.textContent = '';
           
           // Append the ad element
+          adRef.current.appendChild(adElement);
+          
+          // Push the ad to AdSense for display
           try {
-            currentAdRef.appendChild(adElement);
-            
-            // Push the ad to AdSense for display
             const adsbygoogle = (window as any).adsbygoogle || [];
             adsbygoogle.push({});
             
             console.log(`AdSense ad ${slotId} initialized`);
             setAdLoaded(true);
           } catch (e) {
-            console.error('Error appending ad element:', e);
+            console.error('Error initializing AdSense:', e);
           }
         }
       } else {
-        console.log('AdSense not available yet, will retry on next render');
+        console.log('AdSense not available yet');
       }
     } catch (error) {
-      console.error('Error initializing AdSense ad:', error);
+      console.error('Error setting up AdSense ad:', error);
+      setAdElementCreated(false);
     }
-    
-    // No DOM manipulation in cleanup - we'll handle that in the unmount effect
-  }, [slotId, isVisible, adLoaded]);
+  }, [slotId, isVisible, adLoaded, adElementCreated]);
   
-  // Separate cleanup effect that runs on unmount only
+  // Clean up effect - using a more robust approach
   useEffect(() => {
-    // This function runs on component unmount
     return () => {
       try {
-        const currentAdRef = adRef.current;
-        // Check if the element is still in the DOM before manipulating it
-        if (currentAdRef && document.body.contains(currentAdRef)) {
-          // Use a safer method to clear children
-          try {
-            // Use modern approach - remove() method on the element itself
-            while (currentAdRef.firstChild) {
-              currentAdRef.firstChild.remove();
-            }
-          } catch (e) {
-            console.warn('Error during cleanup, using alternative method:', e);
-            // Fallback to simple content replacement if removal fails
-            currentAdRef.textContent = '';
-          }
+        if (adRef.current && adRef.current.isConnected) {
+          // Using textContent clearing instead of node removal
+          // This avoids "NotFoundError: The object can not be found here" errors
+          adRef.current.textContent = '';
         }
+        
+        // Reset states (though component is unmounting, this can help if 
+        // the component is conditionally rendered instead of fully unmounted)
         setAdLoaded(false);
+        setAdElementCreated(false);
       } catch (error) {
-        console.error('Error cleaning up ad unit:', error);
+        console.error('Error during ad unit cleanup:', error);
       }
     };
-  }, []); // Empty dependency array means this only runs on unmount
+  }, []);
   
   return (
     <motion.div 

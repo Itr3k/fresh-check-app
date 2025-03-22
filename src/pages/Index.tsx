@@ -76,9 +76,12 @@ const Index = () => {
           {/* Popular Foods section */}
           <PopularFoods />
 
-          {/* AdUnit with key to ensure proper mount/unmount handling */}
+          {/* AdUnit - using a more stable approach */}
           <div className="my-8">
-            <AdUnit key="ad-home-top" slotId="home-top" format="leaderboard" />
+            <AdUnit 
+              slotId="home-top" 
+              format="leaderboard" 
+            />
           </div>
 
           {/* CategoryCards below AdUnit */}
@@ -93,9 +96,13 @@ const Index = () => {
           {/* SavedFoods after Food Safety Facts */}
           <SavedFoods />
 
-          {/* AdUnit with key to ensure proper mount/unmount handling */}
+          {/* AdUnit - using a more stable approach */}
           <div className="mt-8">
-            <AdUnit key="ad-home-bottom" slotId="home-bottom" format="leaderboard" lazyLoad={true} />
+            <AdUnit 
+              slotId="home-bottom" 
+              format="leaderboard" 
+              lazyLoad={true} 
+            />
           </div>
 
           <div 
