@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -12,6 +11,7 @@ import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 import FoodSafetyFacts from "../components/FoodSafetyFacts";
 import FoodSafetyEducation from "../components/FoodSafetyEducation";
+import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -47,10 +47,10 @@ const Index = () => {
         <link rel="canonical" href="https://freshcheck.app/" />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-24">
+        <main className="container mx-auto px-4 py-8 pt-24 flex-grow">
           <h1 className="text-3xl font-bold mb-2 text-center">
             How Long Does Food Last?
           </h1>
@@ -110,6 +110,8 @@ const Index = () => {
             </div>
           </div>
         </main>
+        
+        <Footer />
       </div>
     </PageTransition>
   );
