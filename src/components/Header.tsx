@@ -1,5 +1,5 @@
 
-import { Search } from "lucide-react";
+import { Search, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -13,6 +13,13 @@ const Header = () => {
           <h1 className="text-xl font-semibold tracking-tight">Fresh Check</h1>
         </Link>
         <div className="flex items-center space-x-4">
+          <Link 
+            to="/recalls" 
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
+          >
+            <AlertTriangle size={16} />
+            <span className="text-sm font-medium hidden sm:inline">Recalls</span>
+          </Link>
           <Link 
             to="/search" 
             className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
