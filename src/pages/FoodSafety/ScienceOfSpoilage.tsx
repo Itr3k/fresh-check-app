@@ -1,12 +1,14 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import PageTransition from '@/components/PageTransition';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { BookOpen, FlaskConical, Droplet, AlertTriangle, Clock, Thermometer, Fish, Salad } from 'lucide-react';
+import { BookOpen, FlaskConical, Droplet, AlertTriangle, Clock, Thermometer, Fish, Salad, ChevronLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
 
 const ScienceOfSpoilage = () => {
   const isMobile = useIsMobile();
@@ -19,6 +21,13 @@ const ScienceOfSpoilage = () => {
       </Helmet>
       
       <div className="container px-4 py-6 mx-auto max-w-5xl">
+        <Link to="/" className="inline-block mb-4">
+          <Button variant="ghost" size="sm" className="gap-1">
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
+        
         <div className="mb-6">
           <div className="inline-flex items-center px-3 py-1 mb-2 text-sm font-medium rounded-full bg-teal-100 text-teal-800">
             <BookOpen className="w-4 h-4 mr-1.5" />
