@@ -40,7 +40,6 @@ import {
 import AdUnit from "../../components/AdUnit";
 
 const PreventCrossContamination = () => {
-  // Scroll to top on component mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -95,9 +94,7 @@ const PreventCrossContamination = () => {
       <div className="min-h-screen bg-background">
         <Header />
 
-        {/* Main Content */}
         <main className="container mx-auto px-4 py-8 pt-24 pb-16">
-          {/* Breadcrumb Navigation */}
           <div className="mb-6">
             <Link
               to="/"
@@ -108,7 +105,6 @@ const PreventCrossContamination = () => {
             </Link>
           </div>
 
-          {/* Page Title */}
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-green-100 p-2 rounded-full">
@@ -121,7 +117,6 @@ const PreventCrossContamination = () => {
             </p>
           </div>
 
-          {/* Introduction Section */}
           <section className="mb-10">
             <div className="bg-secondary/30 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-semibold mb-2">What is Cross-Contamination?</h2>
@@ -166,10 +161,8 @@ const PreventCrossContamination = () => {
             </div>
           </section>
 
-          {/* Ad Unit */}
           <AdUnit slotId="cross-contamination-top" className="my-8" format="leaderboard" />
 
-          {/* Core Prevention Strategies Section */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-6">Core Prevention Strategies</h2>
 
@@ -404,7 +397,6 @@ const PreventCrossContamination = () => {
             </Tabs>
           </section>
 
-          {/* Special Considerations Section */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-6">Special Considerations</h2>
             
@@ -451,10 +443,8 @@ const PreventCrossContamination = () => {
             </div>
           </section>
 
-          {/* Ad Unit */}
           <AdUnit slotId="cross-contamination-middle" className="my-8" format="leaderboard" />
 
-          {/* FAQ Section */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
             
@@ -541,7 +531,6 @@ const PreventCrossContamination = () => {
             </Accordion>
           </section>
 
-          {/* Additional Resources Section */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-6">Additional Resources</h2>
             
@@ -608,7 +597,6 @@ const PreventCrossContamination = () => {
             </div>
           </section>
 
-          {/* References Section */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-6">References</h2>
             
@@ -633,7 +621,6 @@ const PreventCrossContamination = () => {
             </div>
           </section>
 
-          {/* Print and Share Section */}
           <section className="mb-10">
             <div className="flex flex-wrap gap-4 justify-center">
               <Button variant="outline" className="flex items-center gap-2">
@@ -648,7 +635,6 @@ const PreventCrossContamination = () => {
             </div>
           </section>
 
-          {/* Ad Unit */}
           <AdUnit slotId="cross-contamination-bottom" className="mt-8" format="leaderboard" />
         </main>
       </div>
