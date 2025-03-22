@@ -77,7 +77,6 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
   };
 
   const handleVideoLoaded = () => {
-    setIsLoading(false);
     console.log("Video loaded and ready to display");
   };
 
