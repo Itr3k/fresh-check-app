@@ -43,27 +43,26 @@ export const useCameraStream = () => {
       setStream(mediaStream);
       
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        videoRef.current.style.display = 'block';
-        
-        // Force video element to be visible through CSS
         const videoElement = videoRef.current;
+        videoElement.srcObject = mediaStream;
+        
+        // Clear any previous style settings and set new ones
+        videoElement.style.display = 'block';
         videoElement.style.width = '100%';
         videoElement.style.height = '100%';
         videoElement.style.objectFit = 'cover';
         videoElement.style.position = 'absolute';
         videoElement.style.top = '0';
         videoElement.style.left = '0';
+        videoElement.style.zIndex = '1'; // Ensure video appears above background
         
         console.log("Starting video playback");
-        try {
-          // Explicitly play the video
-          await videoRef.current.play();
-          console.log("Video playback started successfully");
-        } catch (playErr) {
+        
+        // Handle play() with a proper Promise catch
+        videoElement.play().catch((playErr) => {
           console.error('Error playing video:', playErr);
           setError('Could not start video feed. Please try again or check permissions.');
-        }
+        });
       } else {
         console.error('Video element reference not available');
       }
@@ -76,7 +75,8 @@ export const useCameraStream = () => {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false);
+      // We'll let the onLoadedData event set isLoading to false
+      // rather than setting it here, to ensure the video is actually visible
     }
   }, [facingMode, stopCamera]);
 
@@ -99,6 +99,7 @@ export const useCameraStream = () => {
     startCamera,
     stopCamera,
     switchCamera,
-    setError
+    setError,
+    setIsLoading // Export this so it can be used by the video's onLoadedData event
   };
 };

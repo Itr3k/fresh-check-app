@@ -24,20 +24,28 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
     startCamera,
     stopCamera,
     switchCamera,
-    setError
+    setError,
+    setIsLoading
   } = useCameraStream();
 
   useEffect(() => {
-    if (videoRef.current) {
-      startCamera(videoRef);
-    }
+    console.log("CameraCapture mounted, starting camera...");
+    
+    // Start the camera with a short delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      if (videoRef.current) {
+        startCamera(videoRef);
+      }
+    }, 100);
     
     // Ensure the body doesn't scroll while camera is open
     document.body.style.overflow = 'hidden';
     
     return () => {
+      clearTimeout(timeoutId);
       stopCamera();
       document.body.style.overflow = '';
+      console.log("CameraCapture unmounted, camera stopped");
     };
   }, [facingMode, startCamera, stopCamera]);
 
@@ -78,6 +86,7 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
 
   const handleVideoLoaded = () => {
     console.log("Video loaded and ready to display");
+    setIsLoading(false);
   };
 
   return (
