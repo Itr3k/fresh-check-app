@@ -18,18 +18,14 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
-  const [adElementCreated, setAdElementCreated] = useState(false);
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
-  let adSize = [300, 250];
-
+  
   if (format === "leaderboard") {
     sizeClass = "h-[90px] w-full";
-    adSize = [728, 90];
   } else if (format === "skyscraper") {
     sizeClass = "h-[600px] w-[160px] md:w-[300px]";
-    adSize = [300, 600];
   }
   
   // Handle lazy loading
@@ -53,74 +49,78 @@ const AdUnit: React.FC<AdUnitProps> = ({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
-  // Initialize the ad - with additional safety checks
+  // Initialize the ad - using a declarative approach
   useEffect(() => {
     // Only run if the ad is visible and hasn't been loaded yet
-    if (typeof window === "undefined" || !isVisible || adLoaded || adElementCreated) return;
+    if (typeof window === "undefined" || !isVisible || adLoaded || !adRef.current) return;
     
-    try {
-      // Check if AdSense is loaded and reference is valid
-      if (adRef.current && (window as any).adsbygoogle) {
-        // Flag that we're in the process of creating the ad
-        setAdElementCreated(true);
+    // Safety function to avoid manipulating disconnected DOM nodes
+    const safelyInitAd = () => {
+      try {
+        if (!adRef.current || !document.body.contains(adRef.current)) return;
         
-        // Create new ins element for AdSense
-        const adElement = document.createElement('ins');
-        adElement.className = 'adsbygoogle';
-        adElement.style.display = 'block';
-        adElement.style.width = '100%';
-        adElement.style.height = '100%';
-        adElement.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
-        adElement.setAttribute('data-ad-slot', slotId);
-        adElement.setAttribute('data-ad-format', 'auto');
-        adElement.setAttribute('data-full-width-responsive', 'true');
-        
-        // Safely clear the container first
-        if (adRef.current.isConnected) {
-          // Use textContent = '' as a safer way to clear children
-          adRef.current.textContent = '';
-          
-          // Append the ad element
-          adRef.current.appendChild(adElement);
-          
-          // Push the ad to AdSense for display
-          try {
-            const adsbygoogle = (window as any).adsbygoogle || [];
-            adsbygoogle.push({});
-            
-            console.log(`AdSense ad ${slotId} initialized`);
-            setAdLoaded(true);
-          } catch (e) {
-            console.error('Error initializing AdSense:', e);
+        // Check if AdSense is loaded
+        if (window.hasOwnProperty('adsbygoogle')) {
+          // Create a clean slate
+          if (adRef.current.children.length > 0) {
+            adRef.current.innerHTML = '';
           }
+          
+          // Create new ins element for AdSense
+          const adElement = document.createElement('ins');
+          adElement.className = 'adsbygoogle';
+          adElement.style.display = 'block';
+          adElement.style.width = '100%';
+          adElement.style.height = '100%';
+          adElement.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
+          adElement.setAttribute('data-ad-slot', slotId);
+          adElement.setAttribute('data-ad-format', 'auto');
+          adElement.setAttribute('data-full-width-responsive', 'true');
+          
+          // Safely append to DOM only if ref is still in document
+          if (adRef.current && document.body.contains(adRef.current)) {
+            adRef.current.appendChild(adElement);
+            
+            try {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+              console.log(`AdSense ad ${slotId} initialized`);
+              setAdLoaded(true);
+            } catch (e) {
+              console.error('Error initializing AdSense:', e);
+            }
+          }
+        } else {
+          console.log('AdSense not available yet');
         }
-      } else {
-        console.log('AdSense not available yet');
+      } catch (error) {
+        console.error('Error setting up AdSense ad:', error);
       }
-    } catch (error) {
-      console.error('Error setting up AdSense ad:', error);
-      setAdElementCreated(false);
-    }
-  }, [slotId, isVisible, adLoaded, adElementCreated]);
+    };
+
+    // Small timeout to ensure DOM stability
+    const timerId = setTimeout(safelyInitAd, 50);
+    return () => clearTimeout(timerId);
+  }, [slotId, isVisible, adLoaded]);
   
-  // Clean up effect - using a more robust approach
+  // Clean up effect - without direct node removal
   useEffect(() => {
     return () => {
       try {
-        if (adRef.current && adRef.current.isConnected) {
-          // Using textContent clearing instead of node removal
-          // This avoids "NotFoundError: The object can not be found here" errors
-          adRef.current.textContent = '';
+        // Only manipulate DOM if the element is still connected to the document
+        if (adRef.current && document.body.contains(adRef.current)) {
+          // Set innerHTML to empty string instead of removing children
+          adRef.current.innerHTML = '';
         }
-        
-        // Reset states (though component is unmounting, this can help if 
-        // the component is conditionally rendered instead of fully unmounted)
-        setAdLoaded(false);
-        setAdElementCreated(false);
       } catch (error) {
         console.error('Error during ad unit cleanup:', error);
       }
     };
+  }, []);
+
+  // Add window type definition to prevent TypeScript errors
+  useEffect(() => {
+    // This is just to ensure the types are available
+    // The actual functionality is implemented in the hooks above
   }, []);
   
   return (
@@ -142,5 +142,12 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </motion.div>
   );
 };
+
+// Add window augmentation for TypeScript
+declare global {
+  interface Window {
+    adsbygoogle: any[];
+  }
+}
 
 export default AdUnit;
