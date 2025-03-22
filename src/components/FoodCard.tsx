@@ -15,36 +15,90 @@ interface FoodCardProps {
 const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
   
-  // Find related foods for fallback images with improved relevance
+  // Find related foods for fallback images with semantically meaningful matches
   const findRelatedImageUrl = (): string => {
-    // Get the current food item to access its tags
+    // Get the current food item to access its tags and name
     const currentFood = foodData.find(food => food.id === id);
     
-    if (currentFood?.tags?.length) {
-      // Try to find foods with matching tags first (most relevant)
+    if (!currentFood) {
+      return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
+    }
+    
+    // Extract keywords from the food name
+    const nameKeywords = currentFood.name.toLowerCase()
+      .replace(/[()]/g, '')
+      .split(/\s+/)
+      .filter(word => word.length > 2);
+    
+    // First priority: Find foods with matching keywords in name that contain our food name
+    // (e.g., "Eggs Benedict" for "Eggs")
+    const nameMatchingFoods = foodData.filter(food => 
+      food.id !== id && 
+      nameKeywords.some(keyword => 
+        food.name.toLowerCase().includes(keyword) && 
+        food.id !== currentFood.id
+      )
+    );
+    
+    if (nameMatchingFoods.length > 0) {
+      return nameMatchingFoods[Math.floor(Math.random() * nameMatchingFoods.length)].imageUrl;
+    }
+    
+    // Second priority: Try to find foods with matching tags, but prioritize exact tag matches
+    if (currentFood.tags?.length) {
+      // First try to find exact tag matches (e.g., "vegetarian" for tofu)
+      for (const tag of currentFood.tags) {
+        // Find foods that have this specific tag but aren't the current food
+        const exactTagMatches = foodData.filter(food => 
+          food.id !== id && 
+          food.tags?.includes(tag)
+        );
+        
+        if (exactTagMatches.length > 0) {
+          return exactTagMatches[Math.floor(Math.random() * exactTagMatches.length)].imageUrl;
+        }
+      }
+      
+      // If no exact matches, try partial tag matches
       const tagMatchingFoods = foodData.filter(food => 
         food.id !== id && 
-        food.tags?.some(tag => currentFood.tags?.includes(tag))
+        food.tags?.some(foodTag => 
+          currentFood.tags?.some(currentTag => 
+            foodTag.includes(currentTag) || currentTag.includes(foodTag)
+          )
+        )
       );
       
       if (tagMatchingFoods.length > 0) {
-        // Return a random image from tag-matching foods
         return tagMatchingFoods[Math.floor(Math.random() * tagMatchingFoods.length)].imageUrl;
       }
     }
     
-    // If no tag matches or no tags, try same category (second most relevant)
+    // Third priority: try same category but exclude drastically different items
+    // Special case handling for specific categories that need careful matching
+    if (category === "Specialty Items" && currentFood.tags?.includes("vegetarian")) {
+      // For vegetarian items like tofu, ensure we don't show meat
+      const vegetarianOptions = foodData.filter(food => 
+        food.id !== id && 
+        food.tags?.includes("vegetarian")
+      );
+      
+      if (vegetarianOptions.length > 0) {
+        return vegetarianOptions[Math.floor(Math.random() * vegetarianOptions.length)].imageUrl;
+      }
+    }
+    
+    // Regular category matching as fallback
     const sameCategoryFoods = foodData.filter(food => 
       food.id !== id && 
       food.category === category
     );
     
     if (sameCategoryFoods.length > 0) {
-      // Return a random image from the same category
       return sameCategoryFoods[Math.floor(Math.random() * sameCategoryFoods.length)].imageUrl;
     }
     
-    // If no related foods found, use a generic food image as last resort
+    // Last resort: generic food image
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
   };
   
