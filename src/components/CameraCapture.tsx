@@ -21,8 +21,12 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
   useEffect(() => {
     startCamera();
     
+    // Ensure the body doesn't scroll while camera is open
+    document.body.style.overflow = 'hidden';
+    
     return () => {
       stopCamera();
+      document.body.style.overflow = '';
     };
   }, [facingMode]);
 
@@ -112,48 +116,31 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center">
-      <div className="relative max-w-lg w-full mx-auto">
-        <div className="absolute top-4 right-4 z-10 flex space-x-2">
-          {isMobile && (
-            <button 
-              onClick={switchCamera} 
-              className="bg-black/50 text-white p-2 rounded-full"
-              aria-label="Switch camera"
-            >
-              <RefreshCw size={24} />
-            </button>
-          )}
-          <button 
-            onClick={onClose} 
-            className="bg-black/50 text-white p-2 rounded-full"
-            aria-label="Close camera"
-          >
-            <X size={24} />
-          </button>
-        </div>
-        
+    <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center">
+      <div className="relative w-full h-full">
         {error ? (
-          <div className="bg-white p-6 rounded-lg text-center">
-            <p className="text-red-500 mb-4">{error}</p>
-            <div className="flex justify-center space-x-4">
-              <button 
-                onClick={() => startCamera()}
-                className="bg-primary text-white px-4 py-2 rounded-lg"
-              >
-                Try Again
-              </button>
-              <button 
-                onClick={onClose}
-                className="bg-secondary text-foreground px-4 py-2 rounded-lg"
-              >
-                Close
-              </button>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg text-center mx-4">
+              <p className="text-red-500 mb-4">{error}</p>
+              <div className="flex justify-center space-x-4">
+                <button 
+                  onClick={() => startCamera()}
+                  className="bg-primary text-white px-4 py-2 rounded-lg"
+                >
+                  Try Again
+                </button>
+                <button 
+                  onClick={onClose}
+                  className="bg-secondary text-foreground px-4 py-2 rounded-lg"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         ) : (
           <>
-            <div className="bg-black rounded-lg overflow-hidden relative">
+            <div className="relative w-full h-full">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -163,22 +150,44 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
                 ref={videoRef} 
                 autoPlay 
                 playsInline 
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 onLoadedData={() => setIsLoading(false)}
               />
-            </div>
-            
-            <div className="mt-4 flex justify-center">
-              <button 
-                onClick={handleCapture}
-                disabled={isLoading}
-                className={`bg-primary text-white px-6 py-3 rounded-full shadow-lg flex items-center justify-center ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'
-                }`}
-              >
-                <Camera className="mr-2" size={20} />
-                Capture Photo
-              </button>
+              
+              {/* Camera Controls - Positioned at the bottom of the screen */}
+              <div className="absolute bottom-10 left-0 right-0 flex justify-center space-x-4 px-4 z-10">
+                <button 
+                  onClick={handleCapture}
+                  disabled={isLoading}
+                  className={`w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center ${
+                    isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  aria-label="Capture photo"
+                >
+                  <div className="w-12 h-12 bg-primary rounded-full"></div>
+                </button>
+              </div>
+              
+              {/* Top Controls */}
+              <div className="absolute top-4 right-4 left-4 flex justify-between z-10">
+                {isMobile && (
+                  <button 
+                    onClick={switchCamera} 
+                    className="bg-black/50 text-white p-3 rounded-full"
+                    aria-label="Switch camera"
+                  >
+                    <RefreshCw size={24} />
+                  </button>
+                )}
+                <div className="flex-grow"></div>
+                <button 
+                  onClick={onClose} 
+                  className="bg-black/50 text-white p-3 rounded-full"
+                  aria-label="Close camera"
+                >
+                  <X size={24} />
+                </button>
+              </div>
             </div>
             
             <canvas ref={canvasRef} className="hidden" />

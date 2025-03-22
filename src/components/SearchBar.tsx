@@ -33,11 +33,17 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
       return;
     }
     
+    // Open camera in fullscreen mode
     setShowCameraCapture(true);
+    // Prevent scrolling when camera is open
+    document.body.style.overflow = 'hidden';
   };
 
   const handleCapture = (imageSrc: string) => {
     console.log("Image captured:", imageSrc);
+    
+    // Reset body overflow
+    document.body.style.overflow = '';
     
     // For now, we'll just set a placeholder query
     // In a real application, this would send the image to a backend for processing
@@ -55,6 +61,12 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
         onSearch("Scanned food item");
       }
     }, 1000);
+  };
+
+  const handleCloseCamera = () => {
+    setShowCameraCapture(false);
+    // Reset body overflow
+    document.body.style.overflow = '';
   };
 
   return (
@@ -101,7 +113,7 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
       {showCameraCapture && (
         <CameraCapture 
           onCapture={handleCapture} 
-          onClose={() => setShowCameraCapture(false)} 
+          onClose={handleCloseCamera} 
         />
       )}
     </>
