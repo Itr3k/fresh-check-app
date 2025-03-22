@@ -159,12 +159,14 @@ const AdUnit: React.FC<AdUnitProps> = ({
         if (!adRef.current) {
           console.log(`AdUnit (${slotId}): No ref available, skipping ad load`);
           setAdLoaded(true);
+          setIsError(true); // Show fallback
           return;
         }
         
         if (!document.body.contains(adRef.current)) {
           console.log(`AdUnit (${slotId}): Container not in DOM, skipping ad load`);
           setAdLoaded(true);
+          setIsError(true); // Show fallback
           return;
         }
         
@@ -179,6 +181,15 @@ const AdUnit: React.FC<AdUnitProps> = ({
             console.log("Error clearing ad container:", e);
           }
         }
+        
+        // Set a timeout to check if the ad loaded successfully
+        const adLoadTimeout = setTimeout(() => {
+          console.log(`AdUnit (${slotId}): Ad load timeout triggered`);
+          if (!adLoaded) {
+            setAdLoaded(true);
+            setIsError(true); // Show fallback if ad takes too long
+          }
+        }, 3000);
         
         // Only proceed if window.adsbygoogle is available
         if (typeof window !== 'undefined' && window.adsbygoogle) {
@@ -202,23 +213,48 @@ const AdUnit: React.FC<AdUnitProps> = ({
               try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
                 console.log(`AdSense ad ${slotId} initialized`);
-                setAdLoaded(true);
+                
+                // Add an event listener to track when AdSense loads
+                const checkAdLoaded = setInterval(() => {
+                  const adIframe = adRef.current?.querySelector('iframe');
+                  if (adIframe) {
+                    clearInterval(checkAdLoaded);
+                    clearTimeout(adLoadTimeout);
+                    setAdLoaded(true);
+                    setIsError(false);
+                    console.log(`AdUnit (${slotId}): Ad successfully loaded`);
+                  }
+                }, 300);
+                
+                // Clear interval after 5 seconds to prevent memory leaks
+                setTimeout(() => {
+                  clearInterval(checkAdLoaded);
+                  if (!adLoaded) {
+                    setAdLoaded(true);
+                    setIsError(true); // Show fallback if no iframe detected
+                  }
+                }, 5000);
+                
               } catch (error) {
                 console.error('Error pushing ad to adsbygoogle:', error);
+                clearTimeout(adLoadTimeout);
                 setAdLoaded(true);
                 setIsError(true);
               }
             } else {
+              clearTimeout(adLoadTimeout);
               setAdLoaded(true);
               setIsError(true);
             }
           } catch (e) {
             console.log("Error creating ad element:", e);
+            clearTimeout(adLoadTimeout);
             setAdLoaded(true);
             setIsError(true);
           }
         } else {
           console.log('AdSense not available (window.adsbygoogle undefined)');
+          clearTimeout(adLoadTimeout);
           setAdLoaded(true);
           setIsError(true);
         }
@@ -266,24 +302,18 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // For development, show a clearer placeholder
-  if (isDevelopment) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isVisible ? 1 : 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
-        className={`bg-secondary/30 border border-border rounded-lg overflow-hidden flex flex-col items-center justify-center ${sizeClass} ${className}`}
-        ref={adRef}
-      >
-        <div className="text-center p-4 h-full w-full flex flex-col items-center justify-center">
-          <p className="text-xs text-muted-foreground mb-2 font-semibold">Advertisement Placeholder</p>
-          <Skeleton className={`w-[90%] h-[75%] rounded-md`} />
-          <p className="text-xs text-muted-foreground mt-2">ID: {slotId} ({format})</p>
-        </div>
-      </motion.div>
-    );
-  }
+  // Always render placeholder for development or error states
+  const renderPlaceholder = () => (
+    <div className="text-center p-4 h-full w-full flex flex-col items-center justify-center">
+      <p className="text-xs text-muted-foreground mb-2 font-semibold">
+        {isDevelopment ? "Advertisement Placeholder" : "Advertisement"}
+      </p>
+      <Skeleton className={`w-[90%] h-[75%] rounded-md`} />
+      {isDevelopment && (
+        <p className="text-xs text-muted-foreground mt-2">ID: {slotId} ({format})</p>
+      )}
+    </div>
+  );
 
   // Wrap in a ScrollArea to prevent any scroll issues
   return (
@@ -296,23 +326,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
         id={`ad-container-${slotId}`}
         ref={adRef}
       >
-        {/* Fallback content shown only before ads load */}
-        {!adLoaded && !isError && (
-          <div className="text-center p-4 h-full flex flex-col items-center justify-center">
-            <p className="text-xs text-muted-foreground">Advertisement</p>
-            <Skeleton className="w-[90%] h-[70%] mt-2 rounded-md" />
-          </div>
-        )}
-        
-        {/* Error state - More friendly message for ad blockers */}
-        {isError && (
-          <div className="text-center p-4 h-full flex flex-col items-center justify-center">
-            <p className="text-xs text-muted-foreground">Advertisement space</p>
-            <p className="text-xs text-muted-foreground mt-1 opacity-70">
-              Content unavailable
-            </p>
-          </div>
-        )}
+        {/* Show placeholder when ad isn't loaded yet or when there's an error */}
+        {(!adLoaded || isError || isDevelopment) && renderPlaceholder()}
       </motion.div>
     </ScrollArea>
   );
