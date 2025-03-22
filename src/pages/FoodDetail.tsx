@@ -310,6 +310,226 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
+    if (id === "yogurt") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 14,
+            maxDays: 21,
+            notes: "Keep refrigerated in original container. Check best-by date."
+          },
+          opened: {
+            minDays: 5,
+            maxDays: 10,
+            notes: "Keep tightly covered and refrigerated. Avoid cross-contamination."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 30,
+            maxDays: 60,
+            notes: "Texture may change when frozen, better for smoothies or cooking after thawing."
+          },
+          opened: {
+            minDays: 30,
+            maxDays: 60,
+            notes: "Store in airtight container with minimal air. Texture will change."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration."
+          }
+        }
+      ];
+    }
+    
+    if (id === "oranges") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 14,
+            maxDays: 28,
+            notes: "Store in crisper drawer in a mesh bag for air circulation."
+          },
+          opened: {
+            minDays: 3,
+            maxDays: 5,
+            notes: "Store cut oranges in airtight container or wrap tightly."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze sections or juice, not whole fruit."
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze cut segments in syrup or juice, or freeze juice in containers."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 7,
+            maxDays: 14,
+            notes: "Store in cool, dry place away from direct sunlight."
+          },
+          opened: {
+            minDays: 1,
+            maxDays: 2,
+            notes: "Cut oranges should be refrigerated, not left at room temperature."
+          }
+        }
+      ];
+    }
+    
+    if (id === "avocados") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 3,
+            maxDays: 7,
+            notes: "Refrigerate ripe avocados to slow further ripening."
+          },
+          opened: {
+            minDays: 1,
+            maxDays: 3,
+            notes: "Store cut avocado with pit in, brush with lemon juice, wrap tightly."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Puree flesh with lemon juice before freezing. Best for cooking or guacamole."
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze mashed with lemon juice in airtight container."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 2,
+            maxDays: 7,
+            notes: "Store unripe avocados at room temperature until ripened."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Cut avocados must be refrigerated or used immediately."
+          }
+        }
+      ];
+    }
+    
+    if (id === "tomatoes") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 5,
+            maxDays: 10,
+            notes: "Only refrigerate fully ripe tomatoes; cold temperatures affect flavor."
+          },
+          opened: {
+            minDays: 2,
+            maxDays: 5,
+            notes: "Store cut tomatoes in airtight container."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 365,
+            notes: "Blanch, remove skins, and freeze whole or diced. Best for cooking."
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 365,
+            notes: "Freeze cut tomatoes in airtight containers. Only use for cooking after thawing."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 3,
+            maxDays: 7,
+            notes: "Store stem-side down at room temperature away from direct sunlight."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 1,
+            notes: "Cut tomatoes should be refrigerated, not left at room temperature."
+          }
+        }
+      ];
+    }
+    
+    if (id === "onions") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 30,
+            maxDays: 60,
+            notes: "Whole onions should be kept in pantry. Refrigeration can make them soft and moldy."
+          },
+          opened: {
+            minDays: 7,
+            maxDays: 14,
+            notes: "Store cut onions in airtight container, away from other foods to prevent odor transfer."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 180,
+            maxDays: 365,
+            notes: "Peel, chop, and freeze in airtight containers. Best for cooking."
+          },
+          opened: {
+            minDays: 180,
+            maxDays: 365,
+            notes: "Freeze chopped onions in airtight containers or freezer bags."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 30,
+            maxDays: 90,
+            notes: "Store in mesh bag or open container in cool, dry, well-ventilated area."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Cut onions must be refrigerated."
+          }
+        }
+      ];
+    }
+    
     if (category === "Fruits") {
       return [
         {
@@ -757,607 +977,3 @@ const getFoodDetails = (id: string) => {
         unopened: {
           minDays: 7,
           maxDays: 14,
-          notes: "Keep in original packaging"
-        },
-        opened: {
-          minDays: 3,
-          maxDays: 7,
-          notes: "Store in airtight container"
-        }
-      },
-      {
-        storageType: "freezer",
-        unopened: {
-          minDays: 30,
-          maxDays: 90,
-          notes: "Freeze immediately"
-        },
-        opened: {
-          minDays: 30,
-          maxDays: 60,
-          notes: "Wrap tightly before freezing"
-        }
-      },
-      {
-        storageType: "pantry",
-        unopened: {
-          minDays: 1,
-          maxDays: 3,
-          notes: "Store in a cool, dry place"
-        },
-        opened: {
-          minDays: 1,
-          maxDays: 2,
-          notes: "Not recommended for long storage"
-        }
-      }
-    ];
-  };
-
-  const getSpoilageIndicators = (id: string, category?: string) => {
-    if (id === "salmon") {
-      return {
-        visual: ["Gray or dull color instead of vibrant pink/red", "Milky white residue or slime", "Dark spots or discoloration"],
-        smell: ["Strong fishy or ammonia-like odor", "Sour or rotten smell"],
-        texture: ["Soft, mushy flesh", "Flesh that doesn't spring back when pressed", "Sticky or tacky surface"]
-      };
-    }
-    
-    if (id === "chicken-raw" || id === "chicken") {
-      return {
-        visual: ["Pink or gray discoloration", "Mold spots", "Excessive sliminess"],
-        smell: ["Strong sour odor", "Ammonia-like smell", "Rotten egg odor"],
-        texture: ["Sticky or tacky surface", "Unusually soft flesh"]
-      };
-    }
-    
-    if (id === "chicken-cooked") {
-      return {
-        visual: ["Mold spots", "Discoloration (especially green or gray)", "Dried out appearance"],
-        smell: ["Sour or rotten smell", "Fermented odor"],
-        texture: ["Slimy surface", "Unusually dry or tough texture"]
-      };
-    }
-    
-    if (category === "Seafood") {
-      return {
-        visual: ["Milky, cloudy appearance", "Unusual discoloration", "Excessive slime"],
-        smell: ["Strong fishy or ammonia-like odor", "Sour or rotten smell"],
-        texture: ["Soft, mushy flesh", "Flesh that doesn't spring back when pressed"]
-      };
-    }
-    
-    if (category === "Fruits") {
-      return {
-        visual: ["Mold spots", "Unusual discoloration", "Wrinkled or soft skin"],
-        smell: ["Fermented or alcoholic odor", "Off or musty smell"],
-        texture: ["Extremely soft", "Mushy texture", "Leaking juice"]
-      };
-    }
-    
-    if (id === "apples") {
-      return {
-        visual: ["Brown or soft spots", "Wrinkled skin", "Mold growth"],
-        smell: ["Fermented or alcoholic odor", "Overly sweet smell"],
-        texture: ["Extremely soft flesh", "Mealy or grainy texture", "Flesh browning"]
-      };
-    }
-    
-    if (id === "tofu") {
-      return {
-        visual: ["Slimy surface", "Pink or yellowish discoloration", "Mold growth"],
-        smell: ["Sour or ammonia-like odor", "Strong fermented smell"],
-        texture: ["Excessively soft or mushy", "Crumbly or brittle when firm tofu"]
-      };
-    }
-    
-    if (id === "bacon") {
-      return {
-        visual: ["Discoloration (gray, green, or brown)", "Slimy film", "Mold spots"],
-        smell: ["Sour or rotting smell", "Rancid or fishy odor"],
-        texture: ["Sticky or tacky surface", "Unusually soft or mushy"]
-      };
-    }
-    
-    if (id === "eggs") {
-      return {
-        visual: ["Cracks in shell", "Powdery residue on shell", "Cloudy whites or pink/green yolks"],
-        smell: ["Sulfur or rotten odor", "Strong unpleasant smell when cracked"],
-        texture: ["Watery whites", "Yolk breaks easily when fresh", "Stuck to shell"]
-      };
-    }
-    
-    if (id === "milk") {
-      return {
-        visual: ["Chunky texture", "Separation of solids", "Yellow tinge"],
-        smell: ["Sour or rancid odor", "Unpleasant sharp smell"],
-        texture: ["Lumpy or curdled", "Slimy or unusually thick consistency"]
-      };
-    }
-    
-    if (id === "cheese") {
-      return {
-        visual: ["Mold (except for blue cheese)", "Unusual discoloration", "Dried, cracked edges"],
-        smell: ["Ammonia-like odor", "Rancid smell (different from normal cheese odor)"],
-        texture: ["Slimy surface", "Excessively hard or dry", "Unusual softening"]
-      };
-    }
-    
-    if (id === "bread") {
-      return {
-        visual: ["Mold spots (white, green, black, or pink)", "Unusual discoloration"],
-        smell: ["Musty or sour odor", "Alcohol-like smell"],
-        texture: ["Unusually hard and dry", "Slimy or wet spots"]
-      };
-    }
-    
-    if (id === "bananas") {
-      return {
-        visual: ["Entirely black or brown skin", "Mold spots on skin or flesh", "Fruit flies hovering around"],
-        smell: ["Overly sweet, alcoholic odor", "Fermented smell", "Rotten or sour smell"],
-        texture: ["Extremely mushy interior", "Leaking liquid", "Slimy or gooey consistency"]
-      };
-    }
-    
-    if (id === "ice-cream") {
-      return {
-        visual: ["Large ice crystals throughout", "Freezer burn (white, dehydrated patches)", "Mold (usually appears as spots of unusual colors)"],
-        smell: ["Sour, unpleasant odor", "Off smell that doesn't match the flavor", "Cardboard-like smell"],
-        texture: ["Gummy, sticky texture", "Separated, watery parts", "Grainy or sandy consistency"]
-      };
-    }
-    
-    if (id === "pizza") {
-      return {
-        visual: ["Mold growth (white, green, or black spots)", "Discoloration of toppings", "Dried out, stiff appearance"],
-        smell: ["Sour or rancid odor", "Ammonia-like smell", "Moldy, musty smell"],
-        texture: ["Slimy surface on cheese or toppings", "Extremely hard, dry crust", "Soggy, wet texture"]
-      };
-    }
-    
-    // Default generic spoilage indicators as fallback
-    return {
-      visual: ["Discoloration", "Mold growth"],
-      smell: ["Sour odor", "Ammonia-like smell"],
-      texture: ["Slimy surface", "Unusual softness"]
-    };
-  };
-
-  if (foodFromDatabase) {
-    return {
-      id,
-      name: foodFromDatabase.name,
-      imageUrl: foodFromDatabase.imageUrl || foodImages[id] || foodImages.default,
-      category: foodFromDatabase.category,
-      storageOptions: getStorageOptions(id, foodFromDatabase.category),
-      spoilageIndicators: getSpoilageIndicators(id, foodFromDatabase.category),
-      tips: id === "ice-cream" ? [
-        "Store ice cream in the back of the freezer, not the door",
-        "Keep ice cream at a constant temperature",
-        "Use a piece of plastic wrap pressed against the surface before replacing lid"
-      ] : id === "bananas" ? [
-        "Separate bananas from the bunch to slow ripening",
-        "Wrap stems in plastic wrap to slow ripening process",
-        "Store away from other fruits that produce ethylene gas"
-      ] : id === "pizza" ? [
-        "Refrigerate within 2 hours of delivery or cooking",
-        "For best reheating, use an oven or skillet, not microwave",
-        "Never leave out overnight at room temperature"
-      ] : [
-        "Check packaging for manufacturer's recommendations",
-        "When in doubt, throw it out",
-        "Store away from ethylene-producing fruits"
-      ]
-    };
-  }
-
-  return {
-    id,
-    name: id.charAt(0).toUpperCase() + id.slice(1),
-    imageUrl: foodImages[id] || foodImages.default,
-    category: "Food",
-    storageOptions: getStorageOptions(id),
-    spoilageIndicators: getSpoilageIndicators(id),
-    tips: [
-      "Check packaging for manufacturer's recommendations",
-      "When in doubt, throw it out",
-      "Store away from ethylene-producing fruits"
-    ]
-  };
-};
-
-type StorageType = "refrigerator" | "freezer" | "pantry";
-
-const getRelatedFoods = (currentFoodId: string) => {
-  const relatedFoodsMap: Record<string, {id: string, name: string, imageUrl: string}[]> = {
-    chicken: [
-      { id: "turkey", name: "Turkey", imageUrl: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=300&h=200&fit=crop" },
-      { id: "beef", name: "Beef", imageUrl: "https://images.unsplash.com/photo-1551355716-22e3db76b265?w=300&h=200&fit=crop" },
-      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" }
-    ],
-    milk: [
-      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" },
-      { id: "cheese", name: "Cheese", imageUrl: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=300&h=200&fit=crop" },
-      { id: "yogurt", name: "Yogurt", imageUrl: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=300&h=200&fit=crop" }
-    ],
-    eggs: [
-      { id: "milk", name: "Milk", imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=200&fit=crop" },
-      { id: "chicken", name: "Chicken", imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=300&h=200&fit=crop" },
-      { id: "cheese", name: "Cheese", imageUrl: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=300&h=200&fit=crop" }
-    ],
-    bread: [
-      { id: "flour", name: "Flour", imageUrl: "https://images.unsplash.com/photo-1608197492882-e49d08228f4e?w=300&h=200&fit=crop" },
-      { id: "pasta", name: "Pasta", imageUrl: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=300&h=200&fit=crop" },
-      { id: "rice", name: "Rice", imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e8ac?w=300&h=200&fit=crop" }
-    ],
-    bananas: [
-      { id: "apples", name: "Apples", imageUrl: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&h=200&fit=crop" },
-      { id: "oranges", name: "Oranges", imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=300&h=200&fit=crop" },
-      { id: "strawberries", name: "Strawberries", imageUrl: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=300&h=200&fit=crop" }
-    ],
-    lettuce: [
-      { id: "spinach", name: "Spinach", imageUrl: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&h=200&fit=crop" },
-      { id: "kale", name: "Kale", imageUrl: "https://images.unsplash.com/photo-1524179091875-bf99a9a4af22?w=300&h=200&fit=crop" },
-      { id: "cabbage", name: "Cabbage", imageUrl: "https://images.unsplash.com/photo-1551888765-8dab222e097d?w=300&h=200&fit=crop" }
-    ],
-    apples: [
-      { id: "oranges", name: "Oranges", imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=300&h=200&fit=crop" },
-      { id: "bananas", name: "Bananas", imageUrl: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=200&fit=crop" },
-      { id: "pears", name: "Pears", imageUrl: "https://images.unsplash.com/photo-1514756331096-242fdeb70d4a?w=300&h=200&fit=crop" }
-    ],
-    tofu: [
-      { id: "chicken", name: "Chicken", imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=300&h=200&fit=crop" },
-      { id: "tempeh", name: "Tempeh", imageUrl: "https://images.unsplash.com/photo-1593001872095-7d5b3868dd29?w=300&h=200&fit=crop" },
-      { id: "seitan", name: "Seitan", imageUrl: "https://images.unsplash.com/photo-1621196876763-de1e9c997570?w=300&h=200&fit=crop" }
-    ],
-    bacon: [
-      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" },
-      { id: "sausage", name: "Sausage", imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=200&fit=crop" },
-      { id: "ham", name: "Ham", imageUrl: "https://images.unsplash.com/photo-1533821312764-eb0c94f5a472?w=300&h=200&fit=crop" }
-    ]
-  };
-  
-  return relatedFoodsMap[currentFoodId] || [];
-};
-
-const FoodDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const [food, setFood] = useState<any>(null);
-  const [activeStorageType, setActiveStorageType] = useState<StorageType>("refrigerator");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const isMobile = useIsMobile();
-  
-  useEffect(() => {
-    if (!id) {
-      setError("No food ID provided");
-      setIsLoading(false);
-      return;
-    }
-    
-    try {
-      const foodData = getFoodDetails(id);
-      setFood(foodData);
-      setIsLoading(false);
-    } catch (err) {
-      setError("Failed to load food details");
-      setIsLoading(false);
-    }
-  }, [id]);
-  
-  if (isLoading) {
-    return (
-      <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="animate-pulse space-y-4">
-          <div className="h-12 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-          <div className="h-24 bg-gray-200 rounded"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (error || !food) {
-    return (
-      <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">Error Loading Food Details</h1>
-          <p className="text-lg text-gray-600">{error || "Food not found"}</p>
-          <Link to="/">
-            <Button className="mt-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-  
-  const getStorageInfo = (storageType: StorageType) => {
-    const storageOption = food.storageOptions.find((option: any) => option.storageType === storageType);
-    return storageOption || null;
-  };
-  
-  const printFoodInfo = () => {
-    window.print();
-    toast.success("Printing food information...");
-  };
-  
-  const saveToFavorites = () => {
-    const savedFoods = JSON.parse(localStorage.getItem('savedFoods') || '[]');
-    
-    if (savedFoods.some((item: any) => item.id === food.id)) {
-      toast.info("This food is already in your favorites");
-      return;
-    }
-    
-    const foodToSave = {
-      id: food.id,
-      name: food.name,
-      imageUrl: food.imageUrl
-    };
-    
-    savedFoods.push(foodToSave);
-    localStorage.setItem('savedFoods', JSON.stringify(savedFoods));
-    toast.success(`${food.name} added to your favorites`);
-  };
-  
-  const currentStorageInfo = getStorageInfo(activeStorageType);
-  const relatedFoods = getRelatedFoods(id);
-  const fallbackImageUrl = getFixedFallbackImage(id);
-  
-  const heroImageUrl = fallbackImageUrl || food.imageUrl;
-  
-  const formatStorageTime = (min: number, max: number) => {
-    if (min === 0 && max === 0) return "Not recommended";
-    if (min === max) return `${min} day${min !== 1 ? 's' : ''}`;
-    return `${min}-${max} days`;
-  };
-  
-  const icons = {
-    refrigerator: <Refrigerator className="mr-2 h-5 w-5" />,
-    freezer: <Snowflake className="mr-2 h-5 w-5" />,
-    pantry: <Home className="mr-2 h-5 w-5" />
-  };
-  
-  return (
-    <PageTransition>
-      <Helmet>
-        <title>{`${food.name} Storage Guide | Safe Food Storage & Spoilage Information`}</title>
-        <meta name="description" content={`Learn how to safely store ${food.name}, how long it lasts, and how to tell if it's spoiled. Tips for refrigerator, freezer, and pantry storage.`} />
-      </Helmet>
-      
-      <div className="py-4 md:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <Link to="/" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
-        </Link>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 mb-8">
-          <div className="overflow-hidden">
-            <motion.img
-              src={heroImageUrl}
-              alt={food.name}
-              className="w-full h-72 md:h-96 object-cover rounded-lg shadow-md"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-          
-          <div>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{food.name}</h1>
-              <p className="text-lg text-gray-600 mb-4">Category: {food.category}</p>
-              
-              <div className="flex flex-wrap items-center gap-2 my-4">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={saveToFavorites}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save to Favorites
-                </Button>
-                
-                <Button
-                  variant="outline" 
-                  size="sm"
-                  onClick={printFoodInfo}
-                >
-                  <Printer className="mr-2 h-4 w-4" />
-                  Print
-                </Button>
-              </div>
-              
-              {/* Storage Selection Tabs */}
-              <div className="mt-6">
-                <h2 className="text-xl font-semibold mb-3">Storage Options</h2>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {food.storageOptions.map((option: any) => (
-                    <Button
-                      key={option.storageType}
-                      variant={activeStorageType === option.storageType ? "default" : "outline"}
-                      onClick={() => setActiveStorageType(option.storageType as StorageType)}
-                      className="flex items-center"
-                    >
-                      {icons[option.storageType as keyof typeof icons]}
-                      {option.storageType.charAt(0).toUpperCase() + option.storageType.slice(1)}
-                    </Button>
-                  ))}
-                </div>
-                
-                {currentStorageInfo && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-white border rounded-lg p-4 shadow-sm">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <Calendar className="h-4 w-4" /> 
-                          Unopened
-                        </h3>
-                        <div className="mt-2">
-                          <p className="text-lg font-semibold">
-                            {formatStorageTime(currentStorageInfo.unopened.minDays, currentStorageInfo.unopened.maxDays)}
-                          </p>
-                          <StatusIndicator 
-                            daysRemaining={currentStorageInfo.unopened.maxDays} 
-                            maxDays={currentStorageInfo.unopened.maxDays}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white border rounded-lg p-4 shadow-sm">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <Calendar className="h-4 w-4" /> 
-                          After Opening
-                        </h3>
-                        <div className="mt-2">
-                          <p className="text-lg font-semibold">
-                            {formatStorageTime(currentStorageInfo.opened.minDays, currentStorageInfo.opened.maxDays)}
-                          </p>
-                          <StatusIndicator 
-                            daysRemaining={currentStorageInfo.opened.maxDays} 
-                            maxDays={currentStorageInfo.opened.maxDays}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 border rounded-lg p-4">
-                      <h3 className="font-medium flex items-center gap-2 mb-2">
-                        <Info className="h-4 w-4" /> 
-                        Storage Notes
-                      </h3>
-                      <p>{currentStorageInfo.unopened.notes}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <motion.div 
-            className="bg-white border rounded-lg p-6 shadow-sm"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-blue-600" />
-              How to Tell If It's Spoiled
-            </h2>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-medium text-gray-900 mb-2">Look</h3>
-                <ul className="list-disc list-inside text-gray-700 space-y-1">
-                  {food.spoilageIndicators.visual.map((indicator: string, index: number) => (
-                    <li key={index}>{indicator}</li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-900 mb-2">Smell</h3>
-                <ul className="list-disc list-inside text-gray-700 space-y-1">
-                  {food.spoilageIndicators.smell.map((indicator: string, index: number) => (
-                    <li key={index}>{indicator}</li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-900 mb-2">Texture</h3>
-                <ul className="list-disc list-inside text-gray-700 space-y-1">
-                  {food.spoilageIndicators.texture.map((indicator: string, index: number) => (
-                    <li key={index}>{indicator}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            className="bg-white border rounded-lg p-6 shadow-sm"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-          >
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Info className="h-5 w-5 text-green-600" />
-              Storage Tips
-            </h2>
-            
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              {food.tips.map((tip: string, index: number) => (
-                <li key={index}>{tip}</li>
-              ))}
-            </ul>
-            
-            <div className="mt-6">
-              <Link 
-                to="/food-safety/prevent-cross-contamination"
-                className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
-              >
-                <ShieldAlert className="h-4 w-4" />
-                <span>Food Safety Guidelines</span>
-                <ExternalLink className="h-3 w-3" />
-              </Link>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            className="bg-white border rounded-lg p-6 shadow-sm"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.4 }}
-          >
-            {!isMobile && <AdUnit />}
-          </motion.div>
-        </div>
-        
-        {relatedFoods.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Related Foods</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {relatedFoods.map((relatedFood: any) => (
-                <Link 
-                  to={`/food/${relatedFood.id}`} 
-                  key={relatedFood.id}
-                  className="group"
-                >
-                  <div className="overflow-hidden rounded-lg shadow-sm border">
-                    <img 
-                      src={relatedFood.imageUrl} 
-                      alt={relatedFood.name}
-                      className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300" 
-                    />
-                    <div className="p-2 text-center bg-white">
-                      <h3 className="font-medium">{relatedFood.name}</h3>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {isMobile && (
-          <div className="mt-8">
-            <AdUnit />
-          </div>
-        )}
-      </div>
-    </PageTransition>
-  );
-};
-
-export default FoodDetail;
