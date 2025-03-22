@@ -31,18 +31,24 @@ const ScienceOfSpoilage = () => {
         </div>
 
         <Tabs defaultValue="microorganisms" className="w-full">
-          <TabsList className={`grid w-full ${isMobile ? 'grid-cols-1 gap-1 mb-4' : 'grid-cols-3'}`}>
-            <TabsTrigger value="microorganisms" className={isMobile ? 'py-2' : ''}>
-              <FlaskConical className="mr-1.5 h-4 w-4" />
-              <span className={isMobile ? 'text-sm' : ''}>Microorganisms</span>
+          <TabsList className="w-full mb-4">
+            <TabsTrigger value="microorganisms">
+              <div className="flex items-center">
+                <FlaskConical className="mr-1.5 h-4 w-4" />
+                <span>Microorganisms</span>
+              </div>
             </TabsTrigger>
-            <TabsTrigger value="chemical" className={isMobile ? 'py-2' : ''}>
-              <Droplet className="mr-1.5 h-4 w-4" />
-              <span className={isMobile ? 'text-sm' : ''}>Chemical Changes</span>
+            <TabsTrigger value="chemical">
+              <div className="flex items-center">
+                <Droplet className="mr-1.5 h-4 w-4" />
+                <span>Chemical Changes</span>
+              </div>
             </TabsTrigger>
-            <TabsTrigger value="prevention" className={isMobile ? 'py-2' : ''}>
-              <Clock className="mr-1.5 h-4 w-4" />
-              <span className={isMobile ? 'text-sm' : ''}>Preservation Methods</span>
+            <TabsTrigger value="prevention">
+              <div className="flex items-center">
+                <Clock className="mr-1.5 h-4 w-4" />
+                <span>Preservation</span>
+              </div>
             </TabsTrigger>
           </TabsList>
 

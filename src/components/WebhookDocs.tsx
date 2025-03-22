@@ -2,8 +2,11 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const WebhookDocs = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <Card className="max-w-3xl mx-auto mt-8 mb-8">
       <CardHeader>
@@ -14,7 +17,7 @@ const WebhookDocs = () => {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="integration">
-          <TabsList className="mb-4">
+          <TabsList className={isMobile ? "w-full mb-4" : "mb-4"}>
             <TabsTrigger value="integration">Integration Guide</TabsTrigger>
             <TabsTrigger value="payload">Payload Format</TabsTrigger>
             <TabsTrigger value="test">Test Integration</TabsTrigger>
