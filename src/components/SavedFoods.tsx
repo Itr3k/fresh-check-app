@@ -45,7 +45,23 @@ const SavedFoods = () => {
     };
   }, []);
 
+  // Fixed fallback images for specific troublesome foods
+  const getFixedFallbackImage = (foodId: string): string | null => {
+    const fixedFallbacks: Record<string, string> = {
+      "tofu": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop", // Green salad as fallback for tofu
+      "eggs": "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=500&h=300&fit=crop", // Muffins (which often contain eggs)
+    };
+    
+    return fixedFallbacks[foodId] || null;
+  };
+
   const findRelatedImageUrl = (foodId: string, category: string): string => {
+    // First check if we have a fixed fallback for this specific food
+    const fixedFallback = getFixedFallbackImage(foodId);
+    if (fixedFallback) {
+      return fixedFallback;
+    }
+    
     // Get the current food item to access its tags and name
     const currentFood = foodData.find(food => food.id === foodId);
     
