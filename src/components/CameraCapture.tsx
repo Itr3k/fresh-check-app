@@ -64,11 +64,28 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        // Ensure the video is visible and able to play
         videoRef.current.style.display = 'block';
-        videoRef.current.play().catch(err => {
-          console.error('Error playing video:', err);
-        });
+        
+        // Force video element to be visible through CSS
+        const videoElement = videoRef.current;
+        videoElement.style.width = '100%';
+        videoElement.style.height = '100%';
+        videoElement.style.objectFit = 'cover';
+        videoElement.style.position = 'absolute';
+        videoElement.style.top = '0';
+        videoElement.style.left = '0';
+        
+        console.log("Starting video playback");
+        try {
+          // Explicitly play the video
+          await videoRef.current.play();
+          console.log("Video playback started successfully");
+        } catch (playErr) {
+          console.error('Error playing video:', playErr);
+          setError('Could not start video feed. Please try again or check permissions.');
+        }
+      } else {
+        console.error('Video element reference not available');
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
@@ -161,8 +178,9 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
                 <video 
                   ref={videoRef} 
                   autoPlay 
-                  playsInline 
-                  className="h-full w-full object-cover"
+                  playsInline
+                  muted
+                  className="absolute inset-0 w-full h-full object-cover"
                   onLoadedData={() => {
                     setIsLoading(false);
                     console.log("Video loaded and ready to display");
