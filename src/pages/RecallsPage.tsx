@@ -12,18 +12,58 @@ import AdUnit from "../components/AdUnit";
 import { useRecalls } from "../contexts/RecallsContext";
 import { toast } from "@/hooks/use-toast";
 import WebhookDocs from "../components/WebhookDocs";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Email validation schema
+const emailSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address" }),
+});
+
+type EmailFormValues = z.infer<typeof emailSchema>;
 
 const RecallsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showDocs, setShowDocs] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { lastUpdated, refreshRecalls, loading } = useRecalls();
   
+  // Initialize form with validation
+  const form = useForm<EmailFormValues>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
   const handleRefresh = () => {
     refreshRecalls();
     toast({
       title: "Recalls Updated",
       description: "Recall information has been refreshed",
     });
+  };
+
+  const onSubmitEmail = (data: EmailFormValues) => {
+    setIsSubmitting(true);
+    
+    // Simulate API call with timeout
+    setTimeout(() => {
+      // In production, this would be an actual API call to store the email
+      console.log("Email submitted:", data.email);
+      
+      // Show success toast
+      toast({
+        title: "Subscription Successful",
+        description: "You'll receive recall alerts at " + data.email,
+      });
+      
+      // Reset form
+      form.reset();
+      setIsSubmitting(false);
+    }, 1000);
   };
   
   return (
@@ -141,10 +181,29 @@ const RecallsPage = () => {
             <p className="text-muted-foreground mb-4">
               Get alerts when new recalls are issued for the foods you care about.
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-              <Input placeholder="Your email address" type="email" />
-              <Button>Sign Up</Button>
-            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmitEmail)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input 
+                          placeholder="Your email address" 
+                          type="email" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-left" />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Signing Up..." : "Sign Up"}
+                </Button>
+              </form>
+            </Form>
             <p className="text-xs text-muted-foreground mt-3">
               We'll only email you about relevant recalls. You can unsubscribe at any time.
             </p>
