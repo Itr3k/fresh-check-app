@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { foodData } from "../data/foodData";
 
 interface FoodCardProps {
   id: string;
@@ -13,7 +14,25 @@ interface FoodCardProps {
 
 const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
-  const fallbackImageUrl = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
+  
+  // Find related foods for fallback images
+  const findRelatedImageUrl = (): string => {
+    // Try to find foods in the same category first
+    const sameCategoryFoods = foodData.filter(food => 
+      food.id !== id && 
+      food.category === category
+    );
+    
+    if (sameCategoryFoods.length > 0) {
+      // Return a random image from the same category
+      return sameCategoryFoods[Math.floor(Math.random() * sameCategoryFoods.length)].imageUrl;
+    }
+    
+    // If no related foods found, use a generic food image as last resort
+    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
+  };
+  
+  const fallbackImageUrl = findRelatedImageUrl();
   
   const handleImageError = () => {
     console.error(`Image failed to load for ${name}:`, imageUrl);

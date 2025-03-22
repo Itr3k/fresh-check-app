@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
+import { foodData } from '../data/foodData';
 
 interface SavedFood {
   id: string;
@@ -47,6 +48,23 @@ const SavedFoods = () => {
     };
   }, []);
 
+  // Find a related image for fallback
+  const findRelatedImageUrl = (foodId: string, category: string): string => {
+    // Try to find foods in the same category first
+    const sameCategoryFoods = foodData.filter(food => 
+      food.id !== foodId && 
+      food.category === category
+    );
+    
+    if (sameCategoryFoods.length > 0) {
+      // Return a random image from the same category
+      return sameCategoryFoods[Math.floor(Math.random() * sameCategoryFoods.length)].imageUrl;
+    }
+    
+    // If no related foods found, use a generic food image as last resort
+    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
+  };
+
   const removeSavedFood = (id: string) => {
     localStorage.removeItem(`saved-food-${id}`);
     setSavedFoods(prev => prev.filter(food => food.id !== id));
@@ -86,7 +104,8 @@ const SavedFoods = () => {
                   alt={`${food.name} storage information`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
+                    console.error(`Image failed to load for ${food.name}:`, food.imageUrl);
+                    (e.target as HTMLImageElement).src = findRelatedImageUrl(food.id, food.category);
                   }}
                 />
               </div>
