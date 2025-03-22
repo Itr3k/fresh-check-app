@@ -31,7 +31,7 @@ const educationPages = [
   },
   {
     id: 'vulnerable-groups',
-    title: 'Special Populations',
+    title: 'Food Safety for Vulnerable Groups',
     description: 'Food safety for pregnant women, elderly, children & more',
     icon: Users,
     url: '/food-safety/vulnerable-groups',
