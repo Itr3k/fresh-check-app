@@ -21,6 +21,7 @@ import TemperatureDangerZone from "./pages/FoodSafety/TemperatureDangerZone";
 import FoodborneIllnessPrevention from "./pages/FoodSafety/FoodborneIllnessPrevention";
 import PreventCrossContamination from "./pages/FoodSafety/PreventCrossContamination";
 import VulnerableGroups from "./pages/FoodSafety/VulnerableGroups";
+import HolidayEvents from "./pages/FoodSafety/HolidayEvents";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
               <Route path="/food-safety/prevent-cross-contamination" element={<PreventCrossContamination />} />
               <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
+              <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
