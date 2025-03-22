@@ -6,7 +6,20 @@ import { Separator } from './ui/separator';
 import { Badge } from './ui/badge';
 import { CalendarIcon, Barcode, Info } from 'lucide-react';
 import { Button } from './ui/button';
-import { FoodInfo } from '@/utils/imageProcessingService';
+
+// Define the FoodInfo type directly in this file instead of importing it
+export interface FoodInfo {
+  name: string;
+  imageUrl?: string;
+  expiryDate?: string;
+  barcode?: string;
+  nutritionInfo?: {
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  };
+}
 
 interface FoodInfoResultProps {
   foodInfo: FoodInfo;
