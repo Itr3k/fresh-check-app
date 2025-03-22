@@ -20,6 +20,7 @@ import WebhookReceiver from "./components/WebhookReceiver";
 import TemperatureDangerZone from "./pages/FoodSafety/TemperatureDangerZone";
 import FoodborneIllnessPrevention from "./pages/FoodSafety/FoodborneIllnessPrevention";
 import PreventCrossContamination from "./pages/FoodSafety/PreventCrossContamination";
+import VulnerableGroups from "./pages/FoodSafety/VulnerableGroups";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
               <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
               <Route path="/food-safety/prevent-cross-contamination" element={<PreventCrossContamination />} />
+              <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
