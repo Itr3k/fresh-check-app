@@ -16,6 +16,8 @@ const getFixedFallbackImage = (foodId: string): string | null => {
     "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
     "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
     "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
+    "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop",
+    "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop",
   };
   
   return fixedFallbacks[foodId] || null;
@@ -26,14 +28,14 @@ const getFoodDetails = (id: string) => {
   const foodImages: Record<string, string> = {
     chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
     milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
-    eggs: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=800&h=400&fit=crop",
+    eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
     bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
     bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
-    lettuce: "https://images.unsplash.com/photo-1621262331122-118f92d4d795?w=800&h=400&fit=crop",
-    tomatoes: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&h=400&fit=crop",
-    avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
-    apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=400&fit=crop",
-    tofu: "https://images.unsplash.com/photo-1626711934535-9749ea933616?w=500&h=300&fit=crop",
+    lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
+    tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
+    avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
+    apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
+    tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
     bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
     cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
     yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
@@ -803,10 +805,10 @@ const getRelatedFoods = (currentFoodId: string) => {
     chicken: [
       { id: "turkey", name: "Turkey", imageUrl: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=300&h=200&fit=crop" },
       { id: "beef", name: "Beef", imageUrl: "https://images.unsplash.com/photo-1551355716-22e3db76b265?w=300&h=200&fit=crop" },
-      { id: "eggs", name: "Eggs", imageUrl: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=300&h=200&fit=crop" }
+      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" }
     ],
     milk: [
-      { id: "eggs", name: "Eggs", imageUrl: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=300&h=200&fit=crop" },
+      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" },
       { id: "cheese", name: "Cheese", imageUrl: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=300&h=200&fit=crop" },
       { id: "yogurt", name: "Yogurt", imageUrl: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=300&h=200&fit=crop" }
     ],
@@ -841,7 +843,7 @@ const getRelatedFoods = (currentFoodId: string) => {
       { id: "seitan", name: "Seitan", imageUrl: "https://images.unsplash.com/photo-1621196876763-de1e9c997570?w=300&h=200&fit=crop" }
     ],
     bacon: [
-      { id: "eggs", name: "Eggs", imageUrl: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=300&h=200&fit=crop" },
+      { id: "eggs", name: "Eggs", imageUrl: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png" },
       { id: "sausage", name: "Sausage", imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=200&fit=crop" },
       { id: "ham", name: "Ham", imageUrl: "https://images.unsplash.com/photo-1533821312764-eb0c94f5a472?w=300&h=200&fit=crop" }
     ]

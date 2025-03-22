@@ -21,6 +21,9 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
       "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png", // Custom tofu image
       "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png", // Custom eggs image
       "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop", // Bacon frying in a pan
+      "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop", // New reliable lettuce image
+      "chicken": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop", // Updated chicken image
+      "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop", // New tomatoes image
     };
     
     return fixedFallbacks[foodId] || null;
