@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -176,4 +177,25 @@ const HolidayEvents = () => {
                   <p>• Replace empty platters rather than adding fresh food to a dish that already had food in it</p>
                   <p>• Use chafing dishes, slow cookers, and warming trays to keep hot foods hot</p>
                   <p>• Use ice or commercial freezer packs to keep cold foods cold</p>
-               
+                </div>
+              </div>
+              
+              <div className="rounded-lg border p-4">
+                <h3 className="font-medium mb-3">Buffet Service Tips</h3>
+                <ul className="space-y-2 text-sm">
+                  <li>• Provide serving utensils for each dish to prevent cross-contamination</li>
+                  <li>• Arrange food in small serving dishes and replenish them frequently</li>
+                  <li>• Monitor how long food has been sitting out and remove items after 2 hours</li>
+                  <li>• Consider using smaller plates to encourage guests to take less at once and return for seconds</li>
+                  <li>• Assign a "food safety" person to monitor time and temperatures during the event</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </FoodSafetyLayout>
+  );
+};
+
+export default HolidayEvents;
