@@ -827,4 +827,25 @@ const getRelatedFoods = (currentFoodId: string) => {
     ],
     lettuce: [
       { id: "spinach", name: "Spinach", imageUrl: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&h=200&fit=crop" },
-      { id: "kale", name: "Kale", imageUrl: "https://images.unsplash.com/photo-1524179091875-bf99a9
+      { id: "kale", name: "Kale", imageUrl: "https://images.unsplash.com/photo-1524179091875-bf99a9a4af22?w=300&h=200&fit=crop" },
+      { id: "cabbage", name: "Cabbage", imageUrl: "https://images.unsplash.com/photo-1551888765-8dab222e097d?w=300&h=200&fit=crop" }
+    ],
+    apples: [
+      { id: "oranges", name: "Oranges", imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=300&h=200&fit=crop" },
+      { id: "bananas", name: "Bananas", imageUrl: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=200&fit=crop" },
+      { id: "pears", name: "Pears", imageUrl: "https://images.unsplash.com/photo-1514756331096-242fdeb70d4a?w=300&h=200&fit=crop" }
+    ],
+    tofu: [
+      { id: "chicken", name: "Chicken", imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=300&h=200&fit=crop" },
+      { id: "tempeh", name: "Tempeh", imageUrl: "https://images.unsplash.com/photo-1593001872095-7d5b3868dd29?w=300&h=200&fit=crop" },
+      { id: "seitan", name: "Seitan", imageUrl: "https://images.unsplash.com/photo-1621196876763-de1e9c997570?w=300&h=200&fit=crop" }
+    ],
+    bacon: [
+      { id: "eggs", name: "Eggs", imageUrl: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=300&h=200&fit=crop" },
+      { id: "sausage", name: "Sausage", imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=200&fit=crop" },
+      { id: "ham", name: "Ham", imageUrl: "https://images.unsplash.com/photo-1533821312764-eb0c94f5a472?w=300&h=200&fit=crop" }
+    ]
+  };
+  
+  return relatedFoodsMap[currentFoodId] || [];
+};
