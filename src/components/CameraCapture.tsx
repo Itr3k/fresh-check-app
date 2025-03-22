@@ -99,11 +99,11 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
         const imageSrc = canvas.toDataURL('image/png');
         console.log('Image captured successfully');
         
+        // Ensure camera is stopped before calling onCapture
+        stopCamera();
+        
         // Send the captured image data back to the parent component
         onCapture(imageSrc);
-        
-        // Stop camera after capture
-        stopCamera();
       }
     } else {
       console.error('Video or canvas reference not available');
@@ -115,9 +115,17 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
     }
   };
 
+  const handleClose = () => {
+    console.log('Camera closing...');
+    // Make sure to stop camera before closing
+    stopCamera();
+    // Call the onClose callback
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center">
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full max-h-screen overflow-hidden">
         {error ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg text-center mx-4">
@@ -130,7 +138,7 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
                   Try Again
                 </button>
                 <button 
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="bg-secondary text-foreground px-4 py-2 rounded-lg"
                 >
                   Close
@@ -140,54 +148,53 @@ const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
           </div>
         ) : (
           <>
-            <div className="relative w-full h-full">
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-black">
+              {isLoading ? (
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              ) : (
+                <video 
+                  ref={videoRef} 
+                  autoPlay 
+                  playsInline 
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onLoadedData={() => setIsLoading(false)}
+                />
               )}
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                className="absolute inset-0 w-full h-full object-cover"
-                onLoadedData={() => setIsLoading(false)}
-              />
-              
-              {/* Camera Controls - Positioned at the bottom of the screen */}
-              <div className="absolute bottom-10 left-0 right-0 flex justify-center space-x-4 px-4 z-10">
+            </div>
+            
+            {/* Camera Controls - Fixed positioning for better mobile support */}
+            <div className="fixed bottom-20 left-0 right-0 flex justify-center items-center">
+              <button 
+                onClick={handleCapture}
+                disabled={isLoading}
+                className={`w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center ${
+                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                aria-label="Capture photo"
+              >
+                <div className="w-16 h-16 bg-primary rounded-full"></div>
+              </button>
+            </div>
+            
+            {/* Top Controls - Fixed positioning */}
+            <div className="fixed top-4 right-4 left-4 flex justify-between z-10">
+              {isMobile && (
                 <button 
-                  onClick={handleCapture}
-                  disabled={isLoading}
-                  className={`w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center ${
-                    isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  aria-label="Capture photo"
+                  onClick={switchCamera} 
+                  className="bg-black/70 text-white p-3 rounded-full shadow-lg"
+                  aria-label="Switch camera"
                 >
-                  <div className="w-12 h-12 bg-primary rounded-full"></div>
+                  <RefreshCw size={24} />
                 </button>
-              </div>
-              
-              {/* Top Controls */}
-              <div className="absolute top-4 right-4 left-4 flex justify-between z-10">
-                {isMobile && (
-                  <button 
-                    onClick={switchCamera} 
-                    className="bg-black/50 text-white p-3 rounded-full"
-                    aria-label="Switch camera"
-                  >
-                    <RefreshCw size={24} />
-                  </button>
-                )}
-                <div className="flex-grow"></div>
-                <button 
-                  onClick={onClose} 
-                  className="bg-black/50 text-white p-3 rounded-full"
-                  aria-label="Close camera"
-                >
-                  <X size={24} />
-                </button>
-              </div>
+              )}
+              <div className="flex-grow"></div>
+              <button 
+                onClick={handleClose} 
+                className="bg-black/70 text-white p-3 rounded-full shadow-lg"
+                aria-label="Close camera"
+              >
+                <X size={24} />
+              </button>
             </div>
             
             <canvas ref={canvasRef} className="hidden" />

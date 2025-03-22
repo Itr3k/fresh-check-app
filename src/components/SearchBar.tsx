@@ -46,11 +46,11 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
   const handleCapture = async (imageSrc: string) => {
     console.log("Image captured:", imageSrc.substring(0, 50) + "...");
     
-    // Reset body overflow
-    document.body.style.overflow = '';
-    
     // Close camera capture component
     setShowCameraCapture(false);
+    
+    // Reset body overflow
+    document.body.style.overflow = '';
     
     // Show processing toast
     toast({
@@ -94,6 +94,7 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
   };
 
   const handleCloseCamera = () => {
+    console.log("Closing camera from SearchBar");
     setShowCameraCapture(false);
     // Reset body overflow
     document.body.style.overflow = '';
