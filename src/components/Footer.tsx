@@ -20,7 +20,8 @@ const Footer = () => {
               className="font-medium text-foreground hover:text-primary mx-1"
             >
               Elevated AI
-            </a>
+            </a>{" "}
+            a N3RD Labs LLC company
           </div>
           
           <div className="flex gap-4">
