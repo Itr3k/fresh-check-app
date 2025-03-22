@@ -505,3 +505,8 @@ export const searchFoods = (query: string): FoodItem[] => {
     return false;
   });
 };
+
+// Helper function to get a food item by ID
+export const getFoodById = (id: string): FoodItem | undefined => {
+  return foodData.find(food => food.id === id);
+};

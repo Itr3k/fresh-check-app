@@ -3,14 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface AdUnitProps {
-  slotId: string;
+  slotId?: string;
   className?: string;
   format?: "rectangle" | "leaderboard" | "skyscraper";
   lazyLoad?: boolean;
 }
 
 const AdUnit: React.FC<AdUnitProps> = ({ 
-  slotId, 
+  slotId = "default-ad-slot", 
   className = "",
   format = "rectangle",
   lazyLoad = true

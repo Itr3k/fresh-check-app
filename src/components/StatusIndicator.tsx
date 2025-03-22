@@ -6,10 +6,11 @@ type Status = "fresh" | "use-soon" | "expired";
 
 interface StatusIndicatorProps {
   status: Status;
-  daysText: string;
+  daysText?: string;
+  size?: "small" | "medium" | "large";
 }
 
-const StatusIndicator = ({ status, daysText }: StatusIndicatorProps) => {
+const StatusIndicator = ({ status, daysText, size = "medium" }: StatusIndicatorProps) => {
   const getStatusConfig = () => {
     switch (status) {
       case "fresh":
@@ -44,6 +45,30 @@ const StatusIndicator = ({ status, daysText }: StatusIndicatorProps) => {
   };
 
   const config = getStatusConfig();
+  
+  // Size classes
+  const sizeClasses = {
+    small: {
+      container: "w-10 h-10",
+      inner: "w-8 h-8",
+      icon: "text-sm",
+      text: "text-xs"
+    },
+    medium: {
+      container: "w-12 h-12",
+      inner: "w-10 h-10",
+      icon: "text-base",
+      text: "text-sm"
+    },
+    large: {
+      container: "w-16 h-16",
+      inner: "w-14 h-14",
+      icon: "text-lg",
+      text: "text-base"
+    }
+  };
+  
+  const sizeClass = sizeClasses[size];
 
   return (
     <motion.div 
@@ -52,15 +77,17 @@ const StatusIndicator = ({ status, daysText }: StatusIndicatorProps) => {
       transition={{ duration: 0.3 }}
       className="flex flex-col items-center space-y-2"
     >
-      <div className={`${config.color} w-16 h-16 rounded-full flex items-center justify-center shadow-md`}>
-        <div className="bg-white/20 w-14 h-14 rounded-full flex items-center justify-center">
+      <div className={`${config.color} ${sizeClass.container} rounded-full flex items-center justify-center shadow-md`}>
+        <div className={`bg-white/20 ${sizeClass.inner} rounded-full flex items-center justify-center`}>
           {config.icon}
         </div>
       </div>
-      <div className="text-center">
-        <div className={`font-semibold text-lg ${config.textColor}`}>{config.label}</div>
-        <div className="text-sm text-muted-foreground">{daysText}</div>
-      </div>
+      {daysText && (
+        <div className="text-center">
+          <div className={`font-semibold ${sizeClass.text} ${config.textColor}`}>{config.label}</div>
+          <div className="text-sm text-muted-foreground">{daysText}</div>
+        </div>
+      )}
     </motion.div>
   );
 };

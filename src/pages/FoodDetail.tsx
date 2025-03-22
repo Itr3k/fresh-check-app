@@ -736,7 +736,7 @@ const FoodDetail = () => {
                           <p className="text-sm text-muted-foreground">Based on your settings</p>
                         </div>
                         <div className="flex items-center">
-                          <StatusIndicator status={status} size="large" />
+                          <StatusIndicator status={status} daysText={daysText} size="large" />
                           <div className="ml-3">
                             <p className="font-semibold">
                               {status === 'fresh' ? 'Fresh' : status === 'use-soon' ? 'Use Soon' : 'Expired'}
@@ -839,7 +839,7 @@ const FoodDetail = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <AdUnit />
+                <AdUnit slotId="food-detail-sidebar" />
                 
                 <div className="mt-8">
                   <h2 className="text-xl font-semibold mb-4">Related Foods</h2>
