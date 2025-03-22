@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -15,7 +14,7 @@ import {
   Printer, 
   FileDown,
   ExternalLink,
-  Knife,
+  Scissors,
   Salad
 } from "lucide-react";
 import PageTransition from "../../components/PageTransition";
@@ -232,7 +231,7 @@ const PreventCrossContamination = () => {
               <TabsContent value="separate">
                 <div className="bg-background border border-border rounded-lg p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Knife size={24} className="text-red-500" />
+                    <Scissors size={24} className="text-red-500" />
                     <h3 className="text-xl font-medium">Separate</h3>
                   </div>
                   
