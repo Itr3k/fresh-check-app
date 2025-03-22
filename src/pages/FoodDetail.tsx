@@ -178,6 +178,138 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
+    if (id === "bananas") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 5,
+            maxDays: 7,
+            notes: "Refrigeration slows ripening but may affect flavor and texture. Better for overripe bananas."
+          },
+          opened: {
+            minDays: 1,
+            maxDays: 3,
+            notes: "For cut bananas, store in airtight container with lemon juice to prevent browning."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Peel and slice before freezing for best results. Great for smoothies or baking."
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 180,
+            notes: "Freeze sliced in airtight container or freezer bag."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 2,
+            maxDays: 7,
+            notes: "Store at room temperature away from direct sunlight. Hang if possible."
+          },
+          opened: {
+            minDays: 1,
+            maxDays: 2,
+            notes: "Best eaten immediately once peeled. Will brown rapidly."
+          }
+        }
+      ];
+    }
+    
+    if (id === "ice-cream") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 0,
+            maxDays: 1,
+            notes: "Regular refrigerator is too warm - ice cream will become soft and melty."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 1,
+            notes: "Will become soupy and develop ice crystals when refrozen."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 60,
+            maxDays: 180,
+            notes: "Store in back of freezer where temperature is most stable."
+          },
+          opened: {
+            minDays: 21,
+            maxDays: 60,
+            notes: "Cover with plastic wrap touching surface to prevent ice crystals. Keep in original container."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - will melt immediately."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - will melt immediately."
+          }
+        }
+      ];
+    }
+    
+    if (id === "pizza") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 3,
+            maxDays: 4,
+            notes: "Store in airtight container or wrap tightly in aluminum foil."
+          },
+          opened: {
+            minDays: 3,
+            maxDays: 4,
+            notes: "Store in airtight container or wrap tightly in aluminum foil."
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 30,
+            maxDays: 60,
+            notes: "Wrap individual slices in plastic wrap, then aluminum foil."
+          },
+          opened: {
+            minDays: 30,
+            maxDays: 60,
+            notes: "Wrap individual slices in plastic wrap, then aluminum foil."
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 1,
+            notes: "Not recommended for more than a few hours at room temperature."
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 1,
+            notes: "Not recommended for more than a few hours at room temperature."
+          }
+        }
+      ];
+    }
+    
     if (category === "Fruits") {
       return [
         {
@@ -759,6 +891,30 @@ const getFoodDetails = (id: string) => {
       };
     }
     
+    if (id === "bananas") {
+      return {
+        visual: ["Entirely black or brown skin", "Mold spots on skin or flesh", "Fruit flies hovering around"],
+        smell: ["Overly sweet, alcoholic odor", "Fermented smell", "Rotten or sour smell"],
+        texture: ["Extremely mushy interior", "Leaking liquid", "Slimy or gooey consistency"]
+      };
+    }
+    
+    if (id === "ice-cream") {
+      return {
+        visual: ["Large ice crystals throughout", "Freezer burn (white, dehydrated patches)", "Mold (usually appears as spots of unusual colors)"],
+        smell: ["Sour, unpleasant odor", "Off smell that doesn't match the flavor", "Cardboard-like smell"],
+        texture: ["Gummy, sticky texture", "Separated, watery parts", "Grainy or sandy consistency"]
+      };
+    }
+    
+    if (id === "pizza") {
+      return {
+        visual: ["Mold growth (white, green, or black spots)", "Discoloration of toppings", "Dried out, stiff appearance"],
+        smell: ["Sour or rancid odor", "Ammonia-like smell", "Moldy, musty smell"],
+        texture: ["Slimy surface on cheese or toppings", "Extremely hard, dry crust", "Soggy, wet texture"]
+      };
+    }
+    
     // Default generic spoilage indicators as fallback
     return {
       visual: ["Discoloration", "Mold growth"],
@@ -775,7 +931,19 @@ const getFoodDetails = (id: string) => {
       category: foodFromDatabase.category,
       storageOptions: getStorageOptions(id, foodFromDatabase.category),
       spoilageIndicators: getSpoilageIndicators(id, foodFromDatabase.category),
-      tips: [
+      tips: id === "ice-cream" ? [
+        "Store ice cream in the back of the freezer, not the door",
+        "Keep ice cream at a constant temperature",
+        "Use a piece of plastic wrap pressed against the surface before replacing lid"
+      ] : id === "bananas" ? [
+        "Separate bananas from the bunch to slow ripening",
+        "Wrap stems in plastic wrap to slow ripening process",
+        "Store away from other fruits that produce ethylene gas"
+      ] : id === "pizza" ? [
+        "Refrigerate within 2 hours of delivery or cooking",
+        "For best reheating, use an oven or skillet, not microwave",
+        "Never leave out overnight at room temperature"
+      ] : [
         "Check packaging for manufacturer's recommendations",
         "When in doubt, throw it out",
         "Store away from ethylene-producing fruits"

@@ -457,7 +457,7 @@ export const foodData: FoodItem[] = [
     name: "Ice Cream",
     imageUrl: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop",
     category: "Frozen Foods",
-    tags: ["dessert", "sweet", "cold", "treat"]
+    tags: ["dessert", "sweet", "cold", "treat", "dairy"]
   },
   {
     id: "frozen-vegetables",

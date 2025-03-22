@@ -24,6 +24,9 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
       "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop", // New reliable lettuce image
       "chicken": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop", // Updated chicken image
       "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop", // New tomatoes image
+      "bananas": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=300&fit=crop", // Reliable bananas image
+      "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop", // Reliable ice cream image
+      "pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop", // Reliable pizza image
     };
     
     return fixedFallbacks[foodId] || null;
