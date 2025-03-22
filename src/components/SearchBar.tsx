@@ -2,20 +2,21 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   id?: string;
   initialValue?: string;
   placeholder?: string;
+  realTimeSearch?: boolean;
 }
 
 const SearchBar = ({ 
   onSearch, 
   id = "search-bar", 
   initialValue = "",
-  placeholder = "Search for any food..."
+  placeholder = "Search for any food...",
+  realTimeSearch = false
 }: SearchBarProps) => {
   const [query, setQuery] = useState(initialValue);
   const [isFocused, setIsFocused] = useState(false);
@@ -31,8 +32,8 @@ const SearchBar = ({
     const newQuery = e.target.value;
     setQuery(newQuery);
     
-    // Call onSearch on every change to provide real-time filtering
-    if (onSearch) {
+    // Call onSearch on every change only if realTimeSearch is enabled
+    if (onSearch && realTimeSearch) {
       onSearch(newQuery);
     }
   };

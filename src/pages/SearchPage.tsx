@@ -66,6 +66,7 @@ const SearchPage = () => {
             onSearch={handleSearch} 
             initialValue={query}
             placeholder="Search for any food (e.g., apple, duck, cheese)"
+            realTimeSearch={true}
           />
         </motion.div>
 

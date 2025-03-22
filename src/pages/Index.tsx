@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import PopularFoods from "../components/PopularFoods";
@@ -14,9 +15,16 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const scrollToSearch = () => {
     searchRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
@@ -50,8 +58,8 @@ const Index = () => {
             expiration calculator for any food.
           </p>
 
-          <div className="max-w-xl mx-auto mb-8">
-            <SearchBar id="search-bar" />
+          <div className="max-w-xl mx-auto mb-8" ref={searchRef}>
+            <SearchBar id="search-bar" onSearch={handleSearch} />
           </div>
 
           <div className="flex justify-center mb-6">
