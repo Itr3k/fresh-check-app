@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import FoodCard from "./FoodCard";
 
-// Updated data for popular foods with fixed images
+// Updated data for popular foods with more reliable image URLs
 const popularFoods = [
   {
     id: "chicken",

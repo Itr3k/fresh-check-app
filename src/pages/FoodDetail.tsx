@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -8,10 +9,24 @@ import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
 
 const getFoodDetails = (id: string) => {
+  // Map of reliable food images
+  const foodImages: Record<string, string> = {
+    chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
+    milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
+    eggs: "https://images.unsplash.com/photo-1607690424560-35d967d6ad7f?w=800&h=400&fit=crop",
+    bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
+    bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
+    lettuce: "https://images.unsplash.com/photo-1621262331122-118f92d4d795?w=800&h=400&fit=crop",
+    tomatoes: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&h=400&fit=crop",
+    avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
+    // Default image for any other food
+    default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
+  };
+
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
-    imageUrl: `https://images.unsplash.com/photo-1546069901-${id}?w=800&h=400&fit=crop`,
+    imageUrl: foodImages[id] || foodImages.default,
     category: "Food",
     storageOptions: [
       {
