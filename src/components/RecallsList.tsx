@@ -5,65 +5,7 @@ import { AlertOctagon, AlertCircle, AlertTriangle, ChevronRight } from "lucide-r
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// Mock data for recalls - this would come from the AI service in the real implementation
-const mockRecalls = [
-  {
-    id: "rec001",
-    product_name: "Organic Baby Spinach",
-    brand: "Fresh Greens",
-    category: "vegetables",
-    recall_date: "2023-11-15",
-    severity: "high",
-    reason: "E. coli contamination",
-    source_agency: "FDA",
-    status: "active"
-  },
-  {
-    id: "rec002",
-    product_name: "Chocolate Chip Cookies",
-    brand: "Sweet Treats",
-    category: "desserts",
-    recall_date: "2023-11-10",
-    severity: "medium",
-    reason: "Undeclared peanut allergen",
-    source_agency: "FDA",
-    status: "active"
-  },
-  {
-    id: "rec003",
-    product_name: "Ground Beef",
-    brand: "Prime Meats",
-    category: "meat",
-    recall_date: "2023-11-05",
-    severity: "high",
-    reason: "Possible foreign matter contamination",
-    source_agency: "USDA",
-    status: "active"
-  },
-  {
-    id: "rec004",
-    product_name: "Protein Bars",
-    brand: "Fitness Fuel",
-    category: "snacks",
-    recall_date: "2023-10-28",
-    severity: "low",
-    reason: "Mislabeled nutrition information",
-    source_agency: "FDA",
-    status: "active"
-  },
-  {
-    id: "rec005",
-    product_name: "Almond Milk",
-    brand: "Nature's Best",
-    category: "dairy-alternatives",
-    recall_date: "2023-10-20",
-    severity: "medium",
-    reason: "Potential bacterial contamination",
-    source_agency: "FDA",
-    status: "active"
-  }
-];
+import { useRecalls } from "../contexts/RecallsContext";
 
 // Helper to render severity icon
 const getSeverityIcon = (severity: string) => {
@@ -90,14 +32,10 @@ interface RecallsListProps {
 }
 
 const RecallsList = ({ searchQuery }: RecallsListProps) => {
-  const [loading, setLoading] = useState(false);
+  const { loading, error, searchRecalls } = useRecalls();
   
   // Filter recalls based on search query
-  const filteredRecalls = mockRecalls.filter(recall => 
-    recall.product_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    recall.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    recall.reason.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredRecalls = searchRecalls(searchQuery);
   
   if (loading) {
     return (
@@ -120,6 +58,16 @@ const RecallsList = ({ searchQuery }: RecallsListProps) => {
             </CardContent>
           </Card>
         ))}
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-8">
+        <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-3" />
+        <h3 className="text-xl font-medium mb-2">Error Loading Recalls</h3>
+        <p className="text-muted-foreground">{error}</p>
       </div>
     );
   }

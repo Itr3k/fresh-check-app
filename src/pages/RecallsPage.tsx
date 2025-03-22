@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Search, Filter, AlertTriangle, AlertCircle, AlertOctagon } from "lucide-react";
+import { Search, Filter, AlertTriangle, AlertCircle, AlertOctagon, RefreshCw } from "lucide-react";
 import Header from "../components/Header";
 import PageTransition from "../components/PageTransition";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,22 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import RecallsList from "../components/RecallsList";
 import AdUnit from "../components/AdUnit";
+import { useRecalls } from "../contexts/RecallsContext";
+import { toast } from "@/hooks/use-toast";
+import WebhookDocs from "../components/WebhookDocs";
 
 const RecallsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showDocs, setShowDocs] = useState(false);
+  const { lastUpdated, refreshRecalls, loading } = useRecalls();
+  
+  const handleRefresh = () => {
+    refreshRecalls();
+    toast({
+      title: "Recalls Updated",
+      description: "Recall information has been refreshed",
+    });
+  };
   
   return (
     <PageTransition>
@@ -70,10 +83,21 @@ const RecallsPage = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Filter size={16} className="mr-2" />
-                Filter
-              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto">
+                  <Filter size={16} className="mr-2" />
+                  Filter
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full sm:w-auto"
+                  onClick={handleRefresh}
+                  disabled={loading}
+                >
+                  <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
             </div>
           </div>
           
@@ -93,7 +117,7 @@ const RecallsPage = () => {
               </div>
             </div>
             <div className="text-sm text-muted-foreground">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated: {new Date(lastUpdated).toLocaleDateString()}
             </div>
           </div>
           
@@ -116,6 +140,20 @@ const RecallsPage = () => {
               We'll only email you about relevant recalls. You can unsubscribe at any time.
             </p>
           </div>
+          
+          {/* Hidden developer tools (would be access controlled in production) */}
+          <div className="text-center mt-16 mb-4">
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-muted-foreground"
+              onClick={() => setShowDocs(!showDocs)}
+            >
+              {showDocs ? "Hide" : "Show"} Integration Documentation
+            </Button>
+          </div>
+          
+          {showDocs && <WebhookDocs />}
         </main>
       </div>
     </PageTransition>

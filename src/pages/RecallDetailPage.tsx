@@ -1,8 +1,6 @@
-
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, AlertOctagon, AlertCircle, AlertTriangle, Share2, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import PageTransition from "../components/PageTransition";
 import { Button } from "@/components/ui/button";
@@ -10,105 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import AdUnit from "../components/AdUnit";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-// Mock data for recalls - this would come from the AI service in the real implementation
-const mockRecalls = [
-  {
-    id: "rec001",
-    product_name: "Organic Baby Spinach",
-    brand: "Fresh Greens",
-    category: "vegetables",
-    recall_date: "2023-11-15",
-    publish_date: "2023-11-16",
-    severity: "high",
-    reason: "E. coli contamination",
-    details: "Fresh Greens Organic Baby Spinach has been recalled due to potential contamination with E. coli O157:H7. The affected products were distributed nationwide in 5oz plastic containers with 'best if used by' dates of 11/20/2023 through 11/25/2023.",
-    affected_products: ["5oz containers", "10oz containers", "16oz family size"],
-    geographic_scope: "Nationwide",
-    source_url: "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
-    source_agency: "FDA",
-    instructions: "Consumers who have purchased Fresh Greens Organic Baby Spinach are urged not to consume the product and to return it to the place of purchase for a full refund. Consumers with questions may contact the company at 1-800-555-1234.",
-    status: "active",
-    ai_confidence: 0.95,
-    human_verified: true
-  },
-  {
-    id: "rec002",
-    product_name: "Chocolate Chip Cookies",
-    brand: "Sweet Treats",
-    category: "desserts",
-    recall_date: "2023-11-10",
-    publish_date: "2023-11-11",
-    severity: "medium",
-    reason: "Undeclared peanut allergen",
-    details: "Sweet Treats is recalling its 12 oz packages of Chocolate Chip Cookies because they may contain undeclared peanuts. People who have allergies to peanuts run the risk of serious or life-threatening allergic reaction if they consume these products.",
-    affected_products: ["12oz packages with lot codes 234A through 238C"],
-    geographic_scope: "California, Nevada, Arizona",
-    source_url: "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
-    source_agency: "FDA",
-    instructions: "Consumers who have purchased 12 oz packages of Chocolate Chip Cookies are urged to return them to the place of purchase for a full refund. Consumers with questions may contact the company at 1-800-555-5678.",
-    status: "active",
-    ai_confidence: 0.92,
-    human_verified: true
-  },
-  {
-    id: "rec003",
-    product_name: "Ground Beef",
-    brand: "Prime Meats",
-    category: "meat",
-    recall_date: "2023-11-05",
-    publish_date: "2023-11-06",
-    severity: "high",
-    reason: "Possible foreign matter contamination",
-    details: "Prime Meats is recalling approximately 28,356 pounds of ground beef products that may be contaminated with extraneous materials, specifically small pieces of metal. The products were shipped to retail locations nationwide.",
-    affected_products: ["1lb packages with use by dates of 11/15/2023", "5lb family packs with use by dates of 11/15/2023"],
-    geographic_scope: "Nationwide",
-    source_url: "https://www.fsis.usda.gov/recalls",
-    source_agency: "USDA",
-    instructions: "Consumers who have purchased these products are urged not to consume them. These products should be thrown away or returned to the place of purchase. Consumers with food safety questions can call the toll-free USDA Meat and Poultry Hotline at 1-888-MPHotline.",
-    status: "active",
-    ai_confidence: 0.98,
-    human_verified: true
-  },
-  {
-    id: "rec004",
-    product_name: "Protein Bars",
-    brand: "Fitness Fuel",
-    category: "snacks",
-    recall_date: "2023-10-28",
-    publish_date: "2023-10-29",
-    severity: "low",
-    reason: "Mislabeled nutrition information",
-    details: "Fitness Fuel is recalling certain lots of its Protein Bars due to mislabeled nutrition information. The product contains 15g of protein per bar instead of the labeled 20g.",
-    affected_products: ["Chocolate, Vanilla, and Peanut Butter flavors with lot codes P7845 through P7865"],
-    geographic_scope: "All 50 states",
-    source_url: "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
-    source_agency: "FDA",
-    instructions: "Consumers who have purchased the affected products can continue to consume them or return them for a replacement. For questions, contact customer service at 1-800-555-9876.",
-    status: "active",
-    ai_confidence: 0.89,
-    human_verified: true
-  },
-  {
-    id: "rec005",
-    product_name: "Almond Milk",
-    brand: "Nature's Best",
-    category: "dairy-alternatives",
-    recall_date: "2023-10-20",
-    publish_date: "2023-10-21",
-    severity: "medium",
-    reason: "Potential bacterial contamination",
-    details: "Nature's Best is recalling its Unsweetened Almond Milk because it has the potential to be contaminated with Listeria monocytogenes, an organism which can cause serious and sometimes fatal infections.",
-    affected_products: ["Half gallon containers with best by dates of 12/15/2023 through 01/15/2024"],
-    geographic_scope: "Northeast and Mid-Atlantic states",
-    source_url: "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
-    source_agency: "FDA",
-    instructions: "Consumers who have purchased Nature's Best Unsweetened Almond Milk are urged to return it to the store where it was purchased for a full refund. Consumers with questions may contact the company at 1-800-555-7890.",
-    status: "active",
-    ai_confidence: 0.94,
-    human_verified: true
-  }
-];
+import { useRecalls } from "../contexts/RecallsContext";
 
 // Helper to render severity icon and color
 const getSeverityData = (severity: string) => {
@@ -148,9 +48,29 @@ const formatDate = (dateString: string) => {
 
 const RecallDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const { getRecallById, loading } = useRecalls();
   
   // Find the recall with the matching ID
-  const recall = mockRecalls.find(r => r.id === id);
+  const recall = id ? getRecallById(id) : undefined;
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8 pt-24">
+          <div className="max-w-3xl mx-auto">
+            <div className="animate-pulse space-y-4">
+              <div className="h-6 bg-secondary rounded w-32"></div>
+              <div className="h-10 bg-secondary rounded w-3/4"></div>
+              <div className="h-4 bg-secondary rounded w-1/2"></div>
+              <div className="h-20 bg-secondary rounded"></div>
+              <div className="h-40 bg-secondary rounded"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
   
   if (!recall) {
     return (
