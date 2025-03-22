@@ -20,17 +20,7 @@ const Footer = () => {
               className="font-medium text-foreground hover:text-primary mx-1"
             >
               Elevated AI
-            </a>{" "}
-            a{" "}
-            <a 
-              href="https://n3rdlabs.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="font-medium text-foreground hover:text-primary mx-1"
-            >
-              N3RD Labs
-            </a>{" "}
-            company
+            </a>
           </div>
           
           <div className="flex gap-4">
@@ -48,4 +38,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
