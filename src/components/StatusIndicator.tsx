@@ -5,12 +5,41 @@ import { Check, Clock, X } from "lucide-react";
 type Status = "fresh" | "use-soon" | "expired";
 
 interface StatusIndicatorProps {
-  status: Status;
+  status?: Status;
   daysText?: string;
   size?: "small" | "medium" | "large";
+  daysRemaining?: number;
+  maxDays?: number;
 }
 
-const StatusIndicator = ({ status, daysText, size = "medium" }: StatusIndicatorProps) => {
+const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRemaining, maxDays }: StatusIndicatorProps) => {
+  // Determine status based on daysRemaining if provided
+  let status = propStatus;
+  
+  if (daysRemaining !== undefined && maxDays !== undefined) {
+    if (daysRemaining <= 0) {
+      status = "expired";
+    } else if (daysRemaining < maxDays * 0.3) {
+      status = "use-soon";
+    } else {
+      status = "fresh";
+    }
+    
+    // Generate days text if not provided
+    if (!daysText) {
+      if (daysRemaining <= 0) {
+        daysText = "Expired";
+      } else if (daysRemaining === 1) {
+        daysText = "1 day";
+      } else {
+        daysText = `${daysRemaining} days`;
+      }
+    }
+  }
+  
+  // Default to fresh if no status is determined
+  status = status || "fresh";
+
   const getStatusConfig = () => {
     switch (status) {
       case "fresh":
