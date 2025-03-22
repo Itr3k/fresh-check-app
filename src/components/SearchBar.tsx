@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Search, Camera } from "lucide-react";
 import { motion } from "framer-motion";
 import CameraCapture from "./CameraCapture";
+import { toast } from "../hooks/use-toast";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -22,18 +23,38 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
   };
 
   const handleCameraClick = () => {
+    // Check if the device has camera capabilities
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast({
+        title: "Camera Not Available",
+        description: "Your device or browser doesn't support camera access.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setShowCameraCapture(true);
   };
 
   const handleCapture = (imageSrc: string) => {
     console.log("Image captured:", imageSrc);
-    // Here you would typically send the image to a backend for processing
-    // For demo purposes, we'll just set a default query
+    
+    // For now, we'll just set a placeholder query
+    // In a real application, this would send the image to a backend for processing
     setQuery("Scanned food item");
     setShowCameraCapture(false);
-    if (onSearch) {
-      onSearch("Scanned food item");
-    }
+    
+    toast({
+      title: "Image Captured",
+      description: "Processing the food image...",
+    });
+    
+    // Simulate a delay before "recognizing" the food
+    setTimeout(() => {
+      if (onSearch) {
+        onSearch("Scanned food item");
+      }
+    }, 1000);
   };
 
   return (
@@ -69,6 +90,7 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
               type="button"
               onClick={handleCameraClick}
               className="absolute right-4 h-9 w-9 flex items-center justify-center rounded-full bg-primary text-white"
+              aria-label="Take a photo of food"
             >
               <Camera size={18} />
             </button>
