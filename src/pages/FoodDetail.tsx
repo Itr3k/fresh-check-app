@@ -213,6 +213,50 @@ const getFoodDetails = (id: string) => {
       ];
     }
     
+    if (id === "tofu") {
+      return [
+        {
+          storageType: "refrigerator",
+          unopened: {
+            minDays: 3,
+            maxDays: 5,
+            notes: "Keep refrigerated in original packaging"
+          },
+          opened: {
+            minDays: 3,
+            maxDays: 5,
+            notes: "Store in water, change water daily"
+          }
+        },
+        {
+          storageType: "freezer",
+          unopened: {
+            minDays: 90,
+            maxDays: 150,
+            notes: "Drain and pat dry before freezing"
+          },
+          opened: {
+            minDays: 90,
+            maxDays: 150,
+            notes: "Freeze in airtight container with minimal water"
+          }
+        },
+        {
+          storageType: "pantry",
+          unopened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          },
+          opened: {
+            minDays: 0,
+            maxDays: 0,
+            notes: "Not recommended - requires refrigeration"
+          }
+        }
+      ];
+    }
+    
     return [
       {
         storageType: "refrigerator",
@@ -270,6 +314,14 @@ const getFoodDetails = (id: string) => {
         visual: ["Brown or soft spots", "Wrinkled skin", "Mold growth"],
         smell: ["Fermented or alcoholic odor", "Overly sweet smell"],
         texture: ["Extremely soft flesh", "Mealy or grainy texture", "Flesh browning"]
+      };
+    }
+    
+    if (id === "tofu") {
+      return {
+        visual: ["Slimy surface", "Pink or yellowish discoloration", "Mold growth"],
+        smell: ["Sour or ammonia-like odor", "Strong fermented smell"],
+        texture: ["Excessively soft or mushy", "Crumbly or brittle when firm tofu"]
       };
     }
     
@@ -398,6 +450,10 @@ const getFoodContentDetails = (id: string) => {
     avocados: {
       about: "Avocados are nutrient-dense fruits known for their high healthy fat content. They provide monounsaturated fatty acids, fiber, potassium, and vitamins K, E, C, and B. Unlike most fruits that are high in carbohydrates, avocados are low in sugar and high in fat, making them popular in various dietary patterns including ketogenic diets.",
       safety: "Unripe avocados should be stored at room temperature until they yield to gentle pressure. Once ripe, refrigeration can extend shelf life by 2-3 days. Cut avocados brown quickly due to oxidation; this discoloration is safe but can be minimized by leaving the pit in unused portions or applying lemon juice to exposed surfaces. Avocados with large moldy areas or an off smell should be discarded."
+    },
+    tofu: {
+      about: "Tofu is a protein-rich food made from condensed soy milk that's been pressed into solid white blocks. It's an excellent source of plant-based protein, containing all nine essential amino acids. Tofu is also rich in iron, calcium (especially if calcium-sulfate is used in processing), manganese, and phosphorus. It's low in calories and contains no cholesterol, making it a popular protein alternative for many dietary patterns.",
+      safety: "Fresh tofu requires refrigeration at all times at temperatures below 40°F (4°C). Store unopened tofu in its original packaging until the expiration date. Once opened, keep tofu submerged in fresh, clean water in an airtight container, changing the water daily to prevent bacterial growth. Tofu can spoil quickly when not properly stored. Firm and extra-firm varieties tend to last longer than silken or soft tofu. Freezing changes tofu's texture, making it more porous and chewier after thawing."
     },
     default: {
       about: "This food item is part of a balanced diet and provides essential nutrients your body needs. Proper storage is key to maintaining its freshness, flavor, and nutritional value. Always check packaging for specific storage instructions from the manufacturer.",
