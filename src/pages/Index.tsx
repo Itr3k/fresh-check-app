@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -75,13 +76,15 @@ const Index = () => {
           {/* Popular Foods section */}
           <PopularFoods />
 
-          {/* AdUnit after Popular Foods */}
-          <AdUnit slotId="home-top" className="my-8" format="leaderboard" />
+          {/* AdUnit with key to ensure proper mount/unmount handling */}
+          <div className="my-8">
+            <AdUnit key="ad-home-top" slotId="home-top" format="leaderboard" />
+          </div>
 
           {/* CategoryCards below AdUnit */}
           <CategoryCards />
           
-          {/* Food Safety Education section - NEW */}
+          {/* Food Safety Education section */}
           <FoodSafetyEducation />
 
           {/* Food Safety Facts section */}
@@ -90,7 +93,10 @@ const Index = () => {
           {/* SavedFoods after Food Safety Facts */}
           <SavedFoods />
 
-          <AdUnit slotId="home-bottom" className="mt-8" format="leaderboard" lazyLoad={true} />
+          {/* AdUnit with key to ensure proper mount/unmount handling */}
+          <div className="mt-8">
+            <AdUnit key="ad-home-bottom" slotId="home-bottom" format="leaderboard" lazyLoad={true} />
+          </div>
 
           <div 
             className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"

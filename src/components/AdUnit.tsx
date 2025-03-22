@@ -52,14 +52,17 @@ const AdUnit: React.FC<AdUnitProps> = ({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
-  // Initialize the ad
+  // Initialize the ad - with additional safety checks
   useEffect(() => {
     // Only run if the ad is visible and hasn't been loaded yet
     if (typeof window === "undefined" || !isVisible || adLoaded) return;
     
+    // Reference to the current adRef element for cleanup
+    const currentAdRef = adRef.current;
+    
     try {
       // Check if AdSense is loaded
-      if (adRef.current && (window as any).adsbygoogle) {
+      if (currentAdRef && (window as any).adsbygoogle) {
         // Create new ins element for AdSense
         const adElement = document.createElement('ins');
         adElement.className = 'adsbygoogle';
@@ -71,22 +74,31 @@ const AdUnit: React.FC<AdUnitProps> = ({
         adElement.setAttribute('data-ad-format', 'auto');
         adElement.setAttribute('data-full-width-responsive', 'true');
         
-        // Clear and append only if the element is still in the DOM
-        if (adRef.current && adRef.current.isConnected) {
+        // Double check element is still in DOM before manipulating it
+        if (currentAdRef && document.body.contains(currentAdRef)) {
           // Safely clear the container
-          while (adRef.current.firstChild) {
-            adRef.current.removeChild(adRef.current.firstChild);
+          while (currentAdRef.firstChild) {
+            try {
+              currentAdRef.firstChild.remove();
+            } catch (e) {
+              console.warn('Error removing child:', e);
+              break; // Prevent infinite loop if removal fails
+            }
           }
           
           // Append the ad element
-          adRef.current.appendChild(adElement);
-          
-          // Push the ad to AdSense for display
-          const adsbygoogle = (window as any).adsbygoogle || [];
-          adsbygoogle.push({});
-          
-          console.log(`AdSense ad ${slotId} initialized`);
-          setAdLoaded(true);
+          try {
+            currentAdRef.appendChild(adElement);
+            
+            // Push the ad to AdSense for display
+            const adsbygoogle = (window as any).adsbygoogle || [];
+            adsbygoogle.push({});
+            
+            console.log(`AdSense ad ${slotId} initialized`);
+            setAdLoaded(true);
+          } catch (e) {
+            console.error('Error appending ad element:', e);
+          }
         }
       } else {
         console.log('AdSense not available yet, will retry on next render');
@@ -94,16 +106,28 @@ const AdUnit: React.FC<AdUnitProps> = ({
     } catch (error) {
       console.error('Error initializing AdSense ad:', error);
     }
+    
+    // No DOM manipulation in cleanup - we'll handle that in the unmount effect
   }, [slotId, isVisible, adLoaded]);
   
-  // Cleanup on unmount or slot change
+  // Separate cleanup effect that runs on unmount only
   useEffect(() => {
+    // This function runs on component unmount
     return () => {
       try {
-        if (adRef.current && adRef.current.isConnected) {
-          // Safely clear the container instead of setting innerHTML
-          while (adRef.current.firstChild) {
-            adRef.current.removeChild(adRef.current.firstChild);
+        const currentAdRef = adRef.current;
+        // Check if the element is still in the DOM before manipulating it
+        if (currentAdRef && document.body.contains(currentAdRef)) {
+          // Use a safer method to clear children
+          try {
+            // Use modern approach - remove() method on the element itself
+            while (currentAdRef.firstChild) {
+              currentAdRef.firstChild.remove();
+            }
+          } catch (e) {
+            console.warn('Error during cleanup, using alternative method:', e);
+            // Fallback to simple content replacement if removal fails
+            currentAdRef.textContent = '';
           }
         }
         setAdLoaded(false);
@@ -111,7 +135,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
         console.error('Error cleaning up ad unit:', error);
       }
     };
-  }, [slotId]);
+  }, []); // Empty dependency array means this only runs on unmount
   
   return (
     <motion.div 
