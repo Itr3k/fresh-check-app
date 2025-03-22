@@ -15,9 +15,25 @@ interface FoodCardProps {
 const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
   
-  // Find related foods for fallback images
+  // Find related foods for fallback images with improved relevance
   const findRelatedImageUrl = (): string => {
-    // Try to find foods in the same category first
+    // Get the current food item to access its tags
+    const currentFood = foodData.find(food => food.id === id);
+    
+    if (currentFood?.tags?.length) {
+      // Try to find foods with matching tags first (most relevant)
+      const tagMatchingFoods = foodData.filter(food => 
+        food.id !== id && 
+        food.tags?.some(tag => currentFood.tags?.includes(tag))
+      );
+      
+      if (tagMatchingFoods.length > 0) {
+        // Return a random image from tag-matching foods
+        return tagMatchingFoods[Math.floor(Math.random() * tagMatchingFoods.length)].imageUrl;
+      }
+    }
+    
+    // If no tag matches or no tags, try same category (second most relevant)
     const sameCategoryFoods = foodData.filter(food => 
       food.id !== id && 
       food.category === category

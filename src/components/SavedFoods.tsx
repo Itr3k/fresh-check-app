@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -18,7 +17,6 @@ const SavedFoods = () => {
   const [savedFoods, setSavedFoods] = useState<SavedFood[]>([]);
 
   useEffect(() => {
-    // Load saved foods from localStorage
     const loadSavedFoods = () => {
       const foods: SavedFood[] = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -33,14 +31,12 @@ const SavedFoods = () => {
         }
       }
       
-      // Sort by most recently saved
       foods.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
       setSavedFoods(foods);
     };
 
     loadSavedFoods();
     
-    // Add event listener for storage changes
     window.addEventListener('storage', loadSavedFoods);
     
     return () => {
@@ -48,20 +44,29 @@ const SavedFoods = () => {
     };
   }, []);
 
-  // Find a related image for fallback
   const findRelatedImageUrl = (foodId: string, category: string): string => {
-    // Try to find foods in the same category first
+    const currentFood = foodData.find(food => food.id === foodId);
+    
+    if (currentFood?.tags?.length) {
+      const tagMatchingFoods = foodData.filter(food => 
+        food.id !== foodId && 
+        food.tags?.some(tag => currentFood.tags?.includes(tag))
+      );
+      
+      if (tagMatchingFoods.length > 0) {
+        return tagMatchingFoods[Math.floor(Math.random() * tagMatchingFoods.length)].imageUrl;
+      }
+    }
+    
     const sameCategoryFoods = foodData.filter(food => 
       food.id !== foodId && 
       food.category === category
     );
     
     if (sameCategoryFoods.length > 0) {
-      // Return a random image from the same category
       return sameCategoryFoods[Math.floor(Math.random() * sameCategoryFoods.length)].imageUrl;
     }
     
-    // If no related foods found, use a generic food image as last resort
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop";
   };
 
