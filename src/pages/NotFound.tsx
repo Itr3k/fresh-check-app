@@ -4,6 +4,12 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import AdUnit from "../components/AdUnit";
 
+// Define ad slot IDs as constants to ensure consistency
+const AD_SLOTS = {
+  MAIN: "404-main",
+  BOTTOM: "404-bottom"
+};
+
 const NotFound = () => {
   const location = useLocation();
 
@@ -30,14 +36,14 @@ const NotFound = () => {
         </a>
       </div>
       
-      {/* First Ad Unit - Use constants for slotId */}
+      {/* First Ad Unit - Using consistent slot ID constants */}
       <div className="max-w-md w-full mb-8">
-        <AdUnit slotId="404-main" />
+        <AdUnit slotId={AD_SLOTS.MAIN} />
       </div>
       
-      {/* Second Ad Unit - Use constants for slotId */}
+      {/* Second Ad Unit - Using consistent slot ID constants */}
       <div className="max-w-md w-full">
-        <AdUnit slotId="404-bottom" format="leaderboard" />
+        <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" />
       </div>
     </div>
   );

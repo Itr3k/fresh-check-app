@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AdUnitProps {
   slotId?: string;
@@ -18,8 +19,9 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
-  const [adInitialized, setAdInitialized] = useState(false);
-  const timerRef = useRef<number | null>(null);
+  const initializedRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { toast } = useToast();
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
@@ -51,30 +53,30 @@ const AdUnit: React.FC<AdUnitProps> = ({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
-  // Initialize ad safely
+  // Load ad script safely
   useEffect(() => {
-    if (!isVisible || adInitialized || !adRef.current) return;
+    // Only run this effect if the component is visible and not already initialized
+    if (!isVisible || initializedRef.current) return;
     
-    const initializeAd = () => {
-      // Set flag to prevent multiple initializations
-      setAdInitialized(true);
-      
-      // Safety check to ensure component is still mounted and in document
-      if (!adRef.current || !document.body.contains(adRef.current)) {
-        console.log(`AdUnit ${slotId}: Element not in DOM, skipping initialization`);
-        return;
-      }
-      
+    // Mark as initialized to prevent multiple attempts
+    initializedRef.current = true;
+    
+    const loadAd = () => {
       try {
-        // Instead of removing children which can cause "NotFoundError",
-        // use safer innerHTML method to clear the container
+        // Make sure element is still in the DOM
+        if (!adRef.current || !document.body.contains(adRef.current)) {
+          console.log(`AdUnit (${slotId}): Container not in DOM, skipping ad load`);
+          return;
+        }
+        
+        // Clear any existing content
         if (adRef.current) {
           adRef.current.innerHTML = '';
         }
         
-        // Check if AdSense is available
-        if (window.hasOwnProperty('adsbygoogle')) {
-          // Create new ins element
+        // Only proceed if window.adsbygoogle is available
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          // Create the ad element
           const adElement = document.createElement('ins');
           adElement.className = 'adsbygoogle';
           adElement.style.display = 'block';
@@ -85,58 +87,51 @@ const AdUnit: React.FC<AdUnitProps> = ({
           adElement.setAttribute('data-ad-format', 'auto');
           adElement.setAttribute('data-full-width-responsive', 'true');
           
-          // Another safety check before appending to DOM
+          // Double-check DOM connection again before appending
           if (adRef.current && document.body.contains(adRef.current)) {
             adRef.current.appendChild(adElement);
             
-            // Push to adsbygoogle
+            // Push to adsbygoogle with error handling
             try {
               (window.adsbygoogle = window.adsbygoogle || []).push({});
               console.log(`AdSense ad ${slotId} initialized`);
               setAdLoaded(true);
             } catch (error) {
-              console.error('Error initializing AdSense:', error);
+              console.error('Error pushing ad to adsbygoogle:', error);
             }
-          } else {
-            console.log(`AdUnit ${slotId}: Element not in DOM during ad creation`);
           }
         } else {
-          console.log('AdSense not available');
+          console.log('AdSense not available (window.adsbygoogle undefined)');
         }
       } catch (error) {
-        console.error('Error setting up AdSense ad:', error);
+        console.error('Error initializing AdSense ad:', error);
       }
     };
     
-    // Delay initialization slightly to ensure DOM stability
-    // Store timer reference for cleanup
-    timerRef.current = window.setTimeout(initializeAd, 300);
+    // Add a significant delay to ensure the component is fully mounted and stable
+    // This helps avoid race conditions with React's rendering lifecycle
+    timeoutRef.current = setTimeout(loadAd, 1500);
     
+    // Cleanup function
     return () => {
-      // Clean up timer if component unmounts before timer fires
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
-        timerRef.current = null;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
     };
-  }, [slotId, isVisible, adInitialized]);
+  }, [isVisible, slotId]);
   
-  // Component unmount cleanup
+  // Clean up on unmount
   useEffect(() => {
     return () => {
-      try {
-        // Clean up timers
-        if (timerRef.current) {
-          window.clearTimeout(timerRef.current);
-          timerRef.current = null;
-        }
-        
-        // Set state flags to prevent further operations
-        setAdInitialized(false);
-        setAdLoaded(false);
-      } catch (error) {
-        console.error('Error during ad unit cleanup:', error);
+      // Clear any active timeouts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
+      
+      // Reset initialized state if component unmounts
+      initializedRef.current = false;
     };
   }, []);
 
@@ -146,7 +141,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ delay: 0.2, duration: 0.4 }}
       className={`bg-secondary/30 border border-border rounded-lg overflow-hidden ${sizeClass} ${className}`}
-      id={`ad-slot-${slotId}`}
+      id={`ad-container-${slotId}`}
       ref={adRef}
     >
       {/* Fallback content shown only before ads load */}
