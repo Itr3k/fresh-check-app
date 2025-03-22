@@ -16,6 +16,9 @@ import RecallDetailPage from "./pages/RecallDetailPage";
 import { RecallsProvider } from "./contexts/RecallsContext";
 import WebhookReceiver from "./components/WebhookReceiver";
 
+// Import Food Safety Educational Pages
+import TemperatureDangerZone from "./pages/FoodSafety/TemperatureDangerZone";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -35,6 +38,10 @@ const App = () => (
               <Route path="/about" element={<AboutPage />} />
               <Route path="/recalls" element={<RecallsPage />} />
               <Route path="/recalls/:id" element={<RecallDetailPage />} />
+              
+              {/* Food Safety Educational Pages */}
+              <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
