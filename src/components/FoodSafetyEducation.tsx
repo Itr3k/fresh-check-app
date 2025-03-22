@@ -8,7 +8,7 @@ const educationPages = [
   {
     id: 'temperature-danger-zone',
     title: 'Temperature Danger Zone',
-    description: 'Learn about safe food temperatures and the danger zone',
+    description: 'Learn about safe food temperatures and avoiding the 40°F-140°F danger zone',
     icon: Thermometer,
     url: '/food-safety/temperature-danger-zone',
     color: 'bg-red-100'
@@ -16,7 +16,7 @@ const educationPages = [
   {
     id: 'foodborne-illness-prevention',
     title: 'Foodborne Illness Prevention',
-    description: 'Symptoms, causes and prevention of common foodborne illnesses',
+    description: 'Recognize and prevent common foodborne illnesses like Salmonella and E. coli',
     icon: AlertCircle,
     url: '/food-safety/foodborne-illness-prevention',
     color: 'bg-blue-100'
@@ -24,7 +24,7 @@ const educationPages = [
   {
     id: 'prevent-cross-contamination',
     title: 'Prevent Cross-Contamination',
-    description: 'Keep your kitchen safe with proper food handling techniques',
+    description: 'Essential practices to avoid spreading bacteria between foods in your kitchen',
     icon: Utensils,
     url: '/food-safety/prevent-cross-contamination',
     color: 'bg-green-100'
@@ -32,15 +32,15 @@ const educationPages = [
   {
     id: 'vulnerable-groups',
     title: 'Food Safety for Vulnerable Groups',
-    description: 'Food safety for pregnant women, elderly, children & more',
+    description: 'Special precautions for pregnant women, elderly, children & immunocompromised',
     icon: Users,
     url: '/food-safety/vulnerable-groups',
     color: 'bg-purple-100'
   },
   {
     id: 'holiday-events',
-    title: 'Holiday & Event Safety',
-    description: 'Keep food safe during holidays, picnics, and gatherings',
+    title: 'Holiday & Event Food Safety',
+    description: 'Safe food handling for holidays, parties, picnics and outdoor gatherings',
     icon: Cake,
     url: '/food-safety/holiday-events',
     color: 'bg-yellow-100'
@@ -48,7 +48,7 @@ const educationPages = [
   {
     id: 'science-of-spoilage',
     title: 'Science of Food Spoilage',
-    description: 'Understanding the biological mechanisms behind spoilage',
+    description: 'Understanding bacteria, mold, and chemical changes that cause food to spoil',
     icon: BookOpen,
     url: '/food-safety/science-of-spoilage',
     color: 'bg-teal-100'
@@ -56,7 +56,7 @@ const educationPages = [
   {
     id: 'emergency',
     title: 'Emergency Food Safety',
-    description: 'Handling food during power outages and natural disasters',
+    description: 'Keeping food safe during power outages, floods, fires and natural disasters',
     icon: AlertTriangle,
     url: '/food-safety/emergency',
     color: 'bg-orange-100'
@@ -88,6 +88,7 @@ const FoodSafetyEducation = () => {
               <Link
                 to={page.url}
                 className="flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-all bg-white border border-border h-full"
+                aria-label={`Learn about ${page.title}`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${page.color}`}>
                   <Icon size={24} className="text-primary" />
