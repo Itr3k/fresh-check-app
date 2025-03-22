@@ -39,28 +39,26 @@ const FoodSafetyFacts = () => {
 
   return (
     <div className="mt-8 mb-8 p-6 bg-secondary/20 rounded-lg">
-      <div className="flex items-start gap-4">
-        <div className="bg-primary/20 p-2 rounded-lg shrink-0">
-          <Info size={20} className="text-primary" />
+      <div className="flex flex-col items-center text-center gap-4">
+        <div className="bg-primary/20 p-3 rounded-full">
+          <Info size={24} className="text-primary" />
         </div>
-        <div className="flex-1">
-          <h2 className="text-lg font-medium mb-2">Food Safety Tip</h2>
-          <div className="min-h-[60px] flex items-center">
-            <AnimatePresence mode="wait">
-              {isVisible && (
-                <motion.p
-                  key={currentFactIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-sm text-muted-foreground"
-                >
-                  {facts[currentFactIndex]}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
+        <h2 className="text-xl font-medium mb-2">Food Safety Tip</h2>
+        <div className="min-h-[80px] flex items-center justify-center w-full">
+          <AnimatePresence mode="wait">
+            {isVisible && (
+              <motion.p
+                key={currentFactIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-lg font-medium text-center text-muted-foreground max-w-2xl"
+              >
+                {facts[currentFactIndex]}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
