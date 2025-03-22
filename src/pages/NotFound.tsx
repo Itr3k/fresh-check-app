@@ -30,12 +30,12 @@ const NotFound = () => {
         </a>
       </div>
       
-      {/* First Ad Unit */}
+      {/* First Ad Unit - Use constants for slotId */}
       <div className="max-w-md w-full mb-8">
         <AdUnit slotId="404-main" />
       </div>
       
-      {/* Second Ad Unit */}
+      {/* Second Ad Unit - Use constants for slotId */}
       <div className="max-w-md w-full">
         <AdUnit slotId="404-bottom" format="leaderboard" />
       </div>

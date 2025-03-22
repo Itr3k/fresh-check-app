@@ -19,6 +19,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [adLoaded, setAdLoaded] = useState(false);
   const [adInitialized, setAdInitialized] = useState(false);
+  const timerRef = useRef<number | null>(null);
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
@@ -58,13 +59,17 @@ const AdUnit: React.FC<AdUnitProps> = ({
       // Set flag to prevent multiple initializations
       setAdInitialized(true);
       
-      // Safety check to ensure component is still mounted
-      if (!adRef.current || !document.body.contains(adRef.current)) return;
+      // Safety check to ensure component is still mounted and in document
+      if (!adRef.current || !document.body.contains(adRef.current)) {
+        console.log(`AdUnit ${slotId}: Element not in DOM, skipping initialization`);
+        return;
+      }
       
       try {
-        // Create a clean slate - safely clear the container
-        if (adRef.current.firstChild) {
-          adRef.current.textContent = '';
+        // Instead of removing children which can cause "NotFoundError",
+        // use safer innerHTML method to clear the container
+        if (adRef.current) {
+          adRef.current.innerHTML = '';
         }
         
         // Check if AdSense is available
@@ -80,7 +85,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           adElement.setAttribute('data-ad-format', 'auto');
           adElement.setAttribute('data-full-width-responsive', 'true');
           
-          // Final safety check before appending to DOM
+          // Another safety check before appending to DOM
           if (adRef.current && document.body.contains(adRef.current)) {
             adRef.current.appendChild(adElement);
             
@@ -92,6 +97,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
             } catch (error) {
               console.error('Error initializing AdSense:', error);
             }
+          } else {
+            console.log(`AdUnit ${slotId}: Element not in DOM during ad creation`);
           }
         } else {
           console.log('AdSense not available');
@@ -102,16 +109,29 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
     
     // Delay initialization slightly to ensure DOM stability
-    const timer = setTimeout(initializeAd, 100);
-    return () => clearTimeout(timer);
+    // Store timer reference for cleanup
+    timerRef.current = window.setTimeout(initializeAd, 300);
+    
+    return () => {
+      // Clean up timer if component unmounts before timer fires
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [slotId, isVisible, adInitialized]);
   
   // Component unmount cleanup
   useEffect(() => {
     return () => {
       try {
-        // Avoid direct DOM manipulation during cleanup
-        // Just set flag to prevent any further operations
+        // Clean up timers
+        if (timerRef.current) {
+          window.clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+        
+        // Set state flags to prevent further operations
         setAdInitialized(false);
         setAdLoaded(false);
       } catch (error) {
