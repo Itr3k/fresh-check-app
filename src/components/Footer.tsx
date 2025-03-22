@@ -14,7 +14,7 @@ const Footer = () => {
           <div className="text-sm text-muted-foreground flex items-center">
             Created By{" "}
             <a 
-              href="https://elevatedai.com" 
+              href="https://elevatedai.co" 
               target="_blank" 
               rel="noopener noreferrer"
               className="font-medium text-foreground hover:text-primary mx-1"
@@ -48,3 +48,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
