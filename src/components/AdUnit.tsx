@@ -17,6 +17,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
 }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
+  const [adLoaded, setAdLoaded] = useState(false);
   
   // Size based on format
   let sizeClass = "h-[250px] w-full"; // default rectangle (300x250)
@@ -30,37 +31,34 @@ const AdUnit: React.FC<AdUnitProps> = ({
     adSize = [300, 600];
   }
   
+  // Handle lazy loading
   useEffect(() => {
-    // Only run on client side
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !lazyLoad || isVisible) return;
     
-    // Lazy loading implementation
-    if (lazyLoad && !isVisible) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.1 }
-      );
-      
-      if (adRef.current) {
-        observer.observe(adRef.current);
-      }
-      
-      return () => {
-        observer.disconnect();
-      };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "200px" }
+    );
+    
+    if (adRef.current) {
+      observer.observe(adRef.current);
     }
+    
+    return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
   
+  // Initialize the ad
   useEffect(() => {
-    // Only run on client side and when the ad is visible
-    if (typeof window === "undefined" || !isVisible) return;
+    // Only run if the ad is visible and hasn't been loaded yet
+    if (typeof window === "undefined" || !isVisible || adLoaded) return;
     
     try {
+      // Check if AdSense is loaded
       if (adRef.current && (window as any).adsbygoogle) {
         // Clear existing ad content if any
         adRef.current.innerHTML = '';
@@ -80,21 +78,28 @@ const AdUnit: React.FC<AdUnitProps> = ({
         adRef.current.appendChild(adElement);
         
         // Push the ad to AdSense for display
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        const adsbygoogle = (window as any).adsbygoogle || [];
+        adsbygoogle.push({});
         
         console.log(`AdSense ad ${slotId} initialized`);
+        setAdLoaded(true);
+      } else {
+        console.log('AdSense not available yet, will retry on next render');
       }
     } catch (error) {
       console.error('Error initializing AdSense ad:', error);
     }
-    
-    // Cleanup function
+  }, [slotId, isVisible, adLoaded]);
+  
+  // Cleanup on unmount or slot change
+  useEffect(() => {
     return () => {
-      if (adRef.current) {
+      if (adRef.current && adLoaded) {
         adRef.current.innerHTML = '';
+        setAdLoaded(false);
       }
     };
-  }, [slotId, format, isVisible]);
+  }, [slotId, adLoaded]);
   
   return (
     <motion.div 
@@ -106,10 +111,12 @@ const AdUnit: React.FC<AdUnitProps> = ({
       ref={adRef}
     >
       {/* Fallback content shown only before ads load */}
-      <div className="text-center p-4 ad-placeholder">
-        <p className="text-xs text-muted-foreground">Advertisement</p>
-        <p className="text-sm text-muted-foreground opacity-70">Ad ID: {slotId}</p>
-      </div>
+      {!adLoaded && (
+        <div className="text-center p-4 h-full flex flex-col items-center justify-center">
+          <p className="text-xs text-muted-foreground">Advertisement</p>
+          <p className="text-sm text-muted-foreground opacity-70">Ad ID: {slotId}</p>
+        </div>
+      )}
     </motion.div>
   );
 };
