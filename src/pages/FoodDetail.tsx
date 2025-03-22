@@ -11,6 +11,16 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
 
+const getFixedFallbackImage = (foodId: string): string | null => {
+  const fixedFallbacks: Record<string, string> = {
+    "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
+    "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
+    "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
+  };
+  
+  return fixedFallbacks[foodId] || null;
+};
+
 const getFoodDetails = (id: string) => {
   const foodFromDatabase = getFoodById(id);
   const foodImages: Record<string, string> = {
@@ -412,6 +422,7 @@ const FoodDetail = () => {
   const [contentDetails, setContentDetails] = useState<{about: string, safety: string} | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isPrintMode, setIsPrintMode] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     console.log("Loading food details for:", id);
@@ -438,6 +449,11 @@ const FoodDetail = () => {
       calculateExpiration();
     }
   }, [food, storageType, isOpened, purchaseDate]);
+
+  const handleImageError = () => {
+    console.error(`Image failed to load for ${food?.name}:`, food?.imageUrl);
+    setImageError(true);
+  };
 
   const calculateExpiration = () => {
     if (!food) return;
@@ -604,6 +620,8 @@ const FoodDetail = () => {
     }, 100);
   };
 
+  const fallbackImageUrl = id ? getFixedFallbackImage(id) : null;
+
   return (
     <PageTransition>
       <Helmet>
@@ -655,9 +673,10 @@ const FoodDetail = () => {
             >
               <div className="relative aspect-video">
                 <img 
-                  src={food.imageUrl} 
+                  src={imageError && fallbackImageUrl ? fallbackImageUrl : food.imageUrl} 
                   alt={food.name} 
                   className="w-full h-full object-cover"
+                  onError={handleImageError}
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                   <h1 className="text-3xl md:text-4xl font-bold text-white">{food.name}</h1>
@@ -854,6 +873,12 @@ const FoodDetail = () => {
                           src={relatedFood.imageUrl} 
                           alt={relatedFood.name} 
                           className="w-16 h-12 object-cover rounded-md mr-3"
+                          onError={(e) => {
+                            const fallback = getFixedFallbackImage(relatedFood.id);
+                            if (fallback) {
+                              (e.target as HTMLImageElement).src = fallback;
+                            }
+                          }}
                         />
                         <div>
                           <h3 className="font-medium">{relatedFood.name}</h3>
