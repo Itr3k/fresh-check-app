@@ -4,6 +4,8 @@ import { Search, Camera } from "lucide-react";
 import { motion } from "framer-motion";
 import CameraCapture from "./CameraCapture";
 import { toast } from "../hooks/use-toast";
+import { ImageProcessingService, FoodInfo } from "../utils/imageProcessingService";
+import FoodInfoResult from "./FoodInfoResult";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -14,6 +16,8 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showCameraCapture, setShowCameraCapture] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [foodInfo, setFoodInfo] = useState<FoodInfo | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,28 +43,54 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
     document.body.style.overflow = 'hidden';
   };
 
-  const handleCapture = (imageSrc: string) => {
-    console.log("Image captured:", imageSrc);
+  const handleCapture = async (imageSrc: string) => {
+    console.log("Image captured:", imageSrc.substring(0, 50) + "...");
     
     // Reset body overflow
     document.body.style.overflow = '';
     
-    // For now, we'll just set a placeholder query
-    // In a real application, this would send the image to a backend for processing
-    setQuery("Scanned food item");
+    // Close camera capture component
     setShowCameraCapture(false);
     
+    // Show processing toast
     toast({
-      title: "Image Captured",
-      description: "Processing the food image...",
+      title: "Processing Image",
+      description: "Analyzing food image...",
     });
     
-    // Simulate a delay before "recognizing" the food
-    setTimeout(() => {
-      if (onSearch) {
-        onSearch("Scanned food item");
+    // Start processing
+    setIsProcessing(true);
+    
+    try {
+      // Process the image to extract food information
+      const result = await ImageProcessingService.processImage(imageSrc);
+      
+      if (result) {
+        // Set the food info from the processing result
+        setFoodInfo(result);
+        setQuery(result.name); // Update search query with food name
+        
+        toast({
+          title: "Analysis Complete",
+          description: `Identified: ${result.name}`,
+        });
+      } else {
+        toast({
+          title: "No Results",
+          description: "Could not identify food in the image. Try again.",
+          variant: "destructive",
+        });
       }
-    }, 1000);
+    } catch (error) {
+      console.error("Error processing food image:", error);
+      toast({
+        title: "Processing Error",
+        description: "An error occurred while analyzing the image.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleCloseCamera = () => {
@@ -68,6 +98,22 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
     // Reset body overflow
     document.body.style.overflow = '';
   };
+  
+  const handleReset = () => {
+    setFoodInfo(null);
+    setQuery("");
+  };
+
+  // Show food info result if we have processed food information
+  if (foodInfo) {
+    return (
+      <FoodInfoResult 
+        foodInfo={foodInfo} 
+        onSearch={onSearch}
+        onReset={handleReset}
+      />
+    );
+  }
 
   return (
     <>
@@ -96,6 +142,7 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
             onBlur={() => setIsFocused(false)}
             placeholder="Search for any food..."
             className="w-full py-4 px-12 bg-transparent focus:outline-none text-base"
+            disabled={isProcessing}
           />
           {showCamera && (
             <button 
@@ -103,6 +150,7 @@ const SearchBar = ({ onSearch, showCamera = true }: SearchBarProps) => {
               onClick={handleCameraClick}
               className="absolute right-4 h-9 w-9 flex items-center justify-center rounded-full bg-primary text-white"
               aria-label="Take a photo of food"
+              disabled={isProcessing}
             >
               <Camera size={18} />
             </button>
