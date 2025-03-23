@@ -3,6 +3,11 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
+// Add iOS momentum scrolling for mobile
+if (typeof document !== 'undefined') {
+  document.documentElement.style.setProperty('--webkit-overflow-scrolling', 'touch');
+}
+
 // Create a function to measure and optimize first render
 const startApp = () => {
   const root = document.getElementById("root");
@@ -13,7 +18,7 @@ const startApp = () => {
 
 // Use requestIdleCallback for non-critical initialization
 if ('requestIdleCallback' in window) {
-  // Use requestIdleCallback for non-critical initialization
+  // For analytics or other non-critical work
   window.requestIdleCallback(() => {
     // Mark the app as ready for analytics or other initialization
     console.log('App initialized during idle period');
