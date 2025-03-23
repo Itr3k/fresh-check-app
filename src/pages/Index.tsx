@@ -14,6 +14,7 @@ import FoodSafetyFacts from "../components/FoodSafetyFacts";
 import FoodSafetyEducation from "../components/FoodSafetyEducation";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import HeroSection from "../components/HeroSection";
 
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
@@ -118,26 +119,8 @@ const Index = () => {
         <Header />
 
         <main className="container mx-auto px-4 py-8 pt-24 flex-grow">
-          <h1 className="text-3xl font-bold mb-2 text-center">
-            How Long Does Food Last?
-          </h1>
-          <p className="text-center text-muted-foreground mb-6 max-w-xl mx-auto">
-            Get accurate storage times, spoilage indicators, and a free
-            expiration calculator for any food.
-          </p>
-
-          <div className="max-w-xl mx-auto mb-8" ref={searchRef}>
-            <SearchBar id="search-bar" onSearch={handleSearch} />
-          </div>
-
-          <div className="flex justify-center mb-6">
-            <Link
-              to="/about"
-              className="text-sm text-muted-foreground hover:underline"
-            >
-              How We Research Food Storage Guidelines →
-            </Link>
-          </div>
+          {/* New Hero Section */}
+          <HeroSection onSearch={handleSearch} />
 
           {/* Popular Foods section */}
           <PopularFoods />

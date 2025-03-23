@@ -50,12 +50,12 @@ const SearchBar = ({
         onSubmit={handleSearch}
         className={`flex items-center w-full relative overflow-hidden transition-all duration-300 ${
           isFocused 
-            ? "bg-white shadow-lg rounded-xl ring-2 ring-primary/20" 
-            : "bg-white/80 backdrop-blur-sm shadow-md rounded-xl"
+            ? "bg-white shadow-lg rounded-xl ring-2 ring-primary/30" 
+            : "bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg rounded-xl"
         }`}
       >
         <div className="absolute left-4 text-muted-foreground">
-          <Search size={20} />
+          <Search size={22} />
         </div>
         <input
           type="text"
@@ -64,8 +64,16 @@ const SearchBar = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="w-full py-4 px-12 bg-transparent focus:outline-none text-base"
+          className="w-full py-5 px-14 bg-transparent focus:outline-none text-base"
         />
+        <button 
+          type="submit" 
+          className={`absolute right-3 bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+            isFocused ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          Search
+        </button>
       </form>
     </motion.div>
   );
