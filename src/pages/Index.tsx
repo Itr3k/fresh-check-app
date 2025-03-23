@@ -125,16 +125,20 @@ const Index = () => {
           {/* Popular Foods section */}
           <PopularFoods />
 
-          {/* AdUnit - safely implemented */}
+          {/* AdUnit - optimized size */}
           <div className="my-8">
             <AdUnit slotId="home-top" format="leaderboard" />
           </div>
 
           {/* CategoryCards below AdUnit */}
-          <CategoryCards />
+          <div id="browse-categories">
+            <CategoryCards />
+          </div>
           
           {/* Food Safety Education section */}
-          <FoodSafetyEducation />
+          <div id="food-safety-education">
+            <FoodSafetyEducation />
+          </div>
 
           {/* Food Safety Facts section */}
           <FoodSafetyFacts />
@@ -142,7 +146,7 @@ const Index = () => {
           {/* SavedFoods after Food Safety Facts */}
           <SavedFoods />
 
-          {/* AdUnit - safely implemented */}
+          {/* AdUnit - optimized size */}
           <div className="mt-8">
             <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
           </div>
@@ -150,6 +154,7 @@ const Index = () => {
           <div 
             className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
             onClick={scrollToSearch}
+            ref={searchRef}
           >
             <div className="flex items-start gap-3">
               <div className="bg-primary/20 p-2 rounded-lg">

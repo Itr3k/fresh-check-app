@@ -1,14 +1,15 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Define ad format dimensions
+// Define optimized ad format dimensions (reduced height by ~30-40%)
 const AD_FORMAT_DIMENSIONS = {
-  rectangle: { width: "300px", height: "250px" },
-  leaderboard: { width: "728px", height: "90px" },
-  skyscraper: { width: "160px", height: "600px" }
+  rectangle: { width: "300px", height: "180px" },
+  leaderboard: { width: "728px", height: "60px" },
+  skyscraper: { width: "160px", height: "400px" }
 };
 
 interface AdUnitProps {
@@ -33,13 +34,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { toast } = useToast();
   
-  // Size based on format
-  let sizeClass = "h-[250px] w-full max-w-[300px] mx-auto"; // default rectangle
+  // Size based on optimized format (reduced height)
+  let sizeClass = "h-[180px] w-full max-w-[300px] mx-auto"; // default rectangle
   
   if (format === "leaderboard") {
-    sizeClass = "h-[90px] w-full max-w-[728px] mx-auto";
+    sizeClass = "h-[60px] w-full max-w-[728px] mx-auto";
   } else if (format === "skyscraper") {
-    sizeClass = "h-[600px] w-[160px] md:w-[300px]";
+    sizeClass = "h-[400px] w-[160px] md:w-[300px]";
   }
 
   // Determine if we're in development mode or if the host is a lovable preview
@@ -278,13 +279,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
   }, []);
 
   const renderPlaceholder = () => (
-    <div className="text-center p-4 h-full w-full flex flex-col items-center justify-center bg-secondary/30 rounded-lg">
-      <p className="text-xs text-muted-foreground mb-2 font-semibold">
+    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/20 rounded-lg border border-border/30">
+      <p className="text-xs text-muted-foreground mb-1 font-medium">
         {isDevelopment ? "Advertisement Placeholder" : "Advertisement"}
       </p>
-      <Skeleton className={`w-[90%] h-[75%] rounded-md`} />
+      <Skeleton className={`w-[90%] h-[70%] rounded-md`} />
       {isDevelopment && (
-        <p className="text-xs text-muted-foreground mt-2">ID: {slotId} ({format})</p>
+        <p className="text-xs text-muted-foreground mt-1">ID: {slotId} ({format})</p>
       )}
     </div>
   );
@@ -309,7 +310,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: isVisible ? 1 : 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className={`bg-secondary/30 border border-border rounded-lg overflow-hidden h-full w-full`}
+          className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full`}
           id={`ad-container-${slotId}`}
           ref={adRef}
         >

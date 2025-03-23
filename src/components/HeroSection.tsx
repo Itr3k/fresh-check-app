@@ -4,12 +4,19 @@ import { motion } from "framer-motion";
 import { Search, CheckCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
+import BreadcrumbNav from "./BreadcrumbNav";
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
+  showBreadcrumbs?: boolean;
+  breadcrumbItems?: Array<{label: string; href?: string; current?: boolean}>;
 }
 
-const HeroSection = ({ onSearch }: HeroSectionProps) => {
+const HeroSection = ({ 
+  onSearch, 
+  showBreadcrumbs = false, 
+  breadcrumbItems = [] 
+}: HeroSectionProps) => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,6 +44,12 @@ const HeroSection = ({ onSearch }: HeroSectionProps) => {
       variants={containerVariants}
       className="w-full rounded-2xl overflow-hidden shadow-md bg-gradient-to-br from-[#F2FCE2] to-[#D3E4FD] mb-12 mt-4"
     >
+      {showBreadcrumbs && breadcrumbItems.length > 0 && (
+        <div className="px-6 pt-4 pb-0">
+          <BreadcrumbNav items={breadcrumbItems} />
+        </div>
+      )}
+      
       <div className="px-6 py-10 md:px-12 md:py-16 text-center relative">
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 opacity-10 -translate-x-1/4 -translate-y-1/4">

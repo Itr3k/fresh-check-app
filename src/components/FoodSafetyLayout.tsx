@@ -2,10 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PageTransition from '@/components/PageTransition';
 import { cn } from '@/lib/utils';
+import BreadcrumbNav from './BreadcrumbNav';
+import PdfExportButton from './PdfExportButton';
 
 interface FoodSafetyLayoutProps {
   title: string;
@@ -26,21 +28,38 @@ const FoodSafetyLayout = ({
   children,
   keywords = ''
 }: FoodSafetyLayoutProps) => {
+  // Create breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Food Safety', href: '/#food-safety-education' },
+    { label: title, current: true }
+  ];
+
   return (
     <PageTransition>
       <Helmet>
-        <title>{title} | FoodSafe</title>
+        <title>{title} | FreshCheck</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={`food safety, ${keywords}`} />
+        <link rel="canonical" href={`https://freshcheck.app/food-safety/${title.toLowerCase().replace(/\s+/g, '-')}`} />
       </Helmet>
       
       <div className="container px-4 py-6 mx-auto max-w-5xl">
-        <Link to="/" className="inline-block mb-4">
-          <Button variant="ghost" size="sm" className="gap-1">
-            <ChevronLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
-        </Link>
+        <div className="flex items-center justify-between mb-4">
+          <Link to="/" className="inline-block">
+            <Button variant="ghost" size="sm" className="gap-1">
+              <ChevronLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+          
+          <PdfExportButton 
+            contentId="food-safety-content" 
+            fileName={`${title.replace(/\s+/g, '-').toLowerCase()}.pdf`}
+          />
+        </div>
+        
+        <BreadcrumbNav items={breadcrumbItems} className="mb-4" />
         
         <div className="mb-6">
           <div className={cn("inline-flex items-center px-3 py-1 mb-2 text-sm font-medium rounded-full", iconBgColor, iconTextColor)}>
@@ -53,7 +72,9 @@ const FoodSafetyLayout = ({
           </p>
         </div>
 
-        {children}
+        <div id="food-safety-content">
+          {children}
+        </div>
 
         <div className="mt-12 pt-6 border-t">
           <h2 className="text-lg font-medium mb-4">More Food Safety Resources</h2>
@@ -79,7 +100,7 @@ const FoodSafetyLayout = ({
               currentPage={title}
             />
             <RelatedLink
-              title="Holiday & Event Safety"
+              title="Holiday & Event Food Safety"
               url="/food-safety/holiday-events"
               currentPage={title}
             />
