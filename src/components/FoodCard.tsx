@@ -153,7 +153,7 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               loading={index > 3 ? "lazy" : "eager"} 
               onError={handleImageError}
-              fetchpriority={index < 2 ? "high" : "auto"}
+              fetchPriority={index < 2 ? "high" : "auto"}
             />
           </div>
           <div className="p-4">
