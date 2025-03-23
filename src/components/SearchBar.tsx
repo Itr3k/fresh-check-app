@@ -64,14 +64,15 @@ const SearchBar = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="w-full py-4 px-12 bg-transparent focus:outline-none text-base"
+          className="w-full py-4 px-12 bg-transparent focus:outline-none text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/50"
           aria-label={placeholder}
         />
         <button 
           type="submit" 
-          className={`absolute right-3 bg-primary text-white rounded-lg px-4 py-1.5 text-sm font-medium transition-all hover:bg-primary/90 ${
+          className={`absolute right-3 bg-primary text-white rounded-lg px-4 py-1.5 text-sm font-medium transition-all hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/50 ${
             isFocused ? "opacity-100" : "opacity-0"
           }`}
+          aria-label="Search"
         >
           Search
         </button>

@@ -142,15 +142,18 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
-      <Link to={`/food/${id}`} className="block">
+      <Link to={`/food/${id}`} className="block" aria-label={`View details about ${name}`}>
         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
           <div className="h-32 w-full bg-gray-100 overflow-hidden">
             <img 
               src={imageError ? fallbackImageUrl : imageUrl} 
               alt={name} 
+              width="500"
+              height="300"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              loading="lazy"
+              loading={index > 3 ? "lazy" : "eager"} 
               onError={handleImageError}
+              fetchpriority={index < 2 ? "high" : "auto"}
             />
           </div>
           <div className="p-4">
