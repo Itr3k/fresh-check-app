@@ -1,5 +1,4 @@
 
-import { memo } from "react";
 import { motion } from "framer-motion";
 import { Check, Clock, X } from "lucide-react";
 
@@ -13,8 +12,7 @@ interface StatusIndicatorProps {
   maxDays?: number;
 }
 
-// Use the tailwind colors directly in the component for better tree-shaking
-const StatusIndicator = memo(({ status: propStatus, daysText, size = "medium", daysRemaining, maxDays }: StatusIndicatorProps) => {
+const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRemaining, maxDays }: StatusIndicatorProps) => {
   // Determine status based on daysRemaining if provided
   let status = propStatus;
   let calculatedDaysText = daysText;
@@ -122,8 +120,6 @@ const StatusIndicator = memo(({ status: propStatus, daysText, size = "medium", d
       )}
     </motion.div>
   );
-});
-
-StatusIndicator.displayName = "StatusIndicator";
+};
 
 export default StatusIndicator;
