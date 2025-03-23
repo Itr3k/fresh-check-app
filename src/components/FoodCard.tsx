@@ -1,9 +1,8 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { foodData } from "../data/foodData";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FoodCardProps {
   id: string;
@@ -15,29 +14,6 @@ interface FoodCardProps {
 
 const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-  
-  // Intersection Observer for better lazy loading on mobile
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-      },
-      { rootMargin: "200px" }
-    );
-    
-    if (imageRef.current) {
-      observer.observe(imageRef.current);
-    }
-    
-    return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
-      }
-    };
-  }, []);
   
   // Fixed fallback images for specific troublesome foods
   const getFixedFallbackImage = (foodId: string): string | null => {
@@ -160,40 +136,25 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
     setImageError(true);
   };
 
-  // Optimize animation for mobile
-  const animationProps = isMobile 
-    ? {
-        initial: { opacity: 0 },
-        animate: isIntersecting ? { opacity: 1 } : { opacity: 0 },
-        transition: { duration: 0.3 }
-      }
-    : {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.4, delay: index * 0.05 }
-      };
-
   return (
-    <motion.div {...animationProps}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+    >
       <Link to={`/food/${id}`} className="block" aria-label={`View details about ${name}`}>
         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          <div ref={imageRef} className="h-32 w-full bg-gray-100 overflow-hidden">
-            {isIntersecting || !isMobile ? (
-              <img 
-                src={imageError ? fallbackImageUrl : imageUrl} 
-                alt={name} 
-                width="500"
-                height="300"
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                loading={index > 3 ? "lazy" : "eager"} 
-                onError={handleImageError}
-                fetchPriority={index < 2 ? "high" : "auto"}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                <div className="w-8 h-8 rounded-full bg-gray-200/80 animate-pulse"></div>
-              </div>
-            )}
+          <div className="h-32 w-full bg-gray-100 overflow-hidden">
+            <img 
+              src={imageError ? fallbackImageUrl : imageUrl} 
+              alt={name} 
+              width="500"
+              height="300"
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              loading={index > 3 ? "lazy" : "eager"} 
+              onError={handleImageError}
+              fetchPriority={index < 2 ? "high" : "auto"}
+            />
           </div>
           <div className="p-4">
             <h3 className="font-medium text-foreground truncate">{name}</h3>

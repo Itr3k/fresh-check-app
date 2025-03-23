@@ -2,22 +2,13 @@
 import { motion } from "framer-motion";
 import FoodCard from "./FoodCard";
 import { foodData } from "../data/foodData";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const PopularFoods = () => {
-  const isMobile = useIsMobile();
-  
   // Select a diverse set of popular foods to display
-  // On mobile, show fewer items initially
-  const popularFoodIds = ["chicken-raw", "milk", "eggs", "bread", "apple", "bananas", "lettuce", 
-    "tomatoes", "cheddar-cheese", "salmon", "rice", "pizza", "ice-cream", 
-    "orange-juice", "bacon", "tofu"];
-    
-  // For mobile, limit initial display to improve performance  
-  const displayIds = isMobile ? popularFoodIds.slice(0, 8) : popularFoodIds;
-  
   const popularFoods = foodData.filter(food => 
-    displayIds.includes(food.id)
+    ["chicken-raw", "milk", "eggs", "bread", "apple", "bananas", "lettuce", 
+     "tomatoes", "cheddar-cheese", "salmon", "rice", "pizza", "ice-cream", 
+     "orange-juice", "bacon", "tofu"].includes(food.id)
   );
 
   return (

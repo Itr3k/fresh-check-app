@@ -80,7 +80,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    text-rendering: optimizeSpeed;
   }
 
   /* Add font-display: swap to all imported fonts */
@@ -124,43 +123,8 @@
     src: url(https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
   }
 
-  /* Focus styling for accessibility */
-  :focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary;
-  }
-
-  /* Skip to content link */
-  .skip-to-content {
-    @apply sr-only focus:not-sr-only focus:absolute focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
-  }
-
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium tracking-tight;
-  }
-
-  /* Optimizations for mobile performance */
-  @media (max-width: 768px) {
-    .animate-enter {
-      animation: none !important;
-    }
-    
-    .page-transition-enter,
-    .page-transition-enter-active,
-    .page-transition-exit,
-    .page-transition-exit-active {
-      transition: opacity 250ms ease-out !important;
-      transform: none !important;
-    }
-    
-    /* Reduced motion preference support */
-    @media (prefers-reduced-motion) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
   }
 
   .glass {
