@@ -23,7 +23,7 @@ const educationPages = [
   },
   {
     id: 'cross-contamination',
-    title: 'Prevent Cross-Contamination',
+    title: 'Cross-Contamination',
     description: 'Essential practices to avoid spreading bacteria between foods in your kitchen',
     icon: Utensils,
     url: '/food-safety/cross-contamination',

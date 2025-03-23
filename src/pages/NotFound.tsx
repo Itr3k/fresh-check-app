@@ -32,6 +32,14 @@ const FOOD_SAFETY_LINKS = [
   { 
     title: "Holiday & Event Food Safety", 
     url: "/food-safety/holiday-events" 
+  },
+  { 
+    title: "Science of Food Spoilage", 
+    url: "/food-safety/science-of-spoilage" 
+  },
+  { 
+    title: "Emergency Food Safety", 
+    url: "/food-safety/emergency" 
   }
 ];
 
@@ -52,6 +60,7 @@ const NotFound = () => {
         <title>Page Not Found - Fresh Check</title>
         <meta name="description" content="The page you're looking for doesn't exist. Return to Fresh Check to check if your food is still fresh." />
         <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://freshcheck.app/404" />
       </Helmet>
       
       <div className="text-center mb-8 max-w-md">

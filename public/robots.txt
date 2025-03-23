@@ -7,3 +7,12 @@ Sitemap: https://freshcheck.app/news-sitemap.xml
 
 Disallow: /assets/
 Disallow: /api/
+
+# Ensure these important paths are explicitly allowed
+Allow: /food-safety/temperature-danger-zone
+Allow: /food-safety/foodborne-illness-prevention
+Allow: /food-safety/cross-contamination
+Allow: /food-safety/vulnerable-groups
+Allow: /food-safety/holiday-events
+Allow: /food-safety/science-of-spoilage
+Allow: /food-safety/emergency
