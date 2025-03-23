@@ -41,7 +41,7 @@ const FoodSafetyLayout = ({
         <title>{title} | FreshCheck</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={`food safety, ${keywords}`} />
-        <link rel="canonical" href={`https://freshcheck.app/food-safety/${title.toLowerCase().replace(/\s+/g, '-')}`} />
+        <link rel="canonical" href={`https://freshcheck.app/food-safety/${title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '-and-').replace(/[^\w-]+/g, '')}`} />
       </Helmet>
       
       <div className="container px-4 py-6 mx-auto max-w-5xl">
@@ -91,7 +91,7 @@ const FoodSafetyLayout = ({
             />
             <RelatedLink
               title="Prevent Cross-Contamination"
-              url="/food-safety/prevent-cross-contamination"
+              url="/food-safety/cross-contamination"
               currentPage={title}
             />
             <RelatedLink

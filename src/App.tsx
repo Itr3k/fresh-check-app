@@ -48,11 +48,15 @@ const App = () => (
               {/* Food Safety Educational Pages */}
               <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
               <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
-              <Route path="/food-safety/prevent-cross-contamination" element={<PreventCrossContamination />} />
+              <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
               <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
               <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
               <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
               <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+              
+              {/* Redirect paths to maintain backward compatibility */}
+              <Route path="/food-safety/prevent-cross-contamination" element={<PreventCrossContamination />} />
+              <Route path="/food-safety/holiday-event-safety" element={<HolidayEvents />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
