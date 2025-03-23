@@ -2,8 +2,16 @@
 User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://freshcheck.app/sitemap.xml
 Sitemap: https://freshcheck.app/news-sitemap.xml
 
+# Prevent crawling of unnecessary paths
 Disallow: /assets/
 Disallow: /api/
+Disallow: /_vercel/
+Disallow: /*.js$
+Disallow: /*.css$
+
+# Add crawl delay to be nice to search engines
+Crawl-delay: 1
