@@ -15,6 +15,7 @@ interface StatusIndicatorProps {
 const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRemaining, maxDays }: StatusIndicatorProps) => {
   // Determine status based on daysRemaining if provided
   let status = propStatus;
+  let calculatedDaysText = daysText;
   
   if (daysRemaining !== undefined && maxDays !== undefined) {
     if (daysRemaining <= 0) {
@@ -26,13 +27,13 @@ const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRe
     }
     
     // Generate days text if not provided
-    if (!daysText) {
+    if (!calculatedDaysText) {
       if (daysRemaining <= 0) {
-        daysText = "Expired";
+        calculatedDaysText = "Expired";
       } else if (daysRemaining === 1) {
-        daysText = "1 day";
+        calculatedDaysText = "1 day";
       } else {
-        daysText = `${daysRemaining} days`;
+        calculatedDaysText = `${daysRemaining} days`;
       }
     }
   }
@@ -45,23 +46,23 @@ const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRe
       case "fresh":
         return {
           label: "Fresh",
-          color: "bg-status-fresh",
+          color: "bg-green-500",
           icon: <Check className="text-white" size={18} />,
-          textColor: "text-status-fresh"
+          textColor: "text-green-600"
         };
       case "use-soon":
         return {
           label: "Use Soon",
-          color: "bg-status-soon",
+          color: "bg-orange-400",
           icon: <Clock className="text-white" size={18} />,
-          textColor: "text-status-soon"
+          textColor: "text-orange-500"
         };
       case "expired":
         return {
           label: "Expired",
-          color: "bg-status-expired",
+          color: "bg-red-500",
           icon: <X className="text-white" size={18} />,
-          textColor: "text-status-expired"
+          textColor: "text-red-600"
         };
       default:
         return {
@@ -111,10 +112,10 @@ const StatusIndicator = ({ status: propStatus, daysText, size = "medium", daysRe
           {config.icon}
         </div>
       </div>
-      {daysText && (
+      {calculatedDaysText && (
         <div className="text-center">
           <div className={`font-semibold ${sizeClass.text} ${config.textColor}`}>{config.label}</div>
-          <div className="text-sm text-muted-foreground">{daysText}</div>
+          <div className="text-sm text-muted-foreground">{calculatedDaysText}</div>
         </div>
       )}
     </motion.div>

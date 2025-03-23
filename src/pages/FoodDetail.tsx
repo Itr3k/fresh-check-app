@@ -1014,22 +1014,14 @@ const getFoodDetails = (id: string) => {
     ];
   };
 
-  const getFreshness = (id: string, storageType?: string, isOpened?: boolean) => {
+  const calculateFreshness = (storageType: string, isOpened: boolean) => {
     const currentDate = new Date();
     const randomBoughtDate = new Date(currentDate);
     randomBoughtDate.setDate(currentDate.getDate() - Math.floor(Math.random() * 10) - 1);
     
     const storageOptions = getStorageOptions(id, foodFromDatabase?.category);
-    let selectedStorageOption = storageOptions[0]; // Default to refrigerator
-    
-    if (storageType) {
-      const option = storageOptions.find(opt => opt.storageType === storageType);
-      if (option) {
-        selectedStorageOption = option;
-      }
-    }
-    
-    const storageDetails = isOpened ? selectedStorageOption.opened : selectedStorageOption.unopened;
+    const selectedOption = storageOptions.find(opt => opt.storageType === storageType) || storageOptions[0];
+    const storageDetails = isOpened ? selectedOption.opened : selectedOption.unopened;
     const maxDays = storageDetails.maxDays;
     
     const expirationDate = new Date(randomBoughtDate);
@@ -1050,13 +1042,12 @@ const getFoodDetails = (id: string) => {
       expirationDate,
       daysRemaining,
       status,
-      storageDetails,
-      maxDays
+      maxDays,
+      storageDetails
     };
   };
 
   const getRelatedFoods = (id: string) => {
-    // For demonstration purposes, return 3 random but relevant food items
     const allFoods = [
       { id: "chicken", name: "Chicken", category: "Meat", imageUrl: foodImages.chicken || foodImages.default },
       { id: "milk", name: "Milk", category: "Dairy", imageUrl: foodImages.milk || foodImages.default },
@@ -1074,15 +1065,12 @@ const getFoodDetails = (id: string) => {
       { id: "onions", name: "Onions", category: "Vegetables", imageUrl: foodImages.onions || foodImages.default }
     ].filter(food => food.id !== id);
     
-    // Prioritize foods from the same category
     const sameCategory = allFoods.filter(food => foodFromDatabase && food.category === foodFromDatabase.category);
     
     if (sameCategory.length >= 3) {
-      // Randomly select 3 foods from the same category
       const shuffled = [...sameCategory].sort(() => 0.5 - Math.random());
       return shuffled.slice(0, 3);
     } else {
-      // If we don't have enough foods from the same category, fill with other random foods
       const otherFoods = allFoods.filter(food => foodFromDatabase && food.category !== foodFromDatabase.category);
       const shuffledOthers = [...otherFoods].sort(() => 0.5 - Math.random());
       return [...sameCategory, ...shuffledOthers].slice(0, 3);
@@ -1091,7 +1079,7 @@ const getFoodDetails = (id: string) => {
 
   const imageUrl = foodImages[id] || foodImages.default;
   const storageOptions = getStorageOptions(id, foodFromDatabase?.category);
-  const freshness = getFreshness(id);
+  const freshness = calculateFreshness("refrigerator", false);
   const relatedFoods = getRelatedFoods(id);
 
   return {
@@ -1101,7 +1089,8 @@ const getFoodDetails = (id: string) => {
     category: foodFromDatabase?.category || "Unknown",
     storageOptions,
     freshness,
-    relatedFoods
+    relatedFoods,
+    calculateFreshness
   };
 };
 
@@ -1111,15 +1100,16 @@ const FoodDetail = () => {
   const [selectedStorage, setSelectedStorage] = useState<string>("refrigerator");
   const [isOpened, setIsOpened] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [freshness, setFreshness] = useState<any>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
     if (id) {
       setLoading(true);
-      // Simulate API call with a slight delay
       const timer = setTimeout(() => {
         const details = getFoodDetails(id);
         setFoodDetails(details);
+        setFreshness(details.freshness);
         setLoading(false);
       }, 300);
       
@@ -1128,15 +1118,11 @@ const FoodDetail = () => {
   }, [id]);
   
   useEffect(() => {
-    // Update freshness whenever storage type or opened status changes
     if (foodDetails) {
-      const updatedFreshness = getFoodDetails(id!).freshness;
-      setFoodDetails({
-        ...foodDetails,
-        freshness: updatedFreshness
-      });
+      const newFreshness = foodDetails.calculateFreshness(selectedStorage, isOpened);
+      setFreshness(newFreshness);
     }
-  }, [selectedStorage, isOpened]);
+  }, [selectedStorage, isOpened, foodDetails]);
   
   const handleStorageChange = (storageType: string) => {
     setSelectedStorage(storageType);
@@ -1184,6 +1170,14 @@ const FoodDetail = () => {
     );
   }
 
+  const currentStorageOption = foodDetails.storageOptions.find(
+    (option: any) => option.storageType === selectedStorage
+  );
+  
+  const storageInfo = isOpened 
+    ? currentStorageOption?.opened 
+    : currentStorageOption?.unopened;
+
   return (
     <PageTransition>
       <Helmet>
@@ -1207,7 +1201,6 @@ const FoodDetail = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          {/* Left column - Image and basic info */}
           <div className="md:col-span-3">
             <h1 className="text-3xl font-bold mb-2">{foodDetails.name}</h1>
             <p className="text-muted-foreground mb-4">{foodDetails.category}</p>
@@ -1243,7 +1236,9 @@ const FoodDetail = () => {
                   <h3 className="font-medium">Typical Shelf Life</h3>
                   <Calendar size={18} className="text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted-foreground">5-7 days when refrigerated properly.</p>
+                <p className="text-sm text-muted-foreground">
+                  {storageInfo && `${storageInfo.minDays}-${storageInfo.maxDays} days when stored properly.`}
+                </p>
               </div>
               
               <div className="bg-card p-4 rounded-lg border shadow-sm">
@@ -1255,7 +1250,6 @@ const FoodDetail = () => {
               </div>
             </div>
             
-            {/* Storage method selection */}
             <div className="bg-card rounded-lg border shadow-sm mb-6">
               <div className="p-4 border-b">
                 <h2 className="text-xl font-semibold mb-1">Storage Options</h2>
@@ -1314,40 +1308,33 @@ const FoodDetail = () => {
                   </label>
                 </div>
                 
-                {foodDetails.storageOptions.map((option: any) => {
-                  if (option.storageType === selectedStorage) {
-                    const storageInfo = isOpened ? option.opened : option.unopened;
-                    return (
-                      <div key={option.storageType} className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-medium">Shelf Life</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {storageInfo.minDays === storageInfo.maxDays
-                                ? `${storageInfo.maxDays} days`
-                                : `${storageInfo.minDays}-${storageInfo.maxDays} days`}
-                            </p>
-                          </div>
-                          <StatusIndicator 
-                            daysRemaining={foodDetails.freshness.daysRemaining} 
-                            maxDays={storageInfo.maxDays}
-                          />
-                        </div>
-                        
-                        <div>
-                          <h3 className="font-medium mb-1">Storage Tips</h3>
-                          <p className="text-sm text-muted-foreground">{storageInfo.notes}</p>
-                        </div>
+                {storageInfo && freshness && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium">Shelf Life</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {storageInfo.minDays === storageInfo.maxDays
+                            ? `${storageInfo.maxDays} days`
+                            : `${storageInfo.minDays}-${storageInfo.maxDays} days`}
+                        </p>
                       </div>
-                    );
-                  }
-                  return null;
-                })}
+                      <StatusIndicator 
+                        daysRemaining={freshness.daysRemaining} 
+                        maxDays={freshness.maxDays}
+                      />
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-medium mb-1">Storage Tips</h3>
+                      <p className="text-sm text-muted-foreground">{storageInfo.notes}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
           
-          {/* Right column - Additional info and related foods */}
           <div className="md:col-span-2">
             {!isMobile && <AdUnit slotId="detail-sidebar" className="mb-6" />}
             
