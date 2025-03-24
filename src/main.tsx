@@ -1,4 +1,3 @@
-
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
@@ -15,13 +14,16 @@ const renderApp = async () => {
   // Start performance measurement
   performance.mark('react-app-start');
   
-  root.render(
+  // Create a React component to properly wrap Analytics and SpeedInsights
+  const AppWithAnalytics = () => (
     <>
       <App />
       <Analytics />
       <SpeedInsights />
     </>
   );
+  
+  root.render(<AppWithAnalytics />);
   
   // End performance measurement
   performance.mark('react-app-end');
