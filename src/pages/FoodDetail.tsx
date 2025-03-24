@@ -984,6 +984,154 @@ const getFoodDetails = (id: string, getImageUrl: (id: string) => string) => {
     ];
   };
 
+  const getSpoilageSigns = (id: string, category?: string) => {
+    // Define food-specific spoilage signs
+    if (id === "milk") {
+      return "Sour smell, curdled texture, yellow discoloration, or unusual thickness.";
+    }
+    
+    if (id === "eggs") {
+      return "Foul odor when cracked, discolored yolk, or floating in water (fresh eggs sink).";
+    }
+    
+    if (id === "chicken-raw" || id === "chicken") {
+      return "Slimy texture, grayish color, strong ammonia-like odor, or sticky film on the surface.";
+    }
+    
+    if (id === "chicken-cooked") {
+      return "Sour smell, slimy texture, mold, or discoloration.";
+    }
+    
+    if (id === "tomatoes") {
+      return "Mold spots, leaking fluid, wrinkled skin, or fermented smell.";
+    }
+    
+    if (id === "bananas") {
+      return "Black skin (beyond normal ripening), mold, fruit flies, fermented smell, or liquid leakage.";
+    }
+    
+    if (id === "avocados") {
+      return "Brown stringy flesh, rancid smell, excessive mushiness, or visible mold.";
+    }
+    
+    if (id === "bread") {
+      return "Visible mold spots (any color), stale texture, sour or strange smell.";
+    }
+    
+    if (id === "cheese") {
+      return "Mold not typical for the cheese type, ammonia smell, slimy texture, or changed color.";
+    }
+    
+    if (id === "yogurt") {
+      return "Excessive liquid, mold, off-putting smell, or curdled appearance beyond normal separation.";
+    }
+    
+    if (id === "salmon" || id === "tuna" || id === "shrimp" || id === "cod") {
+      return "Fishy or ammonia-like smell, slimy texture, dull or discolored flesh, or milky residue.";
+    }
+    
+    if (id === "lettuce" || id === "spinach") {
+      return "Slimy texture, brown or black discoloration, wilting beyond normal, or foul odor.";
+    }
+    
+    if (id === "apples") {
+      return "Soft spots, wrinkled skin, brown flesh discoloration, fermented smell, or visible mold.";
+    }
+    
+    if (id === "oranges") {
+      return "Soft spots, white or green mold, unusual softness, fermented smell, or dried out appearance.";
+    }
+    
+    // Category-based spoilage signs
+    if (category === "Meat & Poultry") {
+      return "Slimy texture, discoloration (gray/green/brown), sour smell, or unusual stickiness.";
+    }
+    
+    if (category === "Seafood") {
+      return "Fishy or ammonia-like smell, slimy texture, dull or discolored flesh, or milky residue.";
+    }
+    
+    if (category === "Dairy") {
+      return "Sour smell, unusual texture, curdling, mold, or discoloration.";
+    }
+    
+    if (category === "Fruit") {
+      return "Mold growth, unusual softness or mushiness, fermented smell, or leaking fluids.";
+    }
+    
+    if (category === "Vegetables") {
+      return "Slimy texture, discoloration, wilting, strong odor, or visible mold.";
+    }
+    
+    if (category === "Bakery") {
+      return "Mold growth, stale texture, off-putting smell, or unusual hardness.";
+    }
+    
+    // Default spoilage signs if no specific food or category match is found
+    return "Mold, discoloration, sour smell, or slimy texture.";
+  };
+  
+  const getBestStorageTip = (id: string, category?: string) => {
+    if (id === "milk") {
+      return "Store on interior refrigerator shelf, not in the door where temperature fluctuates.";
+    }
+    
+    if (id === "eggs") {
+      return "Keep in original carton on interior refrigerator shelf to maintain humidity and prevent odor absorption.";
+    }
+    
+    if (id === "chicken-raw" || id === "chicken") {
+      return "Store on bottom shelf of refrigerator in original packaging or airtight container to prevent cross-contamination.";
+    }
+    
+    if (id === "bananas") {
+      return "Store at room temperature until ripe, then refrigerate to extend shelf life if needed.";
+    }
+    
+    if (id === "avocados") {
+      return "Ripen at room temperature, then refrigerate to slow further ripening.";
+    }
+    
+    if (id === "cheese") {
+      return "Wrap in cheese paper or wax paper, then loosely in plastic wrap to allow breathing while preventing drying.";
+    }
+    
+    if (id === "bread") {
+      return "Store in a cool, dry place in paper bag or bread box. Freeze sliced bread for longer storage.";
+    }
+    
+    if (id === "tomatoes") {
+      return "Store at room temperature stem-side down until fully ripe, then refrigerate if needed.";
+    }
+    
+    if (id === "lettuce") {
+      return "Wrap in paper towel and store in perforated plastic bag in crisper drawer.";
+    }
+    
+    if (category === "Meat & Poultry") {
+      return "Store on lowest shelf of refrigerator in original packaging or airtight container.";
+    }
+    
+    if (category === "Seafood") {
+      return "Keep on ice or in coldest part of refrigerator and use within 1-2 days of purchase.";
+    }
+    
+    if (category === "Fruit") {
+      return "Most fruits should be stored in the crisper drawer. Keep ethylene-producing fruits separate from ethylene-sensitive ones.";
+    }
+    
+    if (category === "Vegetables") {
+      return "Store most vegetables in crisper drawer with appropriate humidity settings.";
+    }
+    
+    if (category === "Bakery") {
+      return "Store in airtight container at room temperature or freeze for longer preservation.";
+    }
+    
+    // Default tip if no specific match is found
+    return "Keep refrigerated in original packaging until ready to use.";
+  };
+
   const calculateFreshness = (storageType: string, isOpened: boolean) => {
     const currentDate = new Date();
     const randomBoughtDate = new Date(currentDate);
@@ -1051,6 +1199,8 @@ const getFoodDetails = (id: string, getImageUrl: (id: string) => string) => {
   const storageOptions = getStorageOptions(id, foodFromDatabase?.category);
   const freshness = calculateFreshness("refrigerator", false);
   const relatedFoods = getRelatedFoods(id);
+  const spoilageSigns = getSpoilageSigns(id, foodFromDatabase?.category);
+  const bestStorageTip = getBestStorageTip(id, foodFromDatabase?.category);
 
   return {
     id,
@@ -1060,7 +1210,9 @@ const getFoodDetails = (id: string, getImageUrl: (id: string) => string) => {
     storageOptions,
     freshness,
     relatedFoods,
-    calculateFreshness
+    calculateFreshness,
+    spoilageSigns,
+    bestStorageTip
   };
 };
 
@@ -1106,7 +1258,9 @@ const FoodDetail = () => {
     name, 
     category, 
     storageOptions, 
-    relatedFoods 
+    relatedFoods,
+    spoilageSigns,
+    bestStorageTip 
   } = foodDetails;
 
   const handlePrintInfo = () => {
@@ -1170,12 +1324,7 @@ const FoodDetail = () => {
                 <CheckCircle className="h-4 w-4 text-green-500" />
               </div>
               <p className="text-sm text-muted-foreground">
-                {selectedStorage === "refrigerator" && 
-                  "Keep refrigerated in original packaging until ready to use."}
-                {selectedStorage === "freezer" && 
-                  "Store in airtight containers or freezer bags to maintain quality."}
-                {selectedStorage === "pantry" && 
-                  "Store in cool, dry place away from direct sunlight."}
+                {bestStorageTip}
               </p>
             </div>
           </div>
@@ -1203,7 +1352,7 @@ const FoodDetail = () => {
                 <AlertTriangle className="h-4 w-4 text-orange-500" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Mold, discoloration, sour smell, or slimy texture.
+                {spoilageSigns}
               </p>
             </div>
           </div>
@@ -1491,6 +1640,26 @@ const FoodDetail = () => {
             </div>
           </div>
           
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-3">Signs of Spoilage</h2>
+            <div className="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-100">
+              <div className="flex items-start">
+                <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" />
+                <p className="text-sm text-muted-foreground">{spoilageSigns}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-3">Best Storage Practices</h2>
+            <div className="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-100">
+              <div className="flex items-start">
+                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
+                <p className="text-sm text-muted-foreground">{bestStorageTip}</p>
+              </div>
+            </div>
+          </div>
+          
           <div className="mt-6 mb-10">
             <h2 className="text-2xl font-semibold mb-4">Storage Guidelines</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1600,4 +1769,3 @@ const FoodDetail = () => {
 };
 
 export default FoodDetail;
-
