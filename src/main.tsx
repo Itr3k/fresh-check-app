@@ -35,7 +35,9 @@ const renderApp = async () => {
       // Create CLS observer
       const clsObserver = new PerformanceObserver((entryList) => {
         for (const entry of entryList.getEntries()) {
-          if (entry.hadRecentInput) continue;
+          // Type assertion for LayoutShift entries which have the hadRecentInput property
+          const layoutShift = entry as LayoutShift;
+          if (layoutShift.hadRecentInput) continue;
           if (import.meta.env.DEV) {
             console.log('CLS:', entry);
           }
