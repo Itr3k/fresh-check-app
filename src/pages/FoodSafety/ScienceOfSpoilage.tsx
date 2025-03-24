@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { FlaskConical, Droplets, Bacteria } from 'lucide-react';
+import { FlaskConical, Droplets, Bug } from 'lucide-react';
 import FoodSafetyLayout from '@/components/FoodSafetyLayout';
 import AdUnit from '@/components/AdUnit';
 
