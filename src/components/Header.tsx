@@ -26,7 +26,7 @@ const foodSafetyLinks = [
     to: "/food-safety/understanding-food-labels",
     icon: <OptimizedIcons.Tag className="h-4 w-4 text-primary" />,
     title: "Understanding Food Labels",
-    description: "Learn the difference between "Best By," "Use By," and "Sell By" dates"
+    description: 'Learn the difference between "Best By," "Use By," and "Sell By" dates'
   },
   {
     to: "/food-safety/temperature-danger-zone",
