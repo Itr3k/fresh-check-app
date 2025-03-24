@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info, BookOpen, ShieldAlert, ExternalLink, Save, Printer } from "lucide-react";
+import { ArrowLeft, Refrigerator, Snowflake, Home, Calendar, Info, BookOpen, ShieldAlert, ExternalLink, Save, Printer, CheckCircle, AlertTriangle, AlertCircle } from "lucide-react";
 import StatusIndicator from "../components/StatusIndicator";
 import PageTransition from "../components/PageTransition";
 import AdUnit from "../components/AdUnit";
@@ -1128,80 +1128,111 @@ const FoodDetail = () => {
         <link rel="canonical" href={`https://freshcheck.app/food/${id}`} />
       </Helmet>
       
-      <div className="max-w-4xl mx-auto px-4 py-8 pb-24">
-        <div className="mb-4">
-          <Link to="/" className="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            <span>Back to all foods</span>
-          </Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <div className="bg-gray-100 rounded-xl overflow-hidden mb-4">
+      {isMobile ? (
+        <div className="pb-16">
+          <div className="p-3 bg-gray-50 border-b">
+            <Link to="/" className="inline-flex items-center text-sm text-muted-foreground">
+              <ArrowLeft className="h-3 w-3 mr-1" />
+              <span>Home</span>
+              <span className="mx-1">/</span>
+              {category && <span>{category}</span>}
+              <span className="mx-1">/</span>
+              <span className="font-medium text-foreground">{name}</span>
+            </Link>
+          </div>
+          
+          <div className="my-2 px-3">
+            <AdUnit format="mobile_banner" responsive={true} className="w-full" />
+          </div>
+          
+          <div className="px-4 py-2">
+            <h1 className="text-2xl font-bold">{name}</h1>
+            {category && (
+              <div className="text-sm text-muted-foreground">{category}</div>
+            )}
+          </div>
+          
+          <div className="px-4 mb-4">
+            <div className="bg-gray-100 rounded-lg overflow-hidden">
               <img 
                 src={getImageUrl(id)}
                 alt={`${name} - food storage information`}
-                width="800"
-                height="500"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover aspect-video"
+                loading="eager"
               />
-            </div>
-            
-            <div className="print:hidden mb-8">
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handlePrintInfo} 
-                  className="flex items-center gap-1"
-                >
-                  <Printer className="h-4 w-4" />
-                  <span>Print</span>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    const url = window.location.href;
-                    navigator.clipboard.writeText(url);
-                    toast.success("Link copied to clipboard");
-                  }}
-                  className="flex items-center gap-1"
-                >
-                  <Save className="h-4 w-4" />
-                  <span>Share</span>
-                </Button>
-              </div>
             </div>
           </div>
           
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{name}</h1>
-            {category && (
-              <div className="text-muted-foreground mb-4">{category}</div>
-            )}
-            
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-3">Storage Location</h2>
-              <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="px-4 mb-3">
+            <div className="border rounded-lg p-3 bg-white">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="font-semibold">Best Storage</h2>
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {selectedStorage === "refrigerator" && 
+                  "Keep refrigerated in original packaging until ready to use."}
+                {selectedStorage === "freezer" && 
+                  "Store in airtight containers or freezer bags to maintain quality."}
+                {selectedStorage === "pantry" && 
+                  "Store in cool, dry place away from direct sunlight."}
+              </p>
+            </div>
+          </div>
+          
+          <div className="px-4 mb-3">
+            <div className="border rounded-lg p-3 bg-white">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="font-semibold">Typical Shelf Life</h2>
+                <Calendar className="h-4 w-4 text-blue-500" />
+              </div>
+              {freshness && (
+                <p className="text-sm text-muted-foreground">
+                  {isOpened ? 
+                    `${freshness.storageDetails.minDays}-${freshness.storageDetails.maxDays} days when opened.` : 
+                    `${freshness.storageDetails.minDays}-${freshness.storageDetails.maxDays} days when stored properly.`}
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div className="px-4 mb-3">
+            <div className="border rounded-lg p-3 bg-white">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="font-semibold">Signs of Spoilage</h2>
+                <AlertTriangle className="h-4 w-4 text-orange-500" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Mold, discoloration, sour smell, or slimy texture.
+              </p>
+            </div>
+          </div>
+          
+          <div className="px-4 mb-4">
+            <div className="border rounded-lg p-3 bg-white">
+              <h2 className="font-semibold mb-2">Storage Options</h2>
+              <p className="text-xs text-muted-foreground mb-3">
+                Select storage method to see detailed recommendations
+              </p>
+              
+              <div className="flex flex-wrap items-center gap-2 mb-4">
                 {storageOptions.map((option: any) => (
                   <Button
                     key={option.storageType}
                     variant={selectedStorage === option.storageType ? "default" : "outline"}
+                    size="sm"
                     onClick={() => setSelectedStorage(option.storageType)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1.5 py-1 h-8"
                   >
-                    {option.storageType === "refrigerator" && <Refrigerator className="h-4 w-4" />}
-                    {option.storageType === "freezer" && <Snowflake className="h-4 w-4" />}
-                    {option.storageType === "pantry" && <Home className="h-4 w-4" />}
+                    {option.storageType === "refrigerator" && <Refrigerator className="h-3.5 w-3.5" />}
+                    {option.storageType === "freezer" && <Snowflake className="h-3.5 w-3.5" />}
+                    {option.storageType === "pantry" && <Home className="h-3.5 w-3.5" />}
                     <span className="capitalize">{option.storageType}</span>
                   </Button>
                 ))}
               </div>
               
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-3">
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -1210,145 +1241,363 @@ const FoodDetail = () => {
                     onChange={(e) => setIsOpened(e.target.checked)}
                     className="rounded border-gray-300 text-primary focus:ring-primary"
                   />
-                  <label htmlFor="opened" className="ml-2 text-sm font-medium">
+                  <label htmlFor="opened" className="ml-2 text-sm">
                     Opened/Cut
                   </label>
                 </div>
               </div>
+              
+              {freshness && (
+                <div className="flex items-center justify-between border-t pt-3 text-sm">
+                  <div>
+                    <div className="font-medium">Shelf Life</div>
+                    <div className="text-muted-foreground">
+                      ~{freshness.daysRemaining > 0 ? freshness.daysRemaining : 0} days
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-right">Status</div>
+                    <div className={`
+                      ${freshness.status === "fresh" ? "text-green-600" : ""}
+                      ${freshness.status === "use-soon" ? "text-orange-600" : ""}
+                      ${freshness.status === "expired" ? "text-red-600" : ""}
+                    `}>
+                      {freshness.status === "fresh" && "Fresh"}
+                      {freshness.status === "use-soon" && "Use Soon"}
+                      {freshness.status === "expired" && "Expired"}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="border-t pt-3 mt-3">
+                <div className="font-medium mb-1">Storage Tips</div>
+                <p className="text-sm text-muted-foreground">
+                  {freshness?.storageDetails.notes}
+                </p>
+              </div>
             </div>
-            
-            {freshness && (
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-3">Freshness Timeline</h2>
-                <div className="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-100">
-                  <StatusIndicator 
-                    status={freshness.status} 
-                    daysRemaining={freshness.daysRemaining} 
-                    maxDays={freshness.maxDays}
-                  />
-                  
-                  <div className="mt-4 text-sm text-muted-foreground">
-                    <p className="mb-2">
-                      <Calendar className="inline h-4 w-4 mr-1" />
-                      <span>Storage Time: {freshness.storageDetails.minDays}-{freshness.storageDetails.maxDays} days</span>
-                    </p>
-                    <p>{freshness.storageDetails.notes}</p>
-                  </div>
-                </div>
+          </div>
+          
+          <div className="px-4 mb-4">
+            <div className="border rounded-lg p-3 bg-white">
+              <h2 className="font-semibold mb-3">Actions</h2>
+              
+              <div className="space-y-2">
+                <Button variant="outline" size="sm" className="flex items-center w-full justify-start gap-2 h-10">
+                  <Save className="h-4 w-4" />
+                  <span>Save to My Foods</span>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="flex items-center w-full justify-start gap-2 h-10" onClick={handlePrintInfo}>
+                  <Printer className="h-4 w-4" />
+                  <span>Print Storage Guide</span>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="flex items-center w-full justify-start gap-2 h-10">
+                  <Info className="h-4 w-4" />
+                  <span>Detailed Storage Info</span>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="flex items-center w-full justify-start gap-2 h-10">
+                  <ShieldAlert className="h-4 w-4" />
+                  <span>Food Safety Tips</span>
+                </Button>
               </div>
-            )}
+            </div>
+          </div>
+          
+          <div className="px-4 mb-4">
+            <div className="border rounded-lg p-3 bg-white">
+              <h2 className="font-semibold mb-3">Related Foods</h2>
+              
+              <div className="space-y-2">
+                {relatedFoods.map((food: any) => (
+                  <Link 
+                    key={food.id} 
+                    to={`/food/${food.id}`} 
+                    className="flex items-center border rounded-md p-2 hover:bg-gray-50"
+                  >
+                    <div className="w-16 h-12 rounded overflow-hidden mr-3">
+                      <img 
+                        src={getImageUrl(food.id)} 
+                        alt={food.name} 
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-medium">{food.name}</div>
+                      <div className="text-xs text-muted-foreground">{food.category}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <div className="px-4 mb-8">
+            <div className="border rounded-lg p-3 bg-white">
+              <h2 className="font-semibold mb-3">External Resources</h2>
+              
+              <div className="space-y-2">
+                <a 
+                  href="https://www.foodsafety.gov/foodkeeper-app" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-sm text-primary"
+                >
+                  <ExternalLink className="h-3.5 w-3.5 mr-2" />
+                  <span>USDA FoodKeeper App</span>
+                </a>
+                
+                <a 
+                  href="https://www.fda.gov/food/buy-store-serve-safe-food/safe-food-handling" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-sm text-primary"
+                >
+                  <ExternalLink className="h-3.5 w-3.5 mr-2" />
+                  <span>FDA Safe Food Storage Guidelines</span>
+                </a>
+                
+                <a 
+                  href="https://www.stilltasty.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-sm text-primary"
+                >
+                  <ExternalLink className="h-3.5 w-3.5 mr-2" />
+                  <span>StillTasty Food Storage Database</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div className="px-4 mb-8">
+            <AdUnit format="rectangle" responsive={true} className="w-full" />
           </div>
         </div>
-        
-        {/* Storage Guidelines */}
-        <div className="mt-6 mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Storage Guidelines</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {storageOptions.map((option: any) => (
-              <div key={option.storageType} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <div className="flex items-center mb-3">
-                  {option.storageType === "refrigerator" && <Refrigerator className="h-5 w-5 mr-2 text-blue-500" />}
-                  {option.storageType === "freezer" && <Snowflake className="h-5 w-5 mr-2 text-cyan-500" />}
-                  {option.storageType === "pantry" && <Home className="h-5 w-5 mr-2 text-amber-500" />}
-                  <h3 className="text-lg font-medium capitalize">{option.storageType}</h3>
-                </div>
-                
-                <div className="mb-2">
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Unopened</p>
-                  {option.unopened.maxDays > 0 ? (
-                    <p className="text-sm">{option.unopened.minDays !== option.unopened.maxDays ? `${option.unopened.minDays}-` : ''}{option.unopened.maxDays} days</p>
-                  ) : (
-                    <p className="text-sm">Not recommended</p>
-                  )}
-                </div>
-                
-                <div className="mb-2">
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Opened/Cut</p>
-                  {option.opened.maxDays > 0 ? (
-                    <p className="text-sm">{option.opened.minDays !== option.opened.maxDays ? `${option.opened.minDays}-` : ''}{option.opened.maxDays} days</p>
-                  ) : (
-                    <p className="text-sm">Not recommended</p>
-                  )}
-                </div>
-                
-                <div className="mt-3 text-sm">
-                  <Info className="inline h-4 w-4 mr-1 text-muted-foreground" />
-                  <span className="text-muted-foreground">{option.unopened.notes}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Ads */}
-        <div className="print:hidden my-8">
-          <AdUnit className="mx-auto" />
-        </div>
-        
-        {/* Related Foods */}
-        <div className="print:hidden mt-10">
-          <h2 className="text-2xl font-semibold mb-4">Related Foods</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {relatedFoods.map((food: any, index: number) => (
-              <Link to={`/food/${food.id}`} key={food.id} className="block">
-                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
-                  <div className="h-24 md:h-32 overflow-hidden">
-                    <img 
-                      src={getImageUrl(food.id)}
-                      alt={food.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-medium truncate">{food.name}</h3>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-        
-        {/* Food Safety Resources */}
-        <div className="print:hidden mt-16 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Food Safety Resources</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Link to="/food-safety/temperature-danger-zone" className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-              <div className="flex items-start">
-                <BookOpen className="h-5 w-5 mr-2 mt-0.5 text-primary" />
-                <div>
-                  <h3 className="font-medium mb-1">Temperature Danger Zone</h3>
-                  <p className="text-sm text-muted-foreground">Learn about safe temperature ranges for food storage</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link to="/food-safety/cross-contamination" className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-              <div className="flex items-start">
-                <ShieldAlert className="h-5 w-5 mr-2 mt-0.5 text-primary" />
-                <div>
-                  <h3 className="font-medium mb-1">Preventing Cross-Contamination</h3>
-                  <p className="text-sm text-muted-foreground">Tips to avoid the spread of harmful bacteria</p>
-                </div>
-              </div>
+      ) : (
+        <div className="max-w-4xl mx-auto px-4 py-8 pb-24">
+          <div className="mb-4">
+            <Link to="/" className="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              <span>Back to all foods</span>
             </Link>
           </div>
           
-          <div className="mt-4">
-            <a 
-              href="https://www.foodsafety.gov/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-flex items-center text-primary hover:text-primary/80"
-            >
-              <span>More food safety information</span>
-              <ExternalLink className="h-4 w-4 ml-1" />
-            </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <div className="bg-gray-100 rounded-xl overflow-hidden mb-4">
+                <img 
+                  src={getImageUrl(id)}
+                  alt={`${name} - food storage information`}
+                  width="800"
+                  height="500"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              
+              <div className="print:hidden mb-8">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handlePrintInfo} 
+                    className="flex items-center gap-1"
+                  >
+                    <Printer className="h-4 w-4" />
+                    <span>Print</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      const url = window.location.href;
+                      navigator.clipboard.writeText(url);
+                      toast.success("Link copied to clipboard");
+                    }}
+                    className="flex items-center gap-1"
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>Share</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{name}</h1>
+              {category && (
+                <div className="text-muted-foreground mb-4">{category}</div>
+              )}
+              
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-3">Storage Location</h2>
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  {storageOptions.map((option: any) => (
+                    <Button
+                      key={option.storageType}
+                      variant={selectedStorage === option.storageType ? "default" : "outline"}
+                      onClick={() => setSelectedStorage(option.storageType)}
+                      className="flex items-center gap-2"
+                    >
+                      {option.storageType === "refrigerator" && <Refrigerator className="h-4 w-4" />}
+                      {option.storageType === "freezer" && <Snowflake className="h-4 w-4" />}
+                      {option.storageType === "pantry" && <Home className="h-4 w-4" />}
+                      <span className="capitalize">{option.storageType}</span>
+                    </Button>
+                  ))}
+                </div>
+                
+                <div className="flex items-center mb-6">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="opened"
+                      checked={isOpened}
+                      onChange={(e) => setIsOpened(e.target.checked)}
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="opened" className="ml-2 text-sm font-medium">
+                      Opened/Cut
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              {freshness && (
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold mb-3">Freshness Timeline</h2>
+                  <div className="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-100">
+                    <StatusIndicator 
+                      status={freshness.status} 
+                      daysRemaining={freshness.daysRemaining} 
+                      maxDays={freshness.maxDays}
+                    />
+                    
+                    <div className="mt-4 text-sm text-muted-foreground">
+                      <p className="mb-2">
+                        <Calendar className="inline h-4 w-4 mr-1" />
+                        <span>Storage Time: {freshness.storageDetails.minDays}-{freshness.storageDetails.maxDays} days</span>
+                      </p>
+                      <p>{freshness.storageDetails.notes}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="mt-6 mb-10">
+            <h2 className="text-2xl font-semibold mb-4">Storage Guidelines</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {storageOptions.map((option: any) => (
+                <div key={option.storageType} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <div className="flex items-center mb-3">
+                    {option.storageType === "refrigerator" && <Refrigerator className="h-5 w-5 mr-2 text-blue-500" />}
+                    {option.storageType === "freezer" && <Snowflake className="h-5 w-5 mr-2 text-cyan-500" />}
+                    {option.storageType === "pantry" && <Home className="h-5 w-5 mr-2 text-amber-500" />}
+                    <h3 className="text-lg font-medium capitalize">{option.storageType}</h3>
+                  </div>
+                  
+                  <div className="mb-2">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Unopened</p>
+                    {option.unopened.maxDays > 0 ? (
+                      <p className="text-sm">{option.unopened.minDays !== option.unopened.maxDays ? `${option.unopened.minDays}-` : ''}{option.unopened.maxDays} days</p>
+                    ) : (
+                      <p className="text-sm">Not recommended</p>
+                    )}
+                  </div>
+                  
+                  <div className="mb-2">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Opened/Cut</p>
+                    {option.opened.maxDays > 0 ? (
+                      <p className="text-sm">{option.opened.minDays !== option.opened.maxDays ? `${option.opened.minDays}-` : ''}{option.opened.maxDays} days</p>
+                    ) : (
+                      <p className="text-sm">Not recommended</p>
+                    )}
+                  </div>
+                  
+                  <div className="mt-3 text-sm">
+                    <Info className="inline h-4 w-4 mr-1 text-muted-foreground" />
+                    <span className="text-muted-foreground">{option.unopened.notes}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="print:hidden my-8">
+            <AdUnit className="mx-auto" />
+          </div>
+          
+          <div className="print:hidden mt-10">
+            <h2 className="text-2xl font-semibold mb-4">Related Foods</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {relatedFoods.map((food: any, index: number) => (
+                <Link to={`/food/${food.id}`} key={food.id} className="block">
+                  <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+                    <div className="h-24 md:h-32 overflow-hidden">
+                      <img 
+                        src={getImageUrl(food.id)}
+                        alt={food.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-medium truncate">{food.name}</h3>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+          
+          <div className="print:hidden mt-16 mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Food Safety Resources</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link to="/food-safety/temperature-danger-zone" className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                <div className="flex items-start">
+                  <BookOpen className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+                  <div>
+                    <h3 className="font-medium mb-1">Temperature Danger Zone</h3>
+                    <p className="text-sm text-muted-foreground">Learn about safe temperature ranges for food storage</p>
+                  </div>
+                </div>
+              </Link>
+              
+              <Link to="/food-safety/cross-contamination" className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                <div className="flex items-start">
+                  <ShieldAlert className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+                  <div>
+                    <h3 className="font-medium mb-1">Preventing Cross-Contamination</h3>
+                    <p className="text-sm text-muted-foreground">Tips to avoid the spread of harmful bacteria</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+            
+            <div className="mt-4">
+              <a 
+                href="https://www.foodsafety.gov/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center text-primary hover:text-primary/80"
+              >
+                <span>More food safety information</span>
+                <ExternalLink className="h-4 w-4 ml-1" />
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </PageTransition>
   );
 };
 
 export default FoodDetail;
+
