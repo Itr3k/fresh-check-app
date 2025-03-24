@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Info, Calendar, ShoppingBag, Clock } from 'lucide-react';
 import FoodSafetyLayout from '@/components/FoodSafetyLayout';
 import { Button } from '@/components/ui/button';
+import AdUnit from '@/components/AdUnit';
 
 const UnderstandingFoodLabels = () => {
   return (
@@ -23,6 +24,11 @@ const UnderstandingFoodLabels = () => {
             Food date labels can be confusing and often lead to unnecessary food waste. Understanding 
             what these dates actually mean can help you make safer food choices and reduce waste.
           </p>
+          
+          {/* First ad placement - top of content */}
+          <div className="my-6">
+            <AdUnit slotId="food-labels-top" format="leaderboard" />
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
             {/* Best By Card */}
@@ -109,6 +115,11 @@ const UnderstandingFoodLabels = () => {
             </table>
           </div>
           
+          {/* Second ad placement - middle of content */}
+          <div className="my-6">
+            <AdUnit slotId="food-labels-middle" format="rectangle" />
+          </div>
+          
           <h2 className="text-xl font-semibold mb-4">Visual Guide to Food Date Labels</h2>
           
           <div className="bg-muted/30 p-6 rounded-lg mb-8">
@@ -166,6 +177,11 @@ const UnderstandingFoodLabels = () => {
                 <a href="/food-safety/foodborne-illness-prevention">Learn About Foodborne Illness Prevention</a>
               </Button>
             </div>
+          </div>
+          
+          {/* Third ad placement - bottom of content */}
+          <div className="my-6">
+            <AdUnit slotId="food-labels-bottom" format="leaderboard" lazyLoad={true} />
           </div>
           
           <h2 className="text-xl font-semibold mb-4">Regulatory Information</h2>
