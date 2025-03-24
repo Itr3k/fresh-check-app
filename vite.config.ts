@@ -12,11 +12,18 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      // Configure React plugin with simpler options
-      jsxRuntime: 'automatic',
-      refresh: true,
-      // Development mode based on the environment
-      dev: mode === 'development',
+      // Configure React plugin
+      swc: {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic',
+              development: mode === 'development',
+              refresh: true,
+            },
+          },
+        },
+      },
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),

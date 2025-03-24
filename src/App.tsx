@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -56,38 +56,36 @@ const App = () => {
           <WebhookReceiver />
           <Toaster />
           <Sonner />
-          <Router>
-            <TooltipProvider>
-              <Suspense fallback={<PageLoading />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/food/:id" element={<FoodDetail />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/categories/:categoryId" element={<CategoryPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/recalls" element={<RecallsPage />} />
-                  <Route path="/recalls/:id" element={<RecallDetailPage />} />
-                  
-                  {/* Food Safety Educational Pages */}
-                  <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
-                  <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
-                  <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
-                  <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
-                  <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
-                  <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
-                  <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
-                  <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
-                  
-                  {/* Redirect paths to maintain backward compatibility */}
-                  <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
-                  <Route path="/food-safety/holiday-event-safety" element={<Navigate to="/food-safety/holiday-events" replace />} />
-                  
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </TooltipProvider>
-          </Router>
+          <TooltipProvider>
+            <Suspense fallback={<PageLoading />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/food/:id" element={<FoodDetail />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/categories/:categoryId" element={<CategoryPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/recalls" element={<RecallsPage />} />
+                <Route path="/recalls/:id" element={<RecallDetailPage />} />
+                
+                {/* Food Safety Educational Pages */}
+                <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+                <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
+                <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
+                <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
+                <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
+                <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
+                <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+                <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
+                
+                {/* Redirect paths to maintain backward compatibility */}
+                <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
+                <Route path="/food-safety/holiday-event-safety" element={<Navigate to="/food-safety/holiday-events" replace />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </TooltipProvider>
         </RecallsProvider>
       </HelmetProvider>
     </QueryClientProvider>

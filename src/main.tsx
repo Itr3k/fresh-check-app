@@ -5,6 +5,7 @@ import App from './App.tsx'
 import './index.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { BrowserRouter } from 'react-router-dom'
 
 const rootElement = document.getElementById("root");
 
@@ -16,7 +17,9 @@ const root = createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
     <Analytics />
     <SpeedInsights />
   </React.StrictMode>
