@@ -73,7 +73,8 @@ const renderApp = async () => {
         }
       });
       if ('interactionCount' in PerformanceEventTiming.prototype) {
-        inpObserver.observe({ type: 'event', buffered: true, durationThreshold: 16 });
+        // Fixed: Remove durationThreshold which is not part of the standard TypeScript interface
+        inpObserver.observe({ type: 'event', buffered: true });
       }
     } catch (e) {
       console.error('Performance observer error:', e);
