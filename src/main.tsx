@@ -30,18 +30,14 @@ const renderApp = async () => {
   }
 };
 
-// Immediately render our app
-renderApp();
-
-// Preconnect to any third-party domains
-const preconnectLinks = [
+// Define critical preconnect URLs
+const criticalPreconnects = [
   'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com',
-  'https://images.unsplash.com'
+  'https://fonts.gstatic.com'
 ];
 
-// Add preconnect links dynamically
-preconnectLinks.forEach(url => {
+// Add preconnect for critical domains first
+criticalPreconnects.forEach(url => {
   const link = document.createElement('link');
   link.rel = 'preconnect';
   link.href = url;
@@ -49,9 +45,26 @@ preconnectLinks.forEach(url => {
   document.head.appendChild(link);
 });
 
+// Immediately render our app
+renderApp();
+
+// Add less critical preconnects after the app starts rendering
+const nonCriticalPreconnects = [
+  'https://images.unsplash.com'
+];
+
 // Use requestIdleCallback for non-critical initialization
 if ('requestIdleCallback' in window) {
   window.requestIdleCallback(() => {
+    // Add non-critical preconnects during idle time
+    nonCriticalPreconnects.forEach(url => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = url;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    });
+    
     // Register any non-critical observers or analytics here
     if ('PerformanceObserver' in window) {
       const perfObserver = new PerformanceObserver((list) => {
@@ -67,6 +80,13 @@ if ('requestIdleCallback' in window) {
 } else {
   // Fallback for browsers that don't support requestIdleCallback
   setTimeout(() => {
-    // Non-critical initialization here
-  }, 1);
+    // Add non-critical preconnects
+    nonCriticalPreconnects.forEach(url => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = url;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    });
+  }, 200); // Delay by 200ms to prioritize initial render
 }

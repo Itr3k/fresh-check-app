@@ -8,8 +8,17 @@
     <meta name="description" content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator." />
     <meta name="author" content="Fresh Check" />
 
+    <!-- Critical CSS Inline (will be added by a post-process) -->
+    <style>
+      /* Critical path CSS */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Inter', sans-serif; line-height: 1.5; }
+      img { max-width: 100%; }
+      .hidden { display: none; }
+    </style>
+
     <!-- Preload critical resources -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" as="style" />
     <link rel="preload" href="/src/index.css" as="style" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -18,9 +27,6 @@
 
     <!-- Google AdSense Verification -->
     <meta name="google-adsense-account" content="ca-pub-4704318106426851">
-
-    <!-- Google AdSense - Updated to match the exact code from Google -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851" crossorigin="anonymous"></script>
 
     <!-- Open Graph / Facebook - Extended -->
     <meta property="og:type" content="website" />
@@ -49,6 +55,23 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#4CAF50">
     <meta name="msapplication-TileColor" content="#4CAF50">
+    
+    <!-- Defer non-critical CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+
+    <!-- Google AdSense - Load with a small delay to avoid blocking critical rendering -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var script = document.createElement('script');
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          document.head.appendChild(script);
+        }, 1000); // 1 second delay
+      });
+    </script>
   </head>
 
   <body>

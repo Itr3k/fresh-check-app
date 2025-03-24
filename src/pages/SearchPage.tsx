@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -7,9 +7,12 @@ import { Link, useSearchParams } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import FoodCard from "../components/FoodCard";
 import PageTransition from "../components/PageTransition";
-import AdUnit from "../components/AdUnit";
 import { searchFoods, FoodItem } from "../data/foodData";
 import BreadcrumbNav from "../components/BreadcrumbNav";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load AdUnit component to improve initial rendering
+const AdUnit = lazy(() => import("../components/AdUnit"));
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,6 +21,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState<string>(initialQuery);
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [hasSearched, setHasSearched] = useState<boolean>(!!initialQuery);
+  const [isLoading, setIsLoading] = useState<boolean>(!!initialQuery);
 
   // Breadcrumb items
   const breadcrumbItems = [
@@ -32,20 +36,33 @@ const SearchPage = () => {
   // Initialize search results if there's a query parameter
   useEffect(() => {
     if (initialQuery) {
-      const results = searchFoods(initialQuery);
-      setSearchResults(results);
-      setHasSearched(true);
+      setIsLoading(true);
+      
+      // Add a small delay to reduce LCP impact
+      const timer = setTimeout(() => {
+        const results = searchFoods(initialQuery);
+        setSearchResults(results);
+        setHasSearched(true);
+        setIsLoading(false);
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [initialQuery]);
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
     setHasSearched(true);
+    setIsLoading(true);
     setSearchParams(searchQuery ? { q: searchQuery } : {});
 
-    // Search foods based on query
-    const results = searchFoods(searchQuery);
-    setSearchResults(results);
+    // Delay search execution slightly to ensure smooth UI transitions
+    setTimeout(() => {
+      // Search foods based on query
+      const results = searchFoods(searchQuery);
+      setSearchResults(results);
+      setIsLoading(false);
+    }, 100);
   };
 
   // Generate structured data for the search results
@@ -55,7 +72,7 @@ const SearchPage = () => {
     return {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      "itemListElement": searchResults.map((food, index) => ({
+      "itemListElement": searchResults.slice(0, 10).map((food, index) => ({
         "@type": "ListItem",
         "position": index + 1,
         "item": {
@@ -75,13 +92,13 @@ const SearchPage = () => {
         <meta property="og:title" content={`${query ? `${query} - ` : ""}Search Foods - Fresh Check`} />
         <meta property="og:description" content="Search for any food to check if it's still fresh and good to eat." />
         <link rel="canonical" href={`https://freshcheck.app/search${query ? `?q=${encodeURIComponent(query)}` : ""}`} />
+        
+        {hasSearched && searchResults.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify(generateSearchResultsSchema())}
+          </script>
+        )}
       </Helmet>
-
-      {hasSearched && searchResults.length > 0 && (
-        <script type="application/ld+json">
-          {JSON.stringify(generateSearchResultsSchema())}
-        </script>
-      )}
 
       <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
         <div className="mb-4">
@@ -110,7 +127,11 @@ const SearchPage = () => {
           />
         </motion.div>
 
-        <AdUnit slotId="search-top" className="mb-8" format="leaderboard" />
+        <div className="mb-8">
+          <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+            <AdUnit slotId="search-top" className="mb-8" format="leaderboard" />
+          </Suspense>
+        </div>
 
         <div className="mb-8">
           {hasSearched && (
@@ -120,12 +141,26 @@ const SearchPage = () => {
               transition={{ duration: 0.3 }}
             >
               <h2 className="text-xl font-medium mb-4">
-                {searchResults.length === 0 
-                  ? `No results found for "${query}"` 
-                  : `Search results for "${query}"`}
+                {isLoading
+                  ? "Searching..."
+                  : searchResults.length === 0 
+                    ? `No results found for "${query}"` 
+                    : `Search results for "${query}"`}
               </h2>
               
-              {searchResults.length > 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm">
+                      <Skeleton className="h-32 w-full" />
+                      <div className="p-4">
+                        <Skeleton className="h-5 w-full mb-2" />
+                        <Skeleton className="h-3 w-2/3" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : searchResults.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {searchResults.map((food, index) => (
                     <FoodCard
@@ -157,7 +192,9 @@ const SearchPage = () => {
           )}
         </div>
 
-        <AdUnit slotId="search-bottom" className="mt-8" format="rectangle" />
+        <Suspense fallback={<Skeleton className="h-[180px] w-full" />}>
+          <AdUnit slotId="search-bottom" className="mt-8" format="rectangle" />
+        </Suspense>
       </div>
     </PageTransition>
   );

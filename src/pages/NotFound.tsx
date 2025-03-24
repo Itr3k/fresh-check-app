@@ -1,9 +1,12 @@
 
 import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
-import AdUnit from "../components/AdUnit";
 import { AlertTriangle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load AdUnit component to improve initial rendering
+const AdUnit = lazy(() => import("../components/AdUnit"));
 
 // Define ad slot IDs as constants to ensure consistency
 const AD_SLOTS = {
@@ -12,7 +15,7 @@ const AD_SLOTS = {
   BOTTOM: "404-bottom"
 };
 
-// Food safety links to suggest on 404 pages
+// Reduced number of links to improve render speed
 const FOOD_SAFETY_LINKS = [
   { 
     title: "Temperature Danger Zone", 
@@ -29,22 +32,6 @@ const FOOD_SAFETY_LINKS = [
   { 
     title: "Food Safety for Vulnerable Groups", 
     url: "/food-safety/vulnerable-groups" 
-  },
-  { 
-    title: "Holiday & Event Food Safety", 
-    url: "/food-safety/holiday-events" 
-  },
-  { 
-    title: "Science of Food Spoilage", 
-    url: "/food-safety/science-of-spoilage" 
-  },
-  { 
-    title: "Emergency Food Safety", 
-    url: "/food-safety/emergency" 
-  },
-  {
-    title: "Understanding Food Labels",
-    url: "/food-safety/understanding-food-labels"
   }
 ];
 
@@ -53,6 +40,7 @@ const NotFound = () => {
   const isFoodSafetyPath = location.pathname.includes('/food-safety/');
 
   useEffect(() => {
+    // Log 404 errors
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname
@@ -79,9 +67,11 @@ const NotFound = () => {
           We couldn't find the page you're looking for.
         </p>
         
-        {/* First ad placement - top */}
+        {/* First ad placement - top - wrap in Suspense */}
         <div className="my-6">
-          <AdUnit slotId={AD_SLOTS.TOP} format="rectangle" />
+          <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+            <AdUnit slotId={AD_SLOTS.TOP} format="rectangle" />
+          </Suspense>
         </div>
         
         {isFoodSafetyPath && (
@@ -107,7 +97,9 @@ const NotFound = () => {
         
         {/* Second ad placement - middle */}
         <div className="my-6">
-          <AdUnit slotId={AD_SLOTS.MIDDLE} format="rectangle" />
+          <Suspense fallback={<Skeleton className="h-[180px] w-full" />}>
+            <AdUnit slotId={AD_SLOTS.MIDDLE} format="rectangle" />
+          </Suspense>
         </div>
         
         <Link 
@@ -120,7 +112,9 @@ const NotFound = () => {
       
       {/* Third ad placement - bottom */}
       <div className="max-w-md w-full">
-        <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" lazyLoad={true} />
+        <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+          <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" lazyLoad={true} />
+        </Suspense>
       </div>
     </div>
   );

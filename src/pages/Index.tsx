@@ -1,20 +1,24 @@
-import React, { useRef } from "react";
+
+import React, { useRef, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
-import { Search, Tag, ArrowRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import PopularFoods from "../components/PopularFoods";
-import SavedFoods from "../components/SavedFoods";
-import CategoryCards from "../components/CategoryCards";
 import PageTransition from "../components/PageTransition";
-import AdUnit from "../components/AdUnit";
-import FoodSafetyFacts from "../components/FoodSafetyFacts";
-import FoodSafetyEducation from "../components/FoodSafetyEducation";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
-import FoodLabelsPreview from "../components/FoodLabelsPreview";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy-loaded components to improve initial render performance
+const SavedFoods = lazy(() => import("../components/SavedFoods"));
+const CategoryCards = lazy(() => import("../components/CategoryCards"));
+const FoodSafetyFacts = lazy(() => import("../components/FoodSafetyFacts"));
+const FoodSafetyEducation = lazy(() => import("../components/FoodSafetyEducation"));
+const FoodLabelsPreview = lazy(() => import("../components/FoodLabelsPreview"));
+const AdUnit = lazy(() => import("../components/AdUnit"));
 
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
@@ -102,44 +106,60 @@ const Index = () => {
           content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator."
         />
         <link rel="canonical" href="https://freshcheck.app/" />
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(websiteSchema)}
+        </script>
       </Helmet>
-
-      <script type="application/ld+json">
-        {JSON.stringify(faqSchema)}
-      </script>
-      
-      <script type="application/ld+json">
-        {JSON.stringify(websiteSchema)}
-      </script>
 
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
 
         <main className="container mx-auto px-4 py-8 pt-24 flex-grow">
+          {/* Critical content for first paint - Load immediately */}
           <HeroSection onSearch={handleSearch} />
-
-          <FoodLabelsPreview />
 
           <PopularFoods />
 
+          {/* Ad placement - top */}
           <div className="my-8">
-            <AdUnit slotId="home-top" format="leaderboard" />
+            <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+              <AdUnit slotId="home-top" format="leaderboard" />
+            </Suspense>
           </div>
 
+          {/* Non-critical UI components - lazy load */}
+          <Suspense fallback={<Skeleton className="h-[300px] w-full rounded-lg" />}>
+            <FoodLabelsPreview />
+          </Suspense>
+
           <div id="browse-categories">
-            <CategoryCards />
+            <Suspense fallback={<Skeleton className="h-[300px] w-full rounded-lg mt-8" />}>
+              <CategoryCards />
+            </Suspense>
           </div>
           
           <div id="food-safety-education">
-            <FoodSafetyEducation />
+            <Suspense fallback={<Skeleton className="h-[200px] w-full rounded-lg mt-8" />}>
+              <FoodSafetyEducation />
+            </Suspense>
           </div>
 
-          <FoodSafetyFacts />
+          <Suspense fallback={<Skeleton className="h-[250px] w-full rounded-lg mt-8" />}>
+            <FoodSafetyFacts />
+          </Suspense>
           
-          <SavedFoods />
+          <Suspense fallback={<Skeleton className="h-[200px] w-full rounded-lg mt-8" />}>
+            <SavedFoods />
+          </Suspense>
 
+          {/* Ad placement - bottom */}
           <div className="mt-8">
-            <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
+            <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+              <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
+            </Suspense>
           </div>
 
           <div 
