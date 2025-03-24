@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState, useEffect, memo, useRef } from "react";
 import { foodData } from "../data/foodData";
+import { useImages } from "../contexts/ImagesContext";
 
 // Centralized food images mapping for consistent imagery across the app
 export const FOOD_IMAGES: Record<string, string> = {
@@ -41,45 +42,15 @@ interface FoodCardProps {
 
 // Memoize FoodCard to prevent unnecessary re-renders
 const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
+  const { getImageUrl, preloadImage } = useImages();
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Get the consistent image for this food item - prioritize the central mapping
-  const getConsistentImage = (foodId: string): string => {
-    // First check if we have this item in our centralized mapping
-    if (FOOD_IMAGES[foodId]) {
-      return FOOD_IMAGES[foodId];
-    }
-    
-    // If no direct match in our mapping, use the provided imageUrl
-    return imageUrl;
-  };
-  
-  // Find alternative image when primary image fails
-  const findFallbackImage = (): string => {
-    // First check if we have a dedicated high-quality fallback for this specific food
-    if (FOOD_IMAGES[id]) {
-      return FOOD_IMAGES[id];
-    }
-    
-    // If no dedicated fallback exists, find a food with a similar category
-    const sameCategoryFoods = foodData.filter(food => 
-      food.id !== id && 
-      food.category === category &&
-      food.imageUrl && 
-      food.imageUrl.length > 10
-    );
-    
-    if (sameCategoryFoods.length > 0) {
-      return sameCategoryFoods[0].imageUrl;
-    }
-    
-    // Last resort fallback - generic food image
-    return FOOD_IMAGES.default;
-  };
-  
-  const fallbackImageUrl = findFallbackImage();
+  // Preload this image and any related foods
+  useEffect(() => {
+    preloadImage(id);
+  }, [id, preloadImage]);
   
   const handleImageError = () => {
     setImageError(true);
@@ -110,6 +81,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
 
   // Get the appropriate image URL for this food item
   const displayImageUrl = FOOD_IMAGES[id] || imageUrl;
+  const fallbackImageUrl = FOOD_IMAGES.default;
 
   // Performance optimization: reduce motion for users with reduced motion preference
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

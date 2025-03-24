@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -10,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { RecallsProvider } from "./contexts/RecallsContext";
 import WebhookReceiver from "./components/WebhookReceiver";
+import { ImagesProvider } from './contexts/ImagesContext';
 
 // Lazy load non-critical pages
 const FoodDetail = lazy(() => import("./pages/FoodDetail"));
@@ -48,48 +48,50 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <RecallsProvider>
-          <WebhookReceiver />
-          <Toaster />
-          <Sonner />
-          <TooltipProvider>
-            <Suspense fallback={<PageLoading />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/food/:id" element={<FoodDetail />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/categories/:categoryId" element={<CategoryPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/recalls" element={<RecallsPage />} />
-                <Route path="/recalls/:id" element={<RecallDetailPage />} />
-                
-                {/* Food Safety Educational Pages */}
-                <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
-                <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
-                <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
-                <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
-                <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
-                <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
-                <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
-                <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
-                
-                {/* Redirect paths to maintain backward compatibility */}
-                <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
-                <Route path="/food-safety/holiday-event-safety" element={<Navigate to="/food-safety/holiday-events" replace />} />
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </TooltipProvider>
+          <ImagesProvider>
+            <WebhookReceiver />
+            <Toaster />
+            <Sonner />
+            <TooltipProvider>
+              <Suspense fallback={<PageLoading />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/food/:id" element={<FoodDetail />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/categories/:categoryId" element={<CategoryPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/recalls" element={<RecallsPage />} />
+                  <Route path="/recalls/:id" element={<RecallDetailPage />} />
+                  
+                  {/* Food Safety Educational Pages */}
+                  <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+                  <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
+                  <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
+                  <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
+                  <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
+                  <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
+                  <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+                  <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
+                  
+                  {/* Redirect paths to maintain backward compatibility */}
+                  <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
+                  <Route path="/food-safety/holiday-event-safety" element={<Navigate to="/food-safety/holiday-events" replace />} />
+                  
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </TooltipProvider>
+          </ImagesProvider>
         </RecallsProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;
