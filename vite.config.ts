@@ -12,8 +12,15 @@ export default defineConfig({
     },
   },
   server: {
-    // This enables proper SPA routing when developing
-    historyApiFallback: true,
+    port: 8080,
+    // SPA fallback for client-side routing
+    proxy: {
+      '/*': {
+        target: '/',
+        changeOrigin: false,
+        rewrite: (path) => '/index.html',
+      },
+    },
   },
   // Ensure proper SPA behavior when building for production
   build: {
