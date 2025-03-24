@@ -9,7 +9,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react({
       // Add React plugin options if needed
-      jsxRuntime: 'automatic'
+      jsxRuntime: 'automatic',
+      // Explicitly set Fast Refresh configuration
+      fastRefresh: true
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
