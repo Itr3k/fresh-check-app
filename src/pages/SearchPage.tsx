@@ -1,163 +1,147 @@
 
-import { useState, useEffect } from "react";
-import { Helmet } from "react-helmet-async";
-import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
-import SearchBar from "../components/SearchBar";
-import FoodCard from "../components/FoodCard";
-import PageTransition from "../components/PageTransition";
-import AdUnit from "../components/AdUnit";
-import { searchFoods, FoodItem } from "../data/foodData";
-import BreadcrumbNav from "../components/BreadcrumbNav";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { Search, AlertCircle, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import FoodCard from '@/components/FoodCard';
+import { foods } from '@/data/foodData';
+import PageTransition from '@/components/PageTransition';
+import { FoodItem } from '@/types';
+import AdUnit from '@/components/AdUnit';
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  
-  const [query, setQuery] = useState<string>(initialQuery);
+  const query = searchParams.get('q') || '';
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
-  const [hasSearched, setHasSearched] = useState<boolean>(!!initialQuery);
-
-  // Breadcrumb items
-  const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Search", current: query ? false : true },
-  ];
-
-  if (query) {
-    breadcrumbItems.push({ label: query, current: true });
-  }
-
-  // Initialize search results if there's a query parameter
+  const [searchInput, setSearchInput] = useState(query);
+  
   useEffect(() => {
-    if (initialQuery) {
-      const results = searchFoods(initialQuery);
-      setSearchResults(results);
-      setHasSearched(true);
+    setSearchInput(query);
+    
+    if (query) {
+      const filtered = foods.filter(food => 
+        food.name.toLowerCase().includes(query.toLowerCase()) ||
+        (food.category && food.category.toLowerCase().includes(query.toLowerCase())) ||
+        (food.description && food.description.toLowerCase().includes(query.toLowerCase()))
+      );
+      setSearchResults(filtered);
+    } else {
+      setSearchResults([]);
     }
-  }, [initialQuery]);
-
-  const handleSearch = (searchQuery: string) => {
-    setQuery(searchQuery);
-    setHasSearched(true);
-    setSearchParams(searchQuery ? { q: searchQuery } : {});
-
-    // Search foods based on query
-    const results = searchFoods(searchQuery);
-    setSearchResults(results);
+  }, [query]);
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchParams({ q: searchInput });
   };
-
-  // Generate structured data for the search results
-  const generateSearchResultsSchema = () => {
-    if (!hasSearched || searchResults.length === 0) return null;
-
-    return {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "itemListElement": searchResults.map((food, index) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "item": {
-          "@type": "FoodEntity",
-          "name": food.name,
-          "url": `https://freshcheck.app/food/${food.id}`
-        }
-      }))
-    };
-  };
-
+  
+  // Get unique categories from search results
+  const categories = [...new Set(searchResults.map(food => food.category))];
+  
   return (
     <PageTransition>
       <Helmet>
-        <title>{query ? `"${query}" - Search Foods` : "Search Foods"} - Fresh Check</title>
-        <meta name="description" content="Search for any food to check if it's still fresh and good to eat. Get expiration dates, storage tips, and freshness indicators." />
-        <meta property="og:title" content={`${query ? `${query} - ` : ""}Search Foods - Fresh Check`} />
-        <meta property="og:description" content="Search for any food to check if it's still fresh and good to eat." />
-        <link rel="canonical" href={`https://freshcheck.app/search${query ? `?q=${encodeURIComponent(query)}` : ""}`} />
+        <title>Search Foods | FreshCheck - Food Shelf Life Guide</title>
+        <meta name="description" content="Search for food items to learn about their shelf life, storage tips, and signs of spoilage." />
+        <meta name="keywords" content="food search, shelf life search, food storage search" />
+        <link rel="canonical" href="https://freshcheck.app/search" />
       </Helmet>
-
-      {hasSearched && searchResults.length > 0 && (
-        <script type="application/ld+json">
-          {JSON.stringify(generateSearchResultsSchema())}
-        </script>
-      )}
-
-      <div className="pt-20 pb-12 max-w-3xl mx-auto px-4">
-        <div className="mb-4">
-          <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft size={18} className="mr-1" />
-            <span>Back</span>
-          </Link>
-        </div>
-
-        <div className="mb-4">
-          <BreadcrumbNav items={breadcrumbItems} />
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <h1 className="text-2xl font-semibold mb-6 text-center">Search Foods</h1>
-          <SearchBar 
-            onSearch={handleSearch} 
-            initialValue={query}
-            placeholder="Search for any food (e.g., apple, duck, cheese)"
-            realTimeSearch={true}
-          />
-        </motion.div>
-
-        <AdUnit slotId="search-top" className="mb-8" format="leaderboard" />
-
-        <div className="mb-8">
-          {hasSearched && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="text-xl font-medium mb-4">
-                {searchResults.length === 0 
-                  ? `No results found for "${query}"` 
-                  : `Search results for "${query}"`}
-              </h2>
-              
-              {searchResults.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {searchResults.map((food, index) => (
-                    <FoodCard
-                      key={food.id}
-                      id={food.id}
-                      name={food.name}
-                      imageUrl={food.imageUrl}
-                      category={food.category}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-secondary/50 rounded-lg p-6 text-center">
-                  <p className="mb-3">Try searching for a different food item or check our popular foods.</p>
-                  <Link to="/" className="text-primary hover:underline">
-                    View popular foods
-                  </Link>
-                </div>
-              )}
-            </motion.div>
-          )}
-          
-          {!hasSearched && (
-            <div className="text-center text-muted-foreground">
-              <p>Search for any food to check its shelf life and freshness.</p>
-              <p className="mt-2 text-sm">Try searching for: apple, duck, milk, cheese, etc.</p>
+      
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">Search Foods</h1>
+        
+        <form onSubmit={handleSearch} className="mb-8">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search for food items..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="pl-10"
+              />
             </div>
-          )}
+            <Button type="submit">Search</Button>
+          </div>
+        </form>
+        
+        {/* First ad placement - top of content */}
+        <div className="my-6">
+          <AdUnit slotId="search-top" format="leaderboard" />
         </div>
-
-        <AdUnit slotId="search-bottom" className="mt-8" format="rectangle" />
+        
+        {query && searchResults.length === 0 && (
+          <Alert className="mb-8">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>No results found</AlertTitle>
+            <AlertDescription>
+              We couldn't find any results for "{query}". Try a different search term or browse our categories below.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {query && searchResults.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Search Results for "{query}"</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {searchResults.map(food => (
+                <FoodCard key={food.id} food={food} />
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Second ad placement - middle of content */}
+        <div className="my-6">
+          <AdUnit slotId="search-middle" format="rectangle" />
+        </div>
+        
+        {categories.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">Browse by Category</h2>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(category => (
+                <Link key={category} to={`/categories/${category.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <Badge className="px-3 py-1" variant="secondary">{category}</Badge>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Popular Searches</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <Link to="/food/chicken" className="group block p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Chicken</span>
+                <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </Link>
+            <Link to="/food/eggs" className="group block p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Eggs</span>
+                <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </Link>
+            <Link to="/food/milk" className="group block p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Milk</span>
+                <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </Link>
+          </div>
+        </div>
+        
+        {/* Third ad placement - bottom of content */}
+        <div className="my-6">
+          <AdUnit slotId="search-bottom" format="leaderboard" lazyLoad={true} />
+        </div>
       </div>
     </PageTransition>
   );
