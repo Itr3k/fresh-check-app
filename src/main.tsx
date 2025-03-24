@@ -22,7 +22,7 @@ if (!rootElement) {
   );
 }
 
-// Simple HMR setup
+// Simple HMR setup that avoids conflicts with React refresh
 if (import.meta.hot) {
   import.meta.hot.accept();
 }

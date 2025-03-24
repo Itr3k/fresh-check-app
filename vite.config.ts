@@ -7,7 +7,11 @@ import { componentTagger } from "lovable-tagger"
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react(),
+    react({
+      // Configure React refresh properly
+      fastRefresh: true,
+      jsxRuntime: 'automatic',
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
