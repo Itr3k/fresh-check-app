@@ -1043,4 +1043,67 @@ const getFoodDetails = (id: string, getImageUrl: (id: string) => string) => {
     }
     
     if (id === "oranges") {
-      return "Soft spots, white or
+      return "Mold spots, leaking fluid, wrinkled skin, or fermented smell.";
+    }
+    
+    // Default generic spoilage signs as fallback
+    if (category === "Dairy") {
+      return "Sour smell, mold growth, change in texture or color.";
+    }
+    
+    if (category === "Meat") {
+      return "Slimy texture, off-color (greyish or greenish), sour or ammonia smell.";
+    }
+    
+    if (category === "Fruits") {
+      return "Mold growth, fermented smell, excessive softening, leaking fluid.";
+    }
+    
+    if (category === "Vegetables") {
+      return "Sliminess, unusual color, strong odor, wilting beyond normal.";
+    }
+    
+    return "Unusual smell, texture changes, discoloration, mold growth.";
+  };
+
+  const getBestStorageTip = (id: string, category?: string) => {
+    const storageOptions = getStorageOptions(id, category);
+    let bestOption = storageOptions[0];
+    
+    // Find storage type with longest shelf life for unopened product
+    for (const option of storageOptions) {
+      if (option.unopened.maxDays > bestOption.unopened.maxDays) {
+        bestOption = option;
+      }
+    }
+    
+    return {
+      storageType: bestOption.storageType,
+      days: bestOption.unopened.maxDays,
+      notes: bestOption.unopened.notes
+    };
+  };
+
+  // Use the food data if found, otherwise create generic data
+  if (foodFromDatabase) {
+    const imageUrl = getImageUrl(id);
+    
+    return {
+      id,
+      name: foodFromDatabase.name,
+      category: foodFromDatabase.category,
+      image: imageUrl || '/placeholder.svg', 
+      description: foodFromDatabase.description || `Information about ${foodFromDatabase.name} storage and shelf life.`,
+      storageOptions: getStorageOptions(id, foodFromDatabase.category),
+      spoilageSigns: getSpoilageSigns(id, foodFromDatabase.category),
+      bestStorageTip: getBestStorageTip(id, foodFromDatabase.category)
+    };
+  }
+
+  // Fallback for when food isn't found
+  return {
+    id,
+    name: id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+    category: 'General',
+    image: '/placeholder.svg',
+    description: 'Information about food storage
