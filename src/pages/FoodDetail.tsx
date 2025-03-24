@@ -14,6 +14,7 @@ import { getFoodById } from "../data/foodData";
 // Centralized food images mapping to ensure consistency
 const FOOD_IMAGES: Record<string, string> = {
   chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
+  "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
   milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
   eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
   bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
@@ -29,19 +30,22 @@ const FOOD_IMAGES: Record<string, string> = {
   oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
   peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
   onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
+  "orange-juice": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop&auto=format&q=75",
+  "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75",
+  pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75",
+  rice: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&h=300&fit=crop&auto=format&q=75",
+  salmon: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop&auto=format&q=75",
   default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
 };
 
 const getFixedFallbackImage = (foodId: string): string | null => {
-  const fixedFallbacks: Record<string, string> = {
-    "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
-    "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
-    "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
-    "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop",
-    "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop",
-  };
+  // Direct access to the same image mapping to ensure consistency
+  if (FOOD_IMAGES[foodId]) {
+    return FOOD_IMAGES[foodId];
+  }
   
-  return fixedFallbacks[foodId] || null;
+  // Fallback to default if no specific image found
+  return FOOD_IMAGES.default;
 };
 
 const getFoodDetails = (id: string) => {
@@ -1206,12 +1210,12 @@ const FoodDetail = () => {
         <meta name="description" content={`Learn how to properly store ${foodDetails.name} and how long it lasts in the refrigerator, freezer, and pantry.`} />
       </Helmet>
       
-      {/* Ad Unit 1: Top leaderboard */}
+      {/* Top ad unit - responsive for all devices */}
       <div className="container mx-auto px-4 mt-6 mb-4 print:hidden">
         <AdUnit 
           slotId="food-detail-top" 
-          format="leaderboard"
-          mobileFormat="mobile_banner"
+          format={isMobile ? "rectangle" : "leaderboard"}
+          mobileFormat="rectangle"
           className="w-full"
           responsive={true}
         />
@@ -1242,6 +1246,14 @@ const FoodDetail = () => {
                 src={foodDetails.imageUrl} 
                 alt={foodDetails.name}
                 className="w-full h-64 md:h-80 object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (target.src !== FOOD_IMAGES.default) {
+                    console.log(`Image failed to load: ${target.src}, trying fallback for ${id}`);
+                    const fallback = getFixedFallbackImage(id || "");
+                    target.src = fallback || FOOD_IMAGES.default;
+                  }
+                }}
               />
             </div>
             
@@ -1273,7 +1285,7 @@ const FoodDetail = () => {
               </div>
             </div>
             
-            {/* Ad Unit 2: Mid-content ad */}
+            {/* Mid-content ad - always rectangle for better mobile compatibility */}
             <div className="w-full my-6 print:hidden">
               <AdUnit 
                 slotId="food-detail-mid" 
@@ -1368,9 +1380,17 @@ const FoodDetail = () => {
           </div>
           
           <div className="md:col-span-2">
+            {/* Sidebar ad unit - skyscraper for desktop only */}
             {!isMobile && (
               <div className="sticky top-24 print:hidden">
                 <AdUnit slotId="food-detail-sidebar" format="skyscraper" className="mb-6" responsive={false} />
+              </div>
+            )}
+            
+            {/* Mobile-only rectangle ad */}
+            {isMobile && (
+              <div className="w-full mb-6 print:hidden">
+                <AdUnit slotId="food-detail-mobile" format="rectangle" responsive={true} />
               </div>
             )}
             
@@ -1428,6 +1448,13 @@ const FoodDetail = () => {
                             alt={food.name} 
                             className="w-full h-full object-cover"
                             loading="lazy"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              if (target.src !== FOOD_IMAGES.default) {
+                                const fallback = getFixedFallbackImage(food.id);
+                                target.src = fallback || FOOD_IMAGES.default;
+                              }
+                            }}
                           />
                         </div>
                         <div className="p-2">
@@ -1486,11 +1513,11 @@ const FoodDetail = () => {
           </div>
         </div>
         
-        {/* Ad Unit 3: Bottom leaderboard */}
+        {/* Bottom ad unit - responsive for all devices */}
         <div className="w-full mt-8 mb-4 print:hidden">
           <AdUnit 
             slotId="food-detail-bottom" 
-            format="leaderboard"
+            format={isMobile ? "rectangle" : "leaderboard"}
             mobileFormat="rectangle"
             responsive={true}
           />

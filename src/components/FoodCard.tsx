@@ -4,6 +4,34 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, memo, useRef } from "react";
 import { foodData } from "../data/foodData";
 
+// Import shared FOOD_IMAGES from somewhere if possible
+// For consistency, this should ideally be in a shared module
+const FOOD_IMAGES: Record<string, string> = {
+  chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
+  "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
+  milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
+  eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
+  bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
+  bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
+  lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
+  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
+  avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
+  apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
+  tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
+  bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
+  cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
+  yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
+  oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
+  peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
+  onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
+  "orange-juice": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop&auto=format&q=75",
+  "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75",
+  pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75",
+  rice: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&h=300&fit=crop&auto=format&q=75",
+  salmon: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop&auto=format&q=75",
+  default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
+};
+
 interface FoodCardProps {
   id: string;
   name: string;
@@ -18,39 +46,21 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const [imageLoaded, setImageLoaded] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Dedicated high-quality fallback images for specific food items
-  const getDedicatedFallbackImage = (foodId: string): string | null => {
-    const dedicatedFallbacks: Record<string, string> = {
-      // Previously troublesome foods with quality replacements
-      "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png", 
-      "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
-      
-      // Add dedicated fallbacks for foods shown in the screenshot
-      "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
-      "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop&auto=format&q=75",
-      "salmon": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop&auto=format&q=75",
-      "milk": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&h=300&fit=crop&auto=format&q=75",
-      "cheddar-cheese": "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=500&h=300&fit=crop&auto=format&q=75",
-      "apple": "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=500&h=300&fit=crop&auto=format&q=75",
-      "bananas": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=300&fit=crop&auto=format&q=75",
-      "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop&auto=format&q=75",
-      "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop&auto=format&q=75",
-      "bread": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=300&fit=crop&auto=format&q=75",
-      "pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75",
-      "rice": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&h=300&fit=crop&auto=format&q=75",
-      "orange-juice": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop&auto=format&q=75",
-      "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75"
-    };
+  // Use centralized mapping for consistent images
+  const getConsistentImage = (foodId: string): string => {
+    if (FOOD_IMAGES[foodId]) {
+      return FOOD_IMAGES[foodId];
+    }
     
-    return dedicatedFallbacks[foodId] || null;
+    // If no direct match in our mapping, use the provided imageUrl
+    return imageUrl;
   };
   
   // Find alternative image when primary image fails
   const findFallbackImage = (): string => {
     // First check if we have a dedicated high-quality fallback for this specific food
-    const dedicatedFallback = getDedicatedFallbackImage(id);
-    if (dedicatedFallback) {
-      return dedicatedFallback;
+    if (FOOD_IMAGES[id]) {
+      return FOOD_IMAGES[id];
     }
     
     // If no dedicated fallback exists, find a food with a similar category
@@ -66,7 +76,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     }
     
     // Last resort fallback - generic food image
-    return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
+    return FOOD_IMAGES.default;
   };
   
   const fallbackImageUrl = findFallbackImage();
@@ -102,6 +112,11 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const optimizeImageUrl = (url: string): string => {
     if (!url) return fallbackImageUrl;
     
+    // First check if we have this food in our mapping for consistency
+    if (FOOD_IMAGES[id]) {
+      return FOOD_IMAGES[id];
+    }
+    
     // Replace problematic URLs
     if (url.includes('photo-160') || url.includes('photo-162')) {
       return fallbackImageUrl;
@@ -129,6 +144,9 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     "url": `https://freshcheck.app/food/${id}`
   };
 
+  // Use consistent image from our mapping if available
+  const displayImageUrl = FOOD_IMAGES[id] || optimizeImageUrl(imageUrl);
+
   return (
     <motion.div
       initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -152,7 +170,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
             )}
             
             <img 
-              src={imageError ? optimizeImageUrl(fallbackImageUrl) : optimizeImageUrl(imageUrl)}
+              src={imageError ? optimizeImageUrl(fallbackImageUrl) : displayImageUrl}
               alt={`${name} - food storage information`}
               width="500"
               height="300"
