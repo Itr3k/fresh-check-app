@@ -72,32 +72,6 @@ const Header = memo(() => {
             </>
           ) : (
             <>
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="h-auto px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors">Food Safety</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                        {foodSafetyLinks.map((link) => (
-                          <Link 
-                            key={link.to}
-                            to={link.to} 
-                            className="flex p-2 hover:bg-muted rounded-md transition-colors"
-                          >
-                            <div className="mt-1 mr-2">
-                              {link.icon}
-                            </div>
-                            <div>
-                              <div className="text-sm font-medium">{link.title}</div>
-                              <p className="text-xs text-muted-foreground">{link.description}</p>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
               <Link 
                 to="/recalls" 
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"

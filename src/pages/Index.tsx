@@ -11,13 +11,13 @@ import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
+import FoodLabelsPreview from "../components/FoodLabelsPreview";
 
 // Lazy-loaded components to improve initial render performance
 const SavedFoods = lazy(() => import("../components/SavedFoods"));
 const CategoryCards = lazy(() => import("../components/CategoryCards"));
 const FoodSafetyFacts = lazy(() => import("../components/FoodSafetyFacts"));
 const FoodSafetyEducation = lazy(() => import("../components/FoodSafetyEducation"));
-const FoodLabelsPreview = lazy(() => import("../components/FoodLabelsPreview"));
 const AdUnit = lazy(() => import("../components/AdUnit"));
 
 // Custom loading with explicit dimensions to prevent CLS
@@ -149,10 +149,8 @@ const Index = () => {
 
           <PopularFoods />
           
-          {/* Prioritize content over ads - Load primary content first */}
-          <Suspense fallback={<SkeletonLoader height="300px" />}>
-            <FoodLabelsPreview />
-          </Suspense>
+          {/* Food Labels Preview - Load eagerly */}
+          <FoodLabelsPreview />
 
           <div id="browse-categories">
             <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
