@@ -21,7 +21,15 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: mode === 'development', // Only generate sourcemaps in development
+    minify: 'terser', // Use terser for better minification
+    terserOptions: {
+      compress: {
+        drop_console: mode === 'production', // Drop console logs in production
+        drop_debugger: true,
+        pure_funcs: mode === 'production' ? ['console.log', 'console.info', 'console.debug'] : [],
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -37,4 +45,6 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
   },
+  // Detect slow plugins
+  profile: mode === 'development',
 }));

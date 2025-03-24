@@ -10,10 +10,11 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { memo } from "react";
 
-const Header = () => {
+// Memoize the header to prevent unnecessary rerenders
+const Header = memo(() => {
   const isMobile = useIsMobile();
   
   return (
@@ -95,6 +96,8 @@ const Header = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = "Header";
 
 export default Header;

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Thermometer, AlertCircle, Utensils, Users, Cake, BookOpen, AlertTriangle, Tag } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const educationPages = [
   {
@@ -72,8 +73,24 @@ const educationPages = [
 ];
 
 const FoodSafetyEducation = () => {
+  const isMobile = useIsMobile();
+  
+  // Reduce motion complexity on mobile
+  const initialAnimation = isMobile ? 
+    { opacity: 0 } : 
+    { opacity: 0, y: 20 };
+  
+  const animation = isMobile ? 
+    { opacity: 1 } : 
+    { opacity: 1, y: 0 };
+  
+  const transitionDuration = isMobile ? 0.3 : 0.4;
+  
+  // Pre-calculate icon dimensions for layout stability
+  const iconSize = isMobile ? 20 : 24;
+  
   return (
-    <div className="mt-8">
+    <div className="mt-8" id="food-safety-education">
       <motion.h2 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -86,20 +103,28 @@ const FoodSafetyEducation = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {educationPages.map((page, index) => {
           const Icon = page.icon;
+          
+          // Stagger the animations less aggressively on mobile
+          const delay = isMobile ? Math.min(index * 0.05, 0.3) : index * 0.1;
+          
           return (
             <motion.div
               key={page.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
+              initial={initialAnimation}
+              animate={animation}
+              transition={{ duration: transitionDuration, delay }}
+              style={{ display: 'flex', height: '100%' }} // Pre-allocate space
             >
               <Link
                 to={page.url}
                 className="flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-all bg-white border border-border h-full"
                 aria-label={`Learn about ${page.title}`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${page.color}`}>
-                  <Icon size={24} className="text-primary" />
+                <div 
+                  className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${page.color}`}
+                  style={{ minWidth: '3rem' }} // Prevent shrinking on mobile
+                >
+                  <Icon size={iconSize} className="text-primary" />
                 </div>
                 <div>
                   <h3 className="font-medium">{page.title}</h3>
