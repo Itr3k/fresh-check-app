@@ -8,13 +8,14 @@ import { componentTagger } from "lovable-tagger"
 export default defineConfig(({ mode }) => ({
   plugins: [
     react({
-      // Configure React plugin with explicit options for HMR support
+      // Configure React refresh properly with fastRefresh
       jsxRuntime: 'automatic',
       babel: {
         plugins: [],
         babelrc: false,
         configFile: false,
-      }
+      },
+      fastRefresh: true,
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
@@ -29,7 +30,8 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       protocol: 'ws',
       timeout: 30000,
-      clientPort: 8080, // Ensure the client port matches the server port
+      clientPort: 8080,
+      host: 'localhost',
     },
     // SPA fallback for client-side routing
     proxy: {

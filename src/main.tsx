@@ -8,8 +8,11 @@ import React from 'react'
 
 const rootElement = document.getElementById("root");
 
-const renderApp = async () => {
-  if (!rootElement) return;
+const renderApp = () => {
+  if (!rootElement) {
+    console.error("Root element not found");
+    return;
+  }
   
   const root = createRoot(rootElement);
   
@@ -133,3 +136,11 @@ if ('serviceWorker' in navigator) {
 
 // Immediately render the app
 renderApp();
+
+// Allow for Hot Module Replacement in development
+if (import.meta.hot) {
+  import.meta.hot.accept('./App.tsx', () => {
+    console.log('HMR: App.tsx updated, re-rendering');
+    renderApp();
+  });
+}
