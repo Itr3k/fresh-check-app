@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import FoodCard from '@/components/FoodCard';
-import { foods } from '@/data/foodData';
+import { foodData, searchFoods } from '@/data/foodData';
 import PageTransition from '@/components/PageTransition';
 import { FoodItem } from '@/types';
 import AdUnit from '@/components/AdUnit';
@@ -23,11 +23,7 @@ const SearchPage = () => {
     setSearchInput(query);
     
     if (query) {
-      const filtered = foods.filter(food => 
-        food.name.toLowerCase().includes(query.toLowerCase()) ||
-        (food.category && food.category.toLowerCase().includes(query.toLowerCase())) ||
-        (food.description && food.description.toLowerCase().includes(query.toLowerCase()))
-      );
+      const filtered = searchFoods(query);
       setSearchResults(filtered);
     } else {
       setSearchResults([]);
@@ -40,7 +36,7 @@ const SearchPage = () => {
   };
   
   // Get unique categories from search results
-  const categories = [...new Set(searchResults.map(food => food.category))];
+  const categories = [...new Set(searchResults.map(food => food.category))].filter(Boolean) as string[];
   
   return (
     <PageTransition>
@@ -90,7 +86,13 @@ const SearchPage = () => {
             <h2 className="text-xl font-semibold mb-4">Search Results for "{query}"</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {searchResults.map(food => (
-                <FoodCard key={food.id} food={food} />
+                <FoodCard 
+                  key={food.id} 
+                  id={food.id} 
+                  name={food.name} 
+                  imageUrl={food.image || ''} 
+                  category={food.category || ''} 
+                />
               ))}
             </div>
           </div>

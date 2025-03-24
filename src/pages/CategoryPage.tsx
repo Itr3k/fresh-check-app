@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import FoodCard from '@/components/FoodCard';
-import { foods } from '@/data/foodData';
+import { foodData } from '@/data/foodData';
 import { FoodItem } from '@/types';
 import PageTransition from '@/components/PageTransition';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
@@ -28,7 +28,7 @@ const CategoryPage = () => {
       setCategoryName(formattedName);
       
       // Filter foods by the category
-      const filtered = foods.filter(food => 
+      const filtered = foodData.filter(food => 
         food.category && food.category.toLowerCase() === formattedName.toLowerCase()
       );
       setCategoryFoods(filtered);
@@ -76,7 +76,7 @@ const CategoryPage = () => {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               {categoryFoods.map((food) => (
-                <FoodCard key={food.id} food={food} />
+                <FoodCard key={food.id} id={food.id} name={food.name} imageUrl={food.image || ''} category={food.category || ''} />
               ))}
             </div>
             

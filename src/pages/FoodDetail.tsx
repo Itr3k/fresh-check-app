@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import FoodInfoResult from '@/components/FoodInfoResult';
-import { foods } from '@/data/foodData';
+import { foodData } from '@/data/foodData';
 import { FoodItem } from '@/types';
 import PageTransition from '@/components/PageTransition';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
@@ -22,7 +22,7 @@ const FoodDetail = () => {
     window.scrollTo(0, 0);
     
     if (id) {
-      const foodItem = foods.find(f => f.id === id);
+      const foodItem = foodData.find(f => f.id === id);
       if (foodItem) {
         setFood(foodItem);
       } else {
@@ -40,6 +40,14 @@ const FoodDetail = () => {
     { label: 'Foods', href: '/' },
     { label: food.name, current: true }
   ];
+
+  // Convert food object to match FoodInfo interface expected by FoodInfoResult
+  const foodInfo = {
+    name: food.name,
+    imageUrl: food.image,
+    storageInstructions: food.tips,
+    // Add any other fields needed by FoodInfoResult
+  };
 
   return (
     <PageTransition>
@@ -164,7 +172,7 @@ const FoodDetail = () => {
           
           <div className="md:col-span-1">
             <div className="sticky top-4 space-y-6">
-              <FoodInfoResult food={food} />
+              <FoodInfoResult foodInfo={foodInfo} onReset={() => {}} />
               
               {/* Food Safety Resources */}
               <div className="bg-muted/30 p-4 rounded-lg border border-border">
