@@ -14,7 +14,9 @@ export default defineConfig(({ mode }) => ({
         plugins: [],
         babelrc: false,
         configFile: false,
-      }
+      },
+      // Explicitly enable Fast Refresh
+      fastRefresh: true,
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
