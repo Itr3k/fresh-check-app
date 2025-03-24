@@ -4,7 +4,7 @@ import { Check, Clock, X } from "lucide-react";
 
 type Status = "fresh" | "use-soon" | "expired";
 
-interface StatusIndicatorProps {
+export interface StatusIndicatorProps {
   status?: Status;
   daysText?: string;
   size?: "small" | "medium" | "large";

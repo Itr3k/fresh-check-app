@@ -10,7 +10,6 @@ import { useIsMobile } from "../hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
-import { FOOD_IMAGES } from "../components/FoodCard";
 import { useImages } from "../contexts/ImagesContext";
 
 const getFoodDetails = (id: string) => {
@@ -1228,7 +1227,7 @@ const FoodDetail = () => {
                   <StatusIndicator 
                     status={freshness.status} 
                     daysRemaining={freshness.daysRemaining} 
-                    expirationDate={freshness.expirationDate}
+                    maxDays={freshness.maxDays}
                   />
                   
                   <div className="mt-4 text-sm text-muted-foreground">
@@ -1286,7 +1285,7 @@ const FoodDetail = () => {
         
         {/* Ads */}
         <div className="print:hidden my-8">
-          <AdUnit size="large" className="mx-auto" />
+          <AdUnit className="mx-auto" />
         </div>
         
         {/* Related Foods */}
@@ -1356,4 +1355,3 @@ const FoodDetail = () => {
 };
 
 export default FoodDetail;
-
