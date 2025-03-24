@@ -48,10 +48,13 @@ const queryClient = new QueryClient({
   },
 });
 
+// Create a helmet context to fix helmet instances issue
+const helmetContext = {};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <HelmetProvider>
+      <HelmetProvider context={helmetContext}>
         <RecallsProvider>
           <WebhookReceiver />
           <Toaster />
