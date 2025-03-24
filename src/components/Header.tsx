@@ -1,8 +1,17 @@
 
-import { Search, Bell, AlertOctagon } from "lucide-react";
+import { Search, Bell, AlertOctagon, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const isMobile = useIsMobile();
@@ -18,24 +27,63 @@ const Header = () => {
         </Link>
         <div className="flex items-center space-x-4">
           {isMobile ? (
-            <Link to="/recalls">
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                className="gap-1 px-3 py-1.5 rounded-full"
+            <>
+              <Link to="/recalls">
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  className="gap-1 px-3 py-1.5 rounded-full"
+                >
+                  <AlertOctagon size={16} />
+                  <span className="text-xs font-medium">Recalls</span>
+                </Button>
+              </Link>
+              <Link 
+                to="/food-safety/understanding-food-labels" 
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
+              >
+                <Tag size={16} />
+              </Link>
+            </>
+          ) : (
+            <>
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="h-auto px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors">Food Safety</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+                        <Link to="/food-safety/understanding-food-labels" className="flex p-2 hover:bg-muted rounded-md transition-colors">
+                          <div className="mt-1 mr-2">
+                            <Tag className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium">Understanding Food Labels</div>
+                            <p className="text-xs text-muted-foreground">Learn the difference between "Best By," "Use By," and "Sell By" dates</p>
+                          </div>
+                        </Link>
+                        <Link to="/food-safety/temperature-danger-zone" className="flex p-2 hover:bg-muted rounded-md transition-colors">
+                          <div className="mt-1 mr-2">
+                            <AlertOctagon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium">Temperature Danger Zone</div>
+                            <p className="text-xs text-muted-foreground">Safe food temperatures and avoiding bacterial growth</p>
+                          </div>
+                        </Link>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+              <Link 
+                to="/recalls" 
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
               >
                 <AlertOctagon size={16} />
-                <span className="text-xs font-medium">Recalls</span>
-              </Button>
-            </Link>
-          ) : (
-            <Link 
-              to="/recalls" 
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
-            >
-              <AlertOctagon size={16} />
-              <span className="text-sm font-medium">Recalls</span>
-            </Link>
+                <span className="text-sm font-medium">Recalls</span>
+              </Link>
+            </>
           )}
           <Link 
             to="/search" 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Thermometer, AlertCircle, Utensils, Users, Cake, BookOpen, AlertTriangle } from 'lucide-react';
+import { Thermometer, AlertCircle, Utensils, Users, Cake, BookOpen, AlertTriangle, Tag } from 'lucide-react';
 
 const educationPages = [
   {
@@ -28,6 +28,14 @@ const educationPages = [
     icon: Utensils,
     url: '/food-safety/cross-contamination',
     color: 'bg-green-100'
+  },
+  {
+    id: 'understanding-food-labels',
+    title: 'Understanding Food Labels',
+    description: 'Learn the differences between "Best By," "Use By," and "Sell By" dates on packaging',
+    icon: Tag,
+    url: '/food-safety/understanding-food-labels',
+    color: 'bg-purple-100'
   },
   {
     id: 'vulnerable-groups',

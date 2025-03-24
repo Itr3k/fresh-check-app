@@ -95,6 +95,11 @@ const FoodSafetyLayout = ({
               currentPage={title}
             />
             <RelatedLink
+              title="Understanding Food Labels"
+              url="/food-safety/understanding-food-labels"
+              currentPage={title}
+            />
+            <RelatedLink
               title="Food Safety for Vulnerable Groups"
               url="/food-safety/vulnerable-groups"
               currentPage={title}

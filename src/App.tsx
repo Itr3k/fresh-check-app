@@ -27,6 +27,7 @@ const VulnerableGroups = lazy(() => import("./pages/FoodSafety/VulnerableGroups"
 const HolidayEvents = lazy(() => import("./pages/FoodSafety/HolidayEvents"));
 const ScienceOfSpoilage = lazy(() => import("./pages/FoodSafety/ScienceOfSpoilage"));
 const EmergencyFoodSafety = lazy(() => import("./pages/FoodSafety/EmergencyFoodSafety"));
+const UnderstandingFoodLabels = lazy(() => import("./pages/FoodSafety/UnderstandingFoodLabels"));
 
 // Create a fallback loading component
 const PageLoading = () => (
@@ -74,6 +75,7 @@ const App = () => (
                 <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
                 <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
                 <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+                <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
                 
                 {/* Redirect paths to maintain backward compatibility */}
                 <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
