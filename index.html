@@ -58,17 +58,17 @@
       }
     </style>
 
-    <!-- Preload critical resources and use preconnect hints -->
+    <!-- Resource Hints - Preload & Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-
-    <!-- Added to fix ad network connections -->
+    
+    <!-- Added more resource hints for performance -->
     <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin />
     <link rel="preconnect" href="https://adservice.google.com" crossorigin />
     <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
     <link rel="dns-prefetch" href="https://adservice.google.com" />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
     <!-- Preload critical fonts -->
     <link 
@@ -80,8 +80,7 @@
     />
 
     <!-- Non-blocking CSS -->
-    <link rel="preload" href="/src/index.css" as="style" />
-    <link rel="stylesheet" href="/src/index.css" media="print" onload="this.media='all'" />
+    <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
 
     <!-- Google Search Console Verification (Replace with your actual verification code) -->
@@ -137,101 +136,68 @@
     }
     </script>
     
-    <!-- Improved AdSense loader for better performance and reliability -->
-    <script type="text/javascript">
-      // Create a centralized AdSense loader function with better performance patterns
+    <!-- Optimized AdSense loader with modern browser features -->
+    <script>
+      //Create a more efficient AdSense loader
       window.adsenseLoaded = false;
-      window.loadAdSense = function() {
-        // Prevent multiple script loads
-        if (window.adsenseLoaded || window.adsenseLoading || document.getElementById('adsense-script')) return;
-        
-        // Mark as loading
+      window.adsenseLoading = false;
+      
+      const loadAdSense = () => {
+        if (window.adsenseLoaded || window.adsenseLoading) return;
         window.adsenseLoading = true;
         
-        // Create script element with performance attributes
-        var script = document.createElement('script');
+        const script = document.createElement('script');
         script.id = 'adsense-script';
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
         script.async = true;
         script.crossOrigin = 'anonymous';
         
-        // Add performance hints
-        script.setAttribute('data-ad-frequency-hint', 'auto');
-        script.setAttribute('data-ad-channel', 'freshcheck-optimized');
+        // Set attributes for performance optimization
+        script.setAttribute('data-ad-frequency-hint', '30s');
+        script.setAttribute('data-page-url', window.location.href);
+        script.setAttribute('data-overlays', '{"bottom": 0}');
+        script.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
         
-        // Add cookie options for better compliance
-        script.setAttribute('data-adbreak-test', 'on');
-        script.setAttribute('data-ad-host', window.location.hostname);
-        
-        // Testing mode outside production
+        // Use test mode in non-production
         if (window.location.hostname !== 'freshcheck.app') {
           script.setAttribute('data-adtest', 'on');
         }
         
-        // Listen for script events
-        script.onload = function() {
+        script.onload = () => {
           window.adsenseLoaded = true;
           window.adsenseLoading = false;
           console.log('AdSense loaded successfully');
         };
         
-        script.onerror = function(error) {
+        script.onerror = (error) => {
           window.adsenseLoading = false;
           console.warn('AdSense failed to load:', error);
         };
         
-        // Add to document
         document.head.appendChild(script);
       };
-      
-      // Smart ad loading strategy
-      const adStrategy = () => {
-        // Skip if already loaded or loading
-        if (window.adsenseLoaded || window.adsenseLoading) return;
-        
-        // Check if user has shown engagement (scrolled 25% of page)
-        const handleScroll = () => {
-          if (window.scrollY > window.innerHeight * 0.25) {
-            window.loadAdSense();
-            window.removeEventListener('scroll', handleScroll);
-          }
-        };
-        
-        // Load on user interaction
-        const handleInteraction = () => {
-          window.loadAdSense();
-          document.removeEventListener('click', handleInteraction);
-          document.removeEventListener('touchstart', handleInteraction);
-          window.removeEventListener('scroll', handleScroll);
-        };
-        
-        // Set up event listeners with passive option for better performance
-        window.addEventListener('scroll', handleScroll, {passive: true});
-        document.addEventListener('click', handleInteraction, {passive: true});
-        document.addEventListener('touchstart', handleInteraction, {passive: true});
-        
-        // Fallback - load after content is fully loaded but only if needed
-        window.addEventListener('load', () => {
-          // Use requestIdleCallback to schedule ads loading during browser idle time
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => {
-              if (!window.adsenseLoaded && !window.adsenseLoading) {
-                window.loadAdSense();
-              }
-            }, {timeout: 6000});
-          } else {
-            // Fallback for browsers without requestIdleCallback
-            setTimeout(() => {
-              if (!window.adsenseLoaded && !window.adsenseLoading) {
-                window.loadAdSense();
-              }
-            }, 3000);
-          }
-        });
-      };
-      
-      // Initialize ad strategy
-      adStrategy();
+
+      // Smart loading strategy using Intersection Observer
+      const observer = new IntersectionObserver((entries) => {
+        const isVisible = entries.some(entry => entry.isIntersecting);
+        if (isVisible) {
+          loadAdSense();
+          observer.disconnect();
+        }
+      });
+
+      // Observe the first ad slot after DOM is ready
+      window.addEventListener('DOMContentLoaded', () => {
+        const adSlot = document.querySelector('.ad-slot');
+        if (adSlot) {
+          observer.observe(adSlot);
+        }
+      });
+
+      // Fallback for no IO support
+      if (!('IntersectionObserver' in window)) {
+        setTimeout(loadAdSense, 3000);
+      }
     </script>
   </head>
 
@@ -242,3 +208,4 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
