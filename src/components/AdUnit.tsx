@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Reduced height dimensions for better performance
+// Optimized dimensions for better performance
 const AD_FORMAT_DIMENSIONS = {
   rectangle: { width: "300px", height: "180px" },
   leaderboard: { width: "728px", height: "60px" },
@@ -29,7 +29,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const initializedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
-  // Size based on optimized format (reduced height)
+  // Size based on format
   let sizeClass = "h-[180px] w-full max-w-[300px] mx-auto"; // default rectangle
   
   if (format === "leaderboard") {
@@ -38,105 +38,122 @@ const AdUnit: React.FC<AdUnitProps> = ({
     sizeClass = "h-[400px] w-[160px] md:w-[300px]";
   }
 
-  // Check if we're in development mode
+  // Check if in development mode
   const isDevelopment = process.env.NODE_ENV === 'development' || 
                          window.location.hostname === 'localhost' ||
                          window.location.hostname.includes('lovableproject.com');
   
-  // Use IntersectionObserver for lazy loading
+  // Faster way to check if AdSense is loaded
+  const isAdSenseLoaded = () => {
+    return typeof window.adsbygoogle !== 'undefined';
+  };
+  
+  // Use IntersectionObserver for lazy loading with low-resource approach
   useEffect(() => {
     if (!lazyLoad || isVisible) return;
     
+    let observer: IntersectionObserver | null = null;
+    
     try {
-      const observer = new IntersectionObserver(
+      // Create observer that triggers when ad becomes 10% visible
+      observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            observer.disconnect();
+            observer?.disconnect();
+            observer = null;
           }
         },
-        // Increased rootMargin to start loading earlier
-        { threshold: 0.1, rootMargin: "350px" }
+        // Use more aggressive rootMargin but lower threshold to start loading earlier
+        { threshold: 0.01, rootMargin: "200px" }
       );
       
       if (adRef.current) {
         observer.observe(adRef.current);
       }
-      
-      return () => {
-        observer.disconnect();
-      };
     } catch (e) {
       // Fallback to visible if observer fails
       setIsVisible(true);
-      console.log("Error setting up intersection observer:", e);
+      console.warn("AdUnit: IntersectionObserver not available");
     }
+    
+    return () => {
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+    };
   }, [lazyLoad, isVisible]);
   
-  // Load ad or placeholder
+  // Load ad with performance optimization
   useEffect(() => {
     if (!isVisible || initializedRef.current) return;
     
-    // Mark as initialized to prevent multiple attempts
+    // Flag to prevent multiple initializations
     initializedRef.current = true;
     
-    // If in development, show placeholder
+    // Development fallback
     if (isDevelopment) {
-      timeoutRef.current = setTimeout(() => {
-        setAdLoaded(true);
-      }, 500);
+      // Quick placeholder in dev mode
+      setAdLoaded(true);
       return;
     }
     
-    // Show the placeholder immediately
+    // Set placeholder immediately
     setAdLoaded(true);
     
-    // Use the centralized AdSense loader
-    if (typeof window !== 'undefined' && !isDevelopment) {
-      // Ensure the AdSense script is loaded
-      if (window.loadAdSense && typeof window.loadAdSense === 'function') {
-        window.loadAdSense();
+    // Adaptive timeout depending on if page is still loading
+    const loadWaitTime = document.readyState === 'complete' ? 100 : 1000;
+    
+    // Delayed ad load to avoid competing with critical resources
+    timeoutRef.current = setTimeout(() => {
+      if (!adRef.current || !document.body.contains(adRef.current)) {
+        return; // Skip if component unmounted
       }
       
-      timeoutRef.current = setTimeout(() => {
-        try {
-          if (!adRef.current) return;
-
-          // Create new ad element
-          const adElement = document.createElement('ins');
-          adElement.className = 'adsbygoogle';
-          adElement.style.display = 'block';
-          adElement.style.width = '100%';
-          adElement.style.height = '100%';
-          adElement.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
-          adElement.setAttribute('data-ad-slot', slotId);
-          adElement.setAttribute('data-ad-format', 'auto');
-          adElement.setAttribute('data-full-width-responsive', 'true');
-          // Add performance hints
-          adElement.setAttribute('data-ad-region', `ad-${slotId}-${Date.now()}`);
+      try {
+        // Only proceed if AdSense loader function exists
+        if (window.loadAdSense && typeof window.loadAdSense === 'function') {
+          // Call the central loader
+          if (!isAdSenseLoaded()) {
+            window.loadAdSense();
+          }
           
-          // Clear existing content and append ad
+          // Clear existing content
           if (adRef.current) {
-            // Only append if the element is still in the DOM
-            if (document.body.contains(adRef.current)) {
-              adRef.current.innerHTML = '';
-              adRef.current.appendChild(adElement);
-              
-              // Push to adsbygoogle queue with error handling
-              try {
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
-              } catch (error) {
-                setIsError(true);
-                console.error('Error pushing ad to adsbygoogle:', error);
-              }
+            adRef.current.innerHTML = '';
+            
+            // Create new ad element
+            const adElement = document.createElement('ins');
+            adElement.className = 'adsbygoogle';
+            adElement.style.display = 'block';
+            adElement.style.width = '100%';
+            adElement.style.height = '100%';
+            adElement.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
+            adElement.setAttribute('data-ad-slot', slotId);
+            adElement.setAttribute('data-ad-format', 'auto');
+            adElement.setAttribute('data-full-width-responsive', 'true');
+            // Add unique ID to prevent duplicate ads
+            const uniqueId = `ad-${slotId}-${Math.random().toString(36).substring(2, 11)}`;
+            adElement.setAttribute('data-ad-region', uniqueId);
+            
+            // Append ad to container
+            adRef.current.appendChild(adElement);
+            
+            // Push to adsbygoogle queue with minimal retry
+            try {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (error) {
+              console.warn('AdUnit: Error initializing ad slot', error);
+              setIsError(true);
             }
           }
-        } catch (error) {
-          setIsError(true);
-          console.error('Error initializing ad:', error);
         }
-      }, 150); // Slightly delayed to ensure main content loads first
-    }
+      } catch (error) {
+        console.warn('AdUnit: Error creating ad element', error);
+        setIsError(true);
+      }
+    }, loadWaitTime);
     
     return () => {
       if (timeoutRef.current) {
@@ -156,7 +173,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // Placeholder component
+  // Lightweight placeholder
   const renderPlaceholder = () => (
     <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/20 rounded-lg border border-border/30">
       <p className="text-xs text-muted-foreground mb-1 font-medium">
@@ -169,10 +186,10 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </div>
   );
 
-  // Use a simpler, more performant render approach
+  // Use a more efficient DOM structure
   return (
     <div 
-      className={`overflow-hidden ${sizeClass} ${className}`} 
+      className={`overflow-hidden ${sizeClass} ${className} print:hidden`} 
       role="complementary" 
       aria-label="Advertisement"
       data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
@@ -180,7 +197,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
       <div className="relative h-full w-full">
         {(isError || isDevelopment) && renderPlaceholder()}
         
-        {/* Container for actual ad */}
         <div 
           className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full ${
             isError || isDevelopment ? 'hidden' : ''
@@ -188,6 +204,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           id={`ad-container-${slotId}`}
           ref={adRef}
           aria-hidden="true"
+          data-ad-slot={slotId}
         />
       </div>
     </div>

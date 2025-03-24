@@ -28,15 +28,24 @@ const SkeletonLoader = ({ height = "200px", className = "" }) => (
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const adLoadedRef = useRef(false);
+  const adsInitializedRef = useRef(false);
+  const isMountedRef = useRef(true);
 
-  // Load maximum of 2 ads on the homepage to improve performance
+  // Only load a single ad on first render to improve performance
   useEffect(() => {
-    if (typeof window !== 'undefined' && !adLoadedRef.current) {
-      adLoadedRef.current = true;
-      // Mark as viewed to avoid duplicate ad loads
-      window.sessionStorage.setItem('homepage-ads-viewed', 'true');
+    if (!adsInitializedRef.current) {
+      adsInitializedRef.current = true;
+      
+      // Use session storage to track if ads have been shown
+      const adsViewed = sessionStorage.getItem('homepage-ads-viewed');
+      if (!adsViewed) {
+        sessionStorage.setItem('homepage-ads-viewed', 'true');
+      }
     }
+    
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
   // Memoize scroll handler to prevent unnecessary re-renders
@@ -139,15 +148,8 @@ const Index = () => {
           <HeroSection onSearch={handleSearch} />
 
           <PopularFoods />
-
-          {/* Ad placement - top - only one ad on initial load for better performance */}
-          <div className="my-8 print:hidden">
-            <Suspense fallback={<SkeletonLoader height="90px" />}>
-              <AdUnit slotId="home-top" format="leaderboard" lazyLoad={false} />
-            </Suspense>
-          </div>
-
-          {/* Non-critical UI components - lazy load */}
+          
+          {/* Prioritize content over ads - Load primary content first */}
           <Suspense fallback={<SkeletonLoader height="300px" />}>
             <FoodLabelsPreview />
           </Suspense>
@@ -155,6 +157,13 @@ const Index = () => {
           <div id="browse-categories">
             <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
               <CategoryCards />
+            </Suspense>
+          </div>
+          
+          {/* Only show ONE ad, and only after content has loaded */}
+          <div className="my-8 print:hidden">
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
+              <AdUnit slotId="home-content" format="leaderboard" lazyLoad={true} />
             </Suspense>
           </div>
           
@@ -171,13 +180,6 @@ const Index = () => {
           <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
             <SavedFoods />
           </Suspense>
-
-          {/* Ad placement - bottom - very lazy loaded with extra distance margin */}
-          <div className="mt-8 print:hidden">
-            <Suspense fallback={<SkeletonLoader height="90px" />}>
-              <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
-            </Suspense>
-          </div>
 
           <div 
             className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"

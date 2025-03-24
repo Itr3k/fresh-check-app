@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,7 +61,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
     <!-- Preload critical fonts -->
     <link 
@@ -112,60 +113,91 @@
     <meta name="theme-color" content="#4CAF50">
     <meta name="msapplication-TileColor" content="#4CAF50">
     
-    <!-- Optimized Google AdSense loading - improved for performance -->
+    <!-- Highly optimized AdSense loader for better performance -->
     <script type="text/javascript">
-      // Create a centralized AdSense loader function
+      // Create a centralized AdSense loader function with better performance patterns
+      window.adsenseLoaded = false;
       window.loadAdSense = function() {
-        if (document.getElementById('adsense-script')) return; // Prevent duplicate loading
+        // Prevent multiple script loads
+        if (window.adsenseLoaded || window.adsenseLoading || document.getElementById('adsense-script')) return;
         
+        // Mark as loading
+        window.adsenseLoading = true;
+        
+        // Create script element with performance attributes
         var script = document.createElement('script');
         script.id = 'adsense-script';
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
         script.async = true;
         script.crossOrigin = 'anonymous';
-        script.setAttribute('data-ad-frequency-hint', 'automated');
-        script.setAttribute('data-ad-channel', 'freshcheck-optimized');
-        document.head.appendChild(script);
         
-        // Mark that AdSense is loading
-        window.adsenseLoading = true;
+        // Add performance hints
+        script.setAttribute('data-ad-frequency-hint', 'auto');
+        script.setAttribute('data-ad-channel', 'freshcheck-mobile-optimized');
+        
+        // Listen for script events
+        script.onload = function() {
+          window.adsenseLoaded = true;
+          window.adsenseLoading = false;
+        };
+        
+        script.onerror = function() {
+          window.adsenseLoading = false;
+          console.warn('AdSense failed to load');
+        };
+        
+        // Add to document
+        document.head.appendChild(script);
       };
       
-      // Load AdSense when the page becomes idle or after user interaction
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(function() {
-          // Check if the user has scrolled
-          if (window.adsenseLoaded || window.scrollY > 100) {
+      // Smart ad loading strategy
+      const adStrategy = () => {
+        // Skip if already loaded or loading
+        if (window.adsenseLoaded || window.adsenseLoading) return;
+        
+        // Check if user has shown engagement (scrolled 25% of page)
+        const handleScroll = () => {
+          if (window.scrollY > window.innerHeight * 0.25) {
             window.loadAdSense();
-          } else {
-            // Wait for first interaction or scroll
-            var delayedAdLoad = function() {
-              window.loadAdSense();
-              window.removeEventListener('scroll', scrollHandler);
-              window.removeEventListener('click', delayedAdLoad);
-              window.removeEventListener('touchstart', delayedAdLoad);
-            };
-            
-            var scrollHandler = function() {
-              if (window.scrollY > 100) {
-                delayedAdLoad();
-              }
-            };
-            
-            window.addEventListener('scroll', scrollHandler, {passive: true});
-            window.addEventListener('click', delayedAdLoad, {passive: true});
-            window.addEventListener('touchstart', delayedAdLoad, {passive: true});
-            
-            // Fallback if no interaction after 5 seconds
-            setTimeout(delayedAdLoad, 5000);
+            window.removeEventListener('scroll', handleScroll);
           }
-        }, {timeout: 3000});
-      } else {
-        // Fallback for browsers without requestIdleCallback
-        setTimeout(function() {
+        };
+        
+        // Load on user interaction
+        const handleInteraction = () => {
           window.loadAdSense();
-        }, 3000);
-      }
+          document.removeEventListener('click', handleInteraction);
+          document.removeEventListener('touchstart', handleInteraction);
+          window.removeEventListener('scroll', handleScroll);
+        };
+        
+        // Set up event listeners with passive option for better performance
+        window.addEventListener('scroll', handleScroll, {passive: true});
+        document.addEventListener('click', handleInteraction, {passive: true});
+        document.addEventListener('touchstart', handleInteraction, {passive: true});
+        
+        // Fallback - load after content is fully loaded but only if needed
+        window.addEventListener('load', () => {
+          // Use requestIdleCallback to schedule ads loading during browser idle time
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+              if (!window.adsenseLoaded && !window.adsenseLoading) {
+                window.loadAdSense();
+              }
+            }, {timeout: 6000});
+          } else {
+            // Fallback for browsers without requestIdleCallback
+            setTimeout(() => {
+              if (!window.adsenseLoaded && !window.adsenseLoading) {
+                window.loadAdSense();
+              }
+            }, 3000);
+          }
+        });
+      };
+      
+      // Initialize ad strategy
+      adStrategy();
     </script>
   </head>
 
