@@ -9,30 +9,18 @@ import React from 'react'
 // Get root element
 const rootElement = document.getElementById("root");
 
-// Create a React component to properly wrap Analytics and SpeedInsights
-const AppWithAnalytics = () => {
-  return (
+if (!rootElement) {
+  console.error("Root element not found");
+} else {
+  const root = createRoot(rootElement);
+  root.render(
     <React.StrictMode>
       <App />
       <Analytics />
       <SpeedInsights />
     </React.StrictMode>
   );
-};
-
-// Basic render function
-function renderApp() {
-  if (!rootElement) {
-    console.error("Root element not found");
-    return;
-  }
-  
-  const root = createRoot(rootElement);
-  root.render(<AppWithAnalytics />);
 }
-
-// Initial render
-renderApp();
 
 // Simple HMR setup
 if (import.meta.hot) {

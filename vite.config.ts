@@ -7,10 +7,7 @@ import { componentTagger } from "lovable-tagger"
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({
-      // Use a simpler React refresh configuration
-      jsxRuntime: 'automatic',
-    }),
+    react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
@@ -25,16 +22,7 @@ export default defineConfig(({ mode }) => ({
       protocol: 'ws',
       host: 'localhost',
     },
-    // SPA fallback for client-side routing
-    proxy: {
-      '/*': {
-        target: '/',
-        changeOrigin: false,
-        rewrite: (path) => '/index.html',
-      },
-    },
   },
-  // Ensure proper SPA behavior when building for production
   build: {
     rollupOptions: {
       output: {
@@ -45,7 +33,6 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  // Add specific configuration for HMR and optimization
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
     exclude: []
