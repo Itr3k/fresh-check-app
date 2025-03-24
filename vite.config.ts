@@ -12,16 +12,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      swcOptions: {
-        jsc: {
-          transform: {
-            react: {
-              runtime: 'automatic',
-              useBuiltins: true
-            }
-          }
-        }
-      }
+      jsxImportSource: "react",
+      plugins: [["@swc/plugin-emotion", {}]],
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),

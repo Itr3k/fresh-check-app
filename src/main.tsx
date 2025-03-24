@@ -6,6 +6,7 @@ import './index.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 
 const rootElement = document.getElementById("root");
 
@@ -16,9 +17,13 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 
 root.render(
-  <BrowserRouter>
-    <App />
-    <Analytics />
-    <SpeedInsights />
-  </BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
+      <HelmetProvider>
+        <App />
+        <Analytics />
+        <SpeedInsights />
+      </HelmetProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );
