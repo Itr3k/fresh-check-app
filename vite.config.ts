@@ -8,13 +8,8 @@ import { componentTagger } from "lovable-tagger"
 export default defineConfig(({ mode }) => ({
   plugins: [
     react({
-      // Configure React refresh properly
+      // Use a simpler React refresh configuration
       jsxRuntime: 'automatic',
-      babel: {
-        plugins: [],
-        babelrc: false,
-        configFile: false,
-      },
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
@@ -28,8 +23,6 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     hmr: {
       protocol: 'ws',
-      timeout: 30000,
-      clientPort: 8080,
       host: 'localhost',
     },
     // SPA fallback for client-side routing
