@@ -1,13 +1,70 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { ShieldAlert, AlertTriangle } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 import FoodSafetyLayout from '@/components/FoodSafetyLayout';
-import AdUnit from '@/components/AdUnit';
+import { lazy, Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const AdUnit = lazy(() => import('@/components/AdUnit'));
+
+const AdSkeleton = () => (
+  <Skeleton className="w-full h-[90px] md:h-[90px] rounded-lg" />
+);
 
 const FoodborneIllnessPrevention = () => {
+  useEffect(() => {
+    if (typeof window.loadAdSense === 'function' && !window.adsenseLoaded && !window.adsenseLoading) {
+      setTimeout(() => window.loadAdSense(), 2000);
+    }
+  }, []);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Foodborne Illness Prevention Guide",
+    "description": "Learn how to prevent foodborne illnesses (food poisoning) by following safe food handling practices.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "FreshCheck",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://freshcheck.app/logo.png"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What causes foodborne illness?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Foodborne illnesses occur when you consume food contaminated with bacteria, viruses, parasites, or their toxins. Common pathogens include Salmonella, E. coli, Listeria, Norovirus, and Campylobacter."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I prevent foodborne illness?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Follow the four steps to food safety: Clean (wash hands and surfaces often), Separate (prevent cross-contamination), Cook (to proper temperatures), and Chill (refrigerate promptly)."
+          }
+        }
+      ]
+    }
+  };
+
   return (
     <>
+      <Helmet>
+        <title>Foodborne Illness Prevention Guide | FreshCheck</title>
+        <meta name="description" content="Learn how to prevent foodborne illnesses (food poisoning) by following safe food handling practices." />
+        <meta name="keywords" content="foodborne illness, food poisoning, food safety, prevent food poisoning, food handling, safe food practices" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
       <FoodSafetyLayout
         title="Foodborne Illness Prevention"
         description="Learn how to prevent foodborne illnesses (food poisoning) by following safe food handling practices."
@@ -25,9 +82,16 @@ const FoodborneIllnessPrevention = () => {
             or their toxins. Understanding the causes and prevention methods can help keep you and your family safe.
           </p>
           
-          {/* First ad placement - top of content - leaderboard format */}
-          <div className="my-6 flex justify-center">
-            <AdUnit slotId="foodborne-top" format="leaderboard" mobileFormat="rectangle" />
+          {/* First ad placement - top of content - responsive ad unit */}
+          <div className="my-6 flex justify-center" aria-label="Advertisement section">
+            <Suspense fallback={<AdSkeleton />}>
+              <AdUnit 
+                slotId="foodborne-top" 
+                format="leaderboard" 
+                mobileFormat="rectangle" 
+                waitForViewport={true}
+              />
+            </Suspense>
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Common Pathogens Causing Foodborne Illness</h2>
@@ -69,9 +133,16 @@ const FoodborneIllnessPrevention = () => {
             </li>
           </ol>
           
-          {/* Second ad placement - middle of content - leaderboard format */}
-          <div className="my-6 flex justify-center">
-            <AdUnit slotId="foodborne-middle" format="leaderboard" mobileFormat="rectangle" />
+          {/* Second ad placement - middle of content - responsive ad unit */}
+          <div className="my-6 flex justify-center" aria-label="Advertisement section">
+            <Suspense fallback={<AdSkeleton />}>
+              <AdUnit 
+                slotId="foodborne-middle" 
+                format="leaderboard" 
+                mobileFormat="rectangle" 
+                waitForViewport={true}
+              />
+            </Suspense>
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Recognizing Symptoms of Foodborne Illness</h2>
@@ -107,9 +178,17 @@ const FoodborneIllnessPrevention = () => {
             <li>Unwashed fruits and vegetables</li>
           </ul>
           
-          {/* Third ad placement - bottom of content - leaderboard format */}
-          <div className="my-6 flex justify-center">
-            <AdUnit slotId="foodborne-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
+          {/* Third ad placement - bottom of content - lazy loaded ad unit */}
+          <div className="my-6 flex justify-center" aria-label="Advertisement section">
+            <Suspense fallback={<AdSkeleton />}>
+              <AdUnit 
+                slotId="foodborne-bottom" 
+                format="leaderboard" 
+                mobileFormat="rectangle" 
+                lazyLoad={true}
+                waitForViewport={true}
+              />
+            </Suspense>
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">When to Seek Medical Attention</h2>

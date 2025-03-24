@@ -138,13 +138,18 @@
     
     <!-- Optimized AdSense loader with modern browser features -->
     <script>
-      //Create a more efficient AdSense loader
+      // Improved AdSense loader with better error handling and retry mechanism
       window.adsenseLoaded = false;
       window.adsenseLoading = false;
+      window.adsenseRetries = 0;
+      window.MAX_ADSENSE_RETRIES = 3;
       
       const loadAdSense = () => {
         if (window.adsenseLoaded || window.adsenseLoading) return;
         window.adsenseLoading = true;
+        
+        // Track performance
+        performance.mark('adsense-load-start');
         
         const script = document.createElement('script');
         script.id = 'adsense-script';
@@ -166,37 +171,64 @@
         script.onload = () => {
           window.adsenseLoaded = true;
           window.adsenseLoading = false;
+          window.adsenseRetries = 0;
           console.log('AdSense loaded successfully');
+          performance.mark('adsense-load-end');
+          performance.measure('adsense-load', 'adsense-load-start', 'adsense-load-end');
+          
+          // Notify components that AdSense is ready
+          window.dispatchEvent(new CustomEvent('adsenseLoaded'));
         };
         
         script.onerror = (error) => {
           window.adsenseLoading = false;
           console.warn('AdSense failed to load:', error);
+          
+          // Implement retry logic with exponential backoff
+          if (window.adsenseRetries < window.MAX_ADSENSE_RETRIES) {
+            window.adsenseRetries++;
+            const backoffTime = Math.pow(2, window.adsenseRetries) * 1000;
+            console.log(`Retrying AdSense load (${window.adsenseRetries}/${window.MAX_ADSENSE_RETRIES}) in ${backoffTime}ms`);
+            setTimeout(loadAdSense, backoffTime);
+          }
         };
         
         document.head.appendChild(script);
       };
 
+      // Expose loadAdSense globally
+      window.loadAdSense = loadAdSense;
+
       // Smart loading strategy using Intersection Observer
-      const observer = new IntersectionObserver((entries) => {
-        const isVisible = entries.some(entry => entry.isIntersecting);
-        if (isVisible) {
-          loadAdSense();
-          observer.disconnect();
-        }
-      });
-
-      // Observe the first ad slot after DOM is ready
-      window.addEventListener('DOMContentLoaded', () => {
-        const adSlot = document.querySelector('.ad-slot');
-        if (adSlot) {
-          observer.observe(adSlot);
-        }
-      });
-
-      // Fallback for no IO support
-      if (!('IntersectionObserver' in window)) {
-        setTimeout(loadAdSense, 3000);
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          rootMargin: '200px 0px',
+          threshold: 0.01
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+          const isVisible = entries.some(entry => entry.isIntersecting);
+          if (isVisible) {
+            loadAdSense();
+            observer.disconnect();
+          }
+        }, observerOptions);
+  
+        // Observe the first ad slot after DOM is ready
+        window.addEventListener('DOMContentLoaded', () => {
+          const adSlots = document.querySelectorAll('.ad-unit');
+          if (adSlots.length > 0) {
+            observer.observe(adSlots[0]);
+          } else {
+            // If no ad slots found on initial load, use delayed loading
+            setTimeout(loadAdSense, 3000);
+          }
+        });
+      } else {
+        // Fallback for no IO support - delay load to prioritize content
+        window.addEventListener('load', () => {
+          setTimeout(loadAdSense, 2000);
+        });
       }
     </script>
   </head>
@@ -208,4 +240,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
