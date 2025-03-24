@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import FoodLabelsPreview from "../components/FoodLabelsPreview";
+import SkipToContent from "../components/SkipToContent";
 
 // Lazy-loaded components to improve initial render performance
 const SavedFoods = lazy(() => import("../components/SavedFoods"));
@@ -141,9 +142,10 @@ const Index = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background flex flex-col">
+        <SkipToContent />
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-24 flex-grow">
+        <main id="main-content" className="container mx-auto px-4 py-8 pt-24 flex-grow">
           {/* Critical content for first paint - Load immediately */}
           <HeroSection onSearch={handleSearch} />
 

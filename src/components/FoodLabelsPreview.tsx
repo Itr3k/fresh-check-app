@@ -76,8 +76,9 @@ const FoodLabelsPreview = () => {
           <Link 
             to="/food-safety/understanding-food-labels" 
             className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm font-medium"
+            aria-label="Complete guide to understanding food labels and expiration dates"
           >
-            Learn more <ArrowRight className="h-4 w-4" />
+            Complete guide to food labels <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         
@@ -114,8 +115,9 @@ const FoodLabelsPreview = () => {
           <Link 
             to="/food-safety/understanding-food-labels" 
             className="inline-flex items-center justify-center h-10 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            aria-label="Read our comprehensive guide to understanding food labels and expiration dates"
           >
-            Detailed Food Label Guide
+            Complete Food Label Guide
           </Link>
         </div>
       </div>
