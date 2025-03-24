@@ -11,9 +11,21 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
+    react({
+      // Configure React plugin
+      swc: {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic',
+              development: mode === 'development',
+              refresh: mode === 'development',
+            },
+          },
+        },
+      },
+    }),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
