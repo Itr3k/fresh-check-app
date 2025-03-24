@@ -52,7 +52,8 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     const currentFood = foodData.find(food => food.id === id);
     
     if (!currentFood) {
-      return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop&auto=format&q=75";
+      // Use a known working image from Unsplash as fallback
+      return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
     }
     
     // Find foods with matching category for efficiency
@@ -68,8 +69,8 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
       return sameCategoryFoods[0].imageUrl;
     }
     
-    // Last resort: generic food image
-    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop&auto=format&q=75";
+    // Last resort: generic food image (using one from the available placeholder images)
+    return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
   };
   
   const fallbackImageUrl = findRelatedImageUrl();
@@ -104,6 +105,11 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   // Add auto=format&q=75 to the image URLs if they're from Unsplash
   const optimizeImageUrl = (url: string): string => {
     if (!url) return fallbackImageUrl;
+    
+    // Replace the problematic URLs that are showing 404 errors
+    if (url.includes('photo-160') || url.includes('photo-162')) {
+      return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
+    }
     
     if (url.includes('unsplash.com') && !url.includes('auto=format')) {
       // Add auto format and quality optimization
@@ -158,7 +164,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
               loading={index > 2 ? "lazy" : "eager"} 
               onError={handleImageError}
               onLoad={handleImageLoad}
-              fetchPriority={index < 3 ? "high" : "auto"}
+              fetchpriority={index < 3 ? "high" : "auto"}
               decoding={index < 3 ? "sync" : "async"}
             />
           </div>

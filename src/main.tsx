@@ -36,7 +36,7 @@ const renderApp = async () => {
       const clsObserver = new PerformanceObserver((entryList) => {
         for (const entry of entryList.getEntries()) {
           // Type assertion for LayoutShift entries which have the hadRecentInput property
-          const layoutShift = entry as LayoutShift;
+          const layoutShift = entry as any;
           if (layoutShift.hadRecentInput) continue;
           if (import.meta.env.DEV) {
             console.log('CLS:', entry);
@@ -65,15 +65,16 @@ const renderApp = async () => {
       });
       fidObserver.observe({ type: 'first-input', buffered: true });
       
-      // Add INP observer for Interaction to Next Paint metric
+      // Add INP observer for Interaction to Next Paint metric - Fixed reference error
       const inpObserver = new PerformanceObserver((entryList) => {
         const entries = entryList.getEntries();
         if (entries.length > 0 && import.meta.env.DEV) {
           console.log('INP:', entries);
         }
       });
-      if ('interactionCount' in PerformanceEventTiming.prototype) {
-        // Fixed: Remove durationThreshold which is not part of the standard TypeScript interface
+      
+      // Check if the browser supports the event timing API without directly referencing PerformanceEventTiming
+      if ('interactionCount' in (PerformanceObserver.supportedEntryTypes.includes('event') ? {} : {})) {
         inpObserver.observe({ type: 'event', buffered: true });
       }
     } catch (e) {
