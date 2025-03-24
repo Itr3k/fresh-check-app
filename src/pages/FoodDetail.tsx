@@ -11,6 +11,27 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
 
+// Centralized food images mapping to ensure consistency
+const FOOD_IMAGES: Record<string, string> = {
+  chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
+  milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
+  eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
+  bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
+  bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
+  lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
+  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
+  avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
+  apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
+  tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
+  bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
+  cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
+  yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
+  oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
+  peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
+  onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
+  default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
+};
+
 const getFixedFallbackImage = (foodId: string): string | null => {
   const fixedFallbacks: Record<string, string> = {
     "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
@@ -1185,6 +1206,17 @@ const FoodDetail = () => {
         <meta name="description" content={`Learn how to properly store ${foodDetails.name} and how long it lasts in the refrigerator, freezer, and pantry.`} />
       </Helmet>
       
+      {/* Ad Unit 1: Top leaderboard */}
+      <div className="container mx-auto px-4 mt-6 mb-4 print:hidden">
+        <AdUnit 
+          slotId="food-detail-top" 
+          format="leaderboard"
+          mobileFormat="mobile_banner"
+          className="w-full"
+          responsive={true}
+        />
+      </div>
+      
       <div className="max-w-4xl mx-auto p-4">
         <div className="flex items-center space-x-2 mb-6">
           <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -1210,15 +1242,6 @@ const FoodDetail = () => {
                 src={foodDetails.imageUrl} 
                 alt={foodDetails.name}
                 className="w-full h-64 md:h-80 object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  const fallbackImage = getFixedFallbackImage(id!);
-                  if (fallbackImage && target.src !== fallbackImage) {
-                    target.src = fallbackImage;
-                  } else if (target.src !== foodDetails.foodImages?.default) {
-                    target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop";
-                  }
-                }}
               />
             </div>
             
@@ -1248,6 +1271,15 @@ const FoodDetail = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">Mold, discoloration, sour smell, or slimy texture.</p>
               </div>
+            </div>
+            
+            {/* Ad Unit 2: Mid-content ad */}
+            <div className="w-full my-6 print:hidden">
+              <AdUnit 
+                slotId="food-detail-mid" 
+                format="rectangle"
+                responsive={true}
+              />
             </div>
             
             <div className="bg-card rounded-lg border shadow-sm mb-6">
@@ -1336,7 +1368,11 @@ const FoodDetail = () => {
           </div>
           
           <div className="md:col-span-2">
-            {!isMobile && <AdUnit slotId="detail-sidebar" className="mb-6" />}
+            {!isMobile && (
+              <div className="sticky top-24 print:hidden">
+                <AdUnit slotId="food-detail-sidebar" format="skyscraper" className="mb-6" responsive={false} />
+              </div>
+            )}
             
             <div className="bg-card rounded-lg border shadow-sm mb-6">
               <div className="p-4 border-b">
@@ -1448,6 +1484,16 @@ const FoodDetail = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Ad Unit 3: Bottom leaderboard */}
+        <div className="w-full mt-8 mb-4 print:hidden">
+          <AdUnit 
+            slotId="food-detail-bottom" 
+            format="leaderboard"
+            mobileFormat="rectangle"
+            responsive={true}
+          />
         </div>
       </div>
     </PageTransition>
