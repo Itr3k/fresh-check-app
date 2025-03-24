@@ -19,8 +19,8 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <App />
+      <Analytics />
+      <SpeedInsights />
     </BrowserRouter>
-    <Analytics />
-    <SpeedInsights />
   </React.StrictMode>
 );
