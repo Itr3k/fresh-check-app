@@ -13,9 +13,18 @@ export interface BreadcrumbItem {
 interface BreadcrumbNavProps {
   items: BreadcrumbItem[];
   className?: string;
+  /**
+   * The base URL to use for absolute URLs in the structured data
+   * @default 'https://freshcheck.app'
+   */
+  baseUrl?: string;
 }
 
-const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ items, className }) => {
+const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ 
+  items, 
+  className,
+  baseUrl = 'https://freshcheck.app' 
+}) => {
   if (!items || items.length === 0) return null;
 
   // Generate the JSON-LD schema for breadcrumbs
@@ -26,8 +35,8 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ items, className }) => {
       '@type': 'ListItem',
       'position': index + 1,
       'name': item.label,
-      'item': item.href ? `https://freshcheck.app${item.href}` : undefined
-    }))
+      'item': item.href ? `${baseUrl}${item.href}` : undefined
+    })).filter(item => item.item !== undefined)
   };
 
   return (
@@ -38,29 +47,31 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ items, className }) => {
       </script>
 
       {/* Visual breadcrumb component */}
-      <Breadcrumb className={className}>
-        <BreadcrumbList>
-          {items.map((item, index) => (
-            <React.Fragment key={index}>
-              <BreadcrumbItem>
-                {item.current ? (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link to={item.href || '/'}>{item.label}</Link>
-                  </BreadcrumbLink>
+      <nav aria-label="Breadcrumb" className={className}>
+        <Breadcrumb>
+          <BreadcrumbList>
+            {items.map((item, index) => (
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
+                  {item.current ? (
+                    <BreadcrumbPage aria-current="page">{item.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link to={item.href || '/'}>{item.label}</Link>
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                
+                {index < items.length - 1 && (
+                  <BreadcrumbSeparator aria-hidden="true">
+                    <ChevronRight className="h-4 w-4" />
+                  </BreadcrumbSeparator>
                 )}
-              </BreadcrumbItem>
-              
-              {index < items.length - 1 && (
-                <BreadcrumbSeparator>
-                  <ChevronRight className="h-4 w-4" />
-                </BreadcrumbSeparator>
-              )}
-            </React.Fragment>
-          ))}
-        </BreadcrumbList>
-      </Breadcrumb>
+              </React.Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </nav>
     </>
   );
 };

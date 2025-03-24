@@ -1,12 +1,17 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <!-- Homepage -->
   <url>
     <loc>https://freshcheck.app/</loc>
     <lastmod>2023-09-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://freshcheck.app/og-image.png</image:loc>
+      <image:title>FreshCheck Homepage</image:title>
+    </image:image>
   </url>
   
   <!-- Food Detail Pages -->
@@ -15,12 +20,20 @@
     <lastmod>2023-09-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://freshcheck.app/food-images/chicken.jpg</image:loc>
+      <image:title>Chicken Storage Guide</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://freshcheck.app/food/milk</loc>
     <lastmod>2023-09-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://freshcheck.app/food-images/milk.jpg</image:loc>
+      <image:title>Milk Storage Guide</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://freshcheck.app/food/eggs</loc>
@@ -116,24 +129,58 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Additional Important Pages -->
   <url>
-    <loc>https://freshcheck.app/about</loc>
-    <lastmod>2023-09-01</lastmod>
+    <loc>https://freshcheck.app/food-safety/understanding-food-labels</loc>
+    <lastmod>2023-09-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
+  
+  <!-- Search Pages -->
   <url>
     <loc>https://freshcheck.app/search</loc>
     <lastmod>2023-09-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Category Pages -->
   <url>
     <loc>https://freshcheck.app/categories</loc>
     <lastmod>2023-09-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/categories/fruits</loc>
+    <lastmod>2023-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/categories/vegetables</loc>
+    <lastmod>2023-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/categories/dairy</loc>
+    <lastmod>2023-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://freshcheck.app/categories/meat</loc>
+    <lastmod>2023-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://freshcheck.app/about</loc>
+    <lastmod>2023-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

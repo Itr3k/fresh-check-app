@@ -5,8 +5,11 @@ Allow: /
 Sitemap: https://freshcheck.app/sitemap.xml
 Sitemap: https://freshcheck.app/news-sitemap.xml
 
+# Block access to internal pages and assets
 Disallow: /assets/
 Disallow: /api/
+Disallow: /admin/
+Disallow: /internal/
 
 # Ensure these important paths are explicitly allowed
 Allow: /food-safety/temperature-danger-zone
@@ -16,3 +19,15 @@ Allow: /food-safety/vulnerable-groups
 Allow: /food-safety/holiday-events
 Allow: /food-safety/science-of-spoilage
 Allow: /food-safety/emergency
+Allow: /food-safety/understanding-food-labels
+Allow: /categories/*
+Allow: /food/*
+Allow: /recalls/*
+Allow: /search
+
+# Crawl delay for specific bots (optional)
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /

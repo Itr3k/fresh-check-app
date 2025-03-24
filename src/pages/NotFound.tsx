@@ -47,6 +47,26 @@ const NotFound = () => {
     );
   }, [location.pathname]);
 
+  // Create structured data for 404 page
+  const notFoundSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://freshcheck.app/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Page Not Found",
+        "item": "https://freshcheck.app/404"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <Helmet>
@@ -54,18 +74,23 @@ const NotFound = () => {
         <meta name="description" content="The page you're looking for doesn't exist. Return to Fresh Check to check if your food is still fresh." />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://freshcheck.app/404" />
+        <script type="application/ld+json">
+          {JSON.stringify(notFoundSchema)}
+        </script>
       </Helmet>
       
-      <div className="text-center mb-8 max-w-md w-full">
-        <div className="flex justify-center mb-4">
-          <div className="bg-amber-100 p-3 rounded-full">
-            <AlertTriangle className="h-8 w-8 text-amber-600" />
+      <article className="text-center mb-8 max-w-md w-full">
+        <header className="mb-4">
+          <div className="flex justify-center mb-4">
+            <div className="bg-amber-100 p-3 rounded-full">
+              <AlertTriangle className="h-8 w-8 text-amber-600" aria-hidden="true" />
+            </div>
           </div>
-        </div>
-        <h1 className="text-4xl font-bold mb-4">Page Not Found</h1>
-        <p className="text-xl text-gray-600 mb-4">
-          We couldn't find the page you're looking for.
-        </p>
+          <h1 className="text-4xl font-bold mb-4">Page Not Found</h1>
+          <p className="text-xl text-gray-600 mb-4">
+            We couldn't find the page you're looking for.
+          </p>
+        </header>
         
         {/* First ad placement - top - always leaderboard (desktop) or rectangle (mobile) */}
         <div className="my-6 flex justify-center">
@@ -75,7 +100,7 @@ const NotFound = () => {
         </div>
         
         {isFoodSafetyPath && (
-          <div className="mb-6 text-left bg-blue-50 p-4 rounded-lg border border-blue-100">
+          <nav className="mb-6 text-left bg-blue-50 p-4 rounded-lg border border-blue-100" aria-label="Alternative food safety resources">
             <h2 className="font-medium text-blue-800 mb-2">Looking for food safety information?</h2>
             <p className="text-blue-700 mb-3">
               The URL might have changed. Try one of these food safety resources:
@@ -92,7 +117,7 @@ const NotFound = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         )}
         
         {/* Second ad placement - middle - always leaderboard (desktop) or rectangle (mobile) */}
@@ -102,13 +127,15 @@ const NotFound = () => {
           </Suspense>
         </div>
         
-        <Link 
-          to="/" 
-          className="bg-primary text-white px-6 py-2 rounded-md inline-block hover:bg-primary/90 transition-colors"
-        >
-          Return to Home
-        </Link>
-      </div>
+        <footer className="mt-6">
+          <Link 
+            to="/" 
+            className="bg-primary text-white px-6 py-2 rounded-md inline-block hover:bg-primary/90 transition-colors"
+          >
+            Return to Home
+          </Link>
+        </footer>
+      </article>
       
       {/* Third ad placement - bottom - always leaderboard (desktop) or rectangle (mobile) */}
       <div className="max-w-[728px] w-full flex justify-center">
