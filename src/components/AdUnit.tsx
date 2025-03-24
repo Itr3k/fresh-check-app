@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -145,6 +146,10 @@ const AdUnit: React.FC<AdUnitProps> = ({
             // Add unique ID to prevent duplicate ads
             const uniqueId = `ad-${slotId}-${Math.random().toString(36).substring(2, 11)}`;
             adElement.setAttribute('data-ad-region', uniqueId);
+            // Add data-ad-test attribute in development or staging environments
+            if (window.location.hostname !== 'freshcheck.app') {
+              adElement.setAttribute('data-adtest', 'on');
+            }
             
             // Append ad to container
             adRef.current.appendChild(adElement);

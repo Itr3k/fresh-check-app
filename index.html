@@ -64,6 +64,12 @@
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
+    <!-- Added to fix ad network connections -->
+    <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin />
+    <link rel="preconnect" href="https://adservice.google.com" crossorigin />
+    <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
+    <link rel="dns-prefetch" href="https://adservice.google.com" />
+
     <!-- Preload critical fonts -->
     <link 
       rel="preload" 
@@ -131,7 +137,7 @@
     }
     </script>
     
-    <!-- Highly optimized AdSense loader for better performance -->
+    <!-- Improved AdSense loader for better performance and reliability -->
     <script type="text/javascript">
       // Create a centralized AdSense loader function with better performance patterns
       window.adsenseLoaded = false;
@@ -151,17 +157,27 @@
         
         // Add performance hints
         script.setAttribute('data-ad-frequency-hint', 'auto');
-        script.setAttribute('data-ad-channel', 'freshcheck-mobile-optimized');
+        script.setAttribute('data-ad-channel', 'freshcheck-optimized');
+        
+        // Add cookie options for better compliance
+        script.setAttribute('data-adbreak-test', 'on');
+        script.setAttribute('data-ad-host', window.location.hostname);
+        
+        // Testing mode outside production
+        if (window.location.hostname !== 'freshcheck.app') {
+          script.setAttribute('data-adtest', 'on');
+        }
         
         // Listen for script events
         script.onload = function() {
           window.adsenseLoaded = true;
           window.adsenseLoading = false;
+          console.log('AdSense loaded successfully');
         };
         
-        script.onerror = function() {
+        script.onerror = function(error) {
           window.adsenseLoading = false;
-          console.warn('AdSense failed to load');
+          console.warn('AdSense failed to load:', error);
         };
         
         // Add to document

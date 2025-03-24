@@ -164,7 +164,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
               loading={index > 2 ? "lazy" : "eager"} 
               onError={handleImageError}
               onLoad={handleImageLoad}
-              fetchpriority={index < 3 ? "high" : "auto"}
+              fetchPriority={index < 3 ? "high" : "auto"}
               decoding={index < 3 ? "sync" : "async"}
             />
           </div>
