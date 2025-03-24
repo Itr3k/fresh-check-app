@@ -5,7 +5,14 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      // Explicitly configure Fast Refresh
+      fastRefresh: true,
+      // Add additional React plugin options if needed
+      jsxRuntime: 'automatic'
+    })
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
