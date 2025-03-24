@@ -10,65 +10,10 @@ import { useIsMobile } from "../hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
-
-// Centralized food images mapping to ensure consistency
-const FOOD_IMAGES: Record<string, string> = {
-  chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
-  "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
-  milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
-  eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
-  bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
-  bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
-  lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
-  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
-  avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
-  apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
-  tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
-  bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
-  cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
-  yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
-  oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
-  peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
-  onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
-  "orange-juice": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop&auto=format&q=75",
-  "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75",
-  pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75",
-  rice: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&h=300&fit=crop&auto=format&q=75",
-  salmon: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop&auto=format&q=75",
-  default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
-};
-
-const getFixedFallbackImage = (foodId: string): string | null => {
-  // Direct access to the same image mapping to ensure consistency
-  if (FOOD_IMAGES[foodId]) {
-    return FOOD_IMAGES[foodId];
-  }
-  
-  // Fallback to default if no specific image found
-  return FOOD_IMAGES.default;
-};
+import { FOOD_IMAGES } from "../components/FoodCard";
 
 const getFoodDetails = (id: string) => {
   const foodFromDatabase = getFoodById(id);
-  const foodImages: Record<string, string> = {
-    chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
-    milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
-    eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
-    bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
-    bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
-    lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
-    tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
-    avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
-    apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
-    tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
-    bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
-    cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
-    yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
-    oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
-    peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
-    onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
-    default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=400&fit=crop"
-  };
 
   const getStorageOptions = (id: string, category?: string) => {
     if (id === "salmon") {
@@ -1074,20 +1019,20 @@ const getFoodDetails = (id: string) => {
 
   const getRelatedFoods = (id: string) => {
     const allFoods = [
-      { id: "chicken", name: "Chicken", category: "Meat", imageUrl: foodImages.chicken || foodImages.default },
-      { id: "milk", name: "Milk", category: "Dairy", imageUrl: foodImages.milk || foodImages.default },
-      { id: "eggs", name: "Eggs", category: "Dairy", imageUrl: foodImages.eggs || foodImages.default },
-      { id: "bread", name: "Bread", category: "Bakery", imageUrl: foodImages.bread || foodImages.default },
-      { id: "bananas", name: "Bananas", category: "Fruits", imageUrl: foodImages.bananas || foodImages.default },
-      { id: "apples", name: "Apples", category: "Fruits", imageUrl: foodImages.apples || foodImages.default },
-      { id: "cheese", name: "Cheese", category: "Dairy", imageUrl: foodImages.cheese || foodImages.default },
-      { id: "lettuce", name: "Lettuce", category: "Vegetables", imageUrl: foodImages.lettuce || foodImages.default },
-      { id: "tomatoes", name: "Tomatoes", category: "Vegetables", imageUrl: foodImages.tomatoes || foodImages.default },
-      { id: "bacon", name: "Bacon", category: "Meat", imageUrl: foodImages.bacon || foodImages.default },
-      { id: "yogurt", name: "Yogurt", category: "Dairy", imageUrl: foodImages.yogurt || foodImages.default },
-      { id: "tofu", name: "Tofu", category: "Specialty Items", imageUrl: foodImages.tofu || foodImages.default },
-      { id: "oranges", name: "Oranges", category: "Fruits", imageUrl: foodImages.oranges || foodImages.default },
-      { id: "onions", name: "Onions", category: "Vegetables", imageUrl: foodImages.onions || foodImages.default }
+      { id: "chicken", name: "Chicken", category: "Meat", imageUrl: FOOD_IMAGES.chicken || FOOD_IMAGES.default },
+      { id: "milk", name: "Milk", category: "Dairy", imageUrl: FOOD_IMAGES.milk || FOOD_IMAGES.default },
+      { id: "eggs", name: "Eggs", category: "Dairy", imageUrl: FOOD_IMAGES.eggs || FOOD_IMAGES.default },
+      { id: "bread", name: "Bread", category: "Bakery", imageUrl: FOOD_IMAGES.bread || FOOD_IMAGES.default },
+      { id: "bananas", name: "Bananas", category: "Fruits", imageUrl: FOOD_IMAGES.bananas || FOOD_IMAGES.default },
+      { id: "apples", name: "Apples", category: "Fruits", imageUrl: FOOD_IMAGES.apples || FOOD_IMAGES.default },
+      { id: "cheese", name: "Cheese", category: "Dairy", imageUrl: FOOD_IMAGES.cheese || FOOD_IMAGES.default },
+      { id: "lettuce", name: "Lettuce", category: "Vegetables", imageUrl: FOOD_IMAGES.lettuce || FOOD_IMAGES.default },
+      { id: "tomatoes", name: "Tomatoes", category: "Vegetables", imageUrl: FOOD_IMAGES.tomatoes || FOOD_IMAGES.default },
+      { id: "bacon", name: "Bacon", category: "Meat", imageUrl: FOOD_IMAGES.bacon || FOOD_IMAGES.default },
+      { id: "yogurt", name: "Yogurt", category: "Dairy", imageUrl: FOOD_IMAGES.yogurt || FOOD_IMAGES.default },
+      { id: "tofu", name: "Tofu", category: "Specialty Items", imageUrl: FOOD_IMAGES.tofu || FOOD_IMAGES.default },
+      { id: "oranges", name: "Oranges", category: "Fruits", imageUrl: FOOD_IMAGES.oranges || FOOD_IMAGES.default },
+      { id: "onions", name: "Onions", category: "Vegetables", imageUrl: FOOD_IMAGES.onions || FOOD_IMAGES.default }
     ].filter(food => food.id !== id);
     
     const sameCategory = allFoods.filter(food => foodFromDatabase && food.category === foodFromDatabase.category);
@@ -1102,7 +1047,7 @@ const getFoodDetails = (id: string) => {
     }
   };
 
-  const imageUrl = foodImages[id] || foodImages.default;
+  const imageUrl = FOOD_IMAGES[id] || FOOD_IMAGES.default;
   const storageOptions = getStorageOptions(id, foodFromDatabase?.category);
   const freshness = calculateFreshness("refrigerator", false);
   const relatedFoods = getRelatedFoods(id);
@@ -1250,8 +1195,7 @@ const FoodDetail = () => {
                   const target = e.target as HTMLImageElement;
                   if (target.src !== FOOD_IMAGES.default) {
                     console.log(`Image failed to load: ${target.src}, trying fallback for ${id}`);
-                    const fallback = getFixedFallbackImage(id || "");
-                    target.src = fallback || FOOD_IMAGES.default;
+                    target.src = FOOD_IMAGES.default;
                   }
                 }}
               />
@@ -1444,16 +1388,13 @@ const FoodDetail = () => {
                       <div className="bg-background rounded overflow-hidden border hover:shadow-md transition-all">
                         <div className="h-20 overflow-hidden">
                           <img 
-                            src={food.imageUrl} 
+                            src={FOOD_IMAGES[food.id] || FOOD_IMAGES.default} 
                             alt={food.name} 
                             className="w-full h-full object-cover"
                             loading="lazy"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              if (target.src !== FOOD_IMAGES.default) {
-                                const fallback = getFixedFallbackImage(food.id);
-                                target.src = fallback || FOOD_IMAGES.default;
-                              }
+                              target.src = FOOD_IMAGES.default;
                             }}
                           />
                         </div>

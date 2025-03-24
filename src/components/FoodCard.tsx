@@ -4,22 +4,21 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, memo, useRef } from "react";
 import { foodData } from "../data/foodData";
 
-// Import shared FOOD_IMAGES from somewhere if possible
-// For consistency, this should ideally be in a shared module
-const FOOD_IMAGES: Record<string, string> = {
+// Centralized food images mapping for consistent imagery across the app
+export const FOOD_IMAGES: Record<string, string> = {
   chicken: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&h=400&fit=crop",
   "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
   milk: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=400&fit=crop",
   eggs: "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
   bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
   bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
-  lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=200&fit=crop",
-  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=200&fit=crop",
-  avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=200&fit=crop",
-  apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=200&fit=crop",
+  lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=400&fit=crop",
+  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=400&fit=crop",
+  avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
+  apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=400&fit=crop",
   tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
   bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
-  cheese: "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=800&h=400&fit=crop",
+  cheese: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=800&h=400&fit=crop",
   yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
   oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
   peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
@@ -46,8 +45,9 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const [imageLoaded, setImageLoaded] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Use centralized mapping for consistent images
+  // Get the consistent image for this food item - prioritize the central mapping
   const getConsistentImage = (foodId: string): string => {
+    // First check if we have this item in our centralized mapping
     if (FOOD_IMAGES[foodId]) {
       return FOOD_IMAGES[foodId];
     }
@@ -108,28 +108,8 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     };
   }, [imageLoaded]);
 
-  // Optimize and normalize image URLs
-  const optimizeImageUrl = (url: string): string => {
-    if (!url) return fallbackImageUrl;
-    
-    // First check if we have this food in our mapping for consistency
-    if (FOOD_IMAGES[id]) {
-      return FOOD_IMAGES[id];
-    }
-    
-    // Replace problematic URLs
-    if (url.includes('photo-160') || url.includes('photo-162')) {
-      return fallbackImageUrl;
-    }
-    
-    // Optimize Unsplash URLs
-    if (url.includes('unsplash.com') && !url.includes('auto=format')) {
-      const separator = url.includes('?') ? '&' : '?';
-      return `${url}${separator}auto=format&q=75&w=500&h=300&fit=crop`;
-    }
-    
-    return url;
-  };
+  // Get the appropriate image URL for this food item
+  const displayImageUrl = FOOD_IMAGES[id] || imageUrl;
 
   // Performance optimization: reduce motion for users with reduced motion preference
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -140,12 +120,9 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     "@type": "Product",
     "name": name,
     "category": category,
-    "image": imageError ? optimizeImageUrl(fallbackImageUrl) : optimizeImageUrl(imageUrl),
+    "image": imageError ? fallbackImageUrl : displayImageUrl,
     "url": `https://freshcheck.app/food/${id}`
   };
-
-  // Use consistent image from our mapping if available
-  const displayImageUrl = FOOD_IMAGES[id] || optimizeImageUrl(imageUrl);
 
   return (
     <motion.div
@@ -170,7 +147,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
             )}
             
             <img 
-              src={imageError ? optimizeImageUrl(fallbackImageUrl) : displayImageUrl}
+              src={imageError ? fallbackImageUrl : displayImageUrl}
               alt={`${name} - food storage information`}
               width="500"
               height="300"

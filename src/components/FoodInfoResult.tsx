@@ -6,6 +6,7 @@ import { Separator } from './ui/separator';
 import { Badge } from './ui/badge';
 import { CalendarIcon, Barcode, Info } from 'lucide-react';
 import { Button } from './ui/button';
+import { FOOD_IMAGES } from './FoodCard';
 
 // Define the FoodInfo type directly in this file instead of importing it
 export interface FoodInfo {
@@ -37,6 +38,29 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
   const hasBarcode = !!foodInfo.barcode;
   const hasNutrition = !!foodInfo.nutritionInfo;
   const hasStorageInstructions = !!foodInfo.storageInstructions && foodInfo.storageInstructions.length > 0;
+  
+  // Determine the most appropriate image to use
+  const getImageUrl = (name: string, providedUrl?: string): string => {
+    // Try to find this food item in our central mapping by checking if the name appears in any ID
+    const foodId = Object.keys(FOOD_IMAGES).find(id => 
+      id.toLowerCase() === name.toLowerCase() || 
+      id.replace('-', ' ').toLowerCase() === name.toLowerCase()
+    );
+    
+    if (foodId) {
+      return FOOD_IMAGES[foodId];
+    }
+    
+    // If we have a provided URL, use that
+    if (providedUrl && providedUrl.length > 10) {
+      return providedUrl;
+    }
+    
+    // Fallback to default
+    return FOOD_IMAGES.default;
+  };
+  
+  const imageUrl = getImageUrl(foodInfo.name, foodInfo.imageUrl);
   
   // Generate structured data for HowTo storage instructions if available
   const generateHowToSchema = () => {
@@ -110,13 +134,19 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
       </script>
       
       <Card className="overflow-hidden">
-        {foodInfo.imageUrl && (
+        {imageUrl && (
           <div className="relative h-48 w-full overflow-hidden">
             <img 
-              src={foodInfo.imageUrl} 
+              src={imageUrl} 
               alt={foodInfo.name}
               className="object-cover w-full h-full"
-              loading="lazy" // Add lazy loading for images
+              loading="lazy"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== FOOD_IMAGES.default) {
+                  target.src = FOOD_IMAGES.default;
+                }
+              }}
             />
           </div>
         )}
