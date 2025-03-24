@@ -7,10 +7,7 @@ import { componentTagger } from "lovable-tagger"
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({
-      // Explicitly configure Fast Refresh
-      fastRefresh: true,
-    }),
+    react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
@@ -41,8 +38,12 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  // Add specific configuration for HMR to help with the refresh issue
+  // Add specific configuration for HMR and optimization
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: []
   },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  }
 }))
