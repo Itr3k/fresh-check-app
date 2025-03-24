@@ -9,9 +9,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react({
       // Add React plugin options if needed
-      jsxRuntime: 'automatic',
-      // Explicitly set Fast Refresh configuration
-      fastRefresh: true
+      jsxRuntime: 'automatic'
+      // Note: fastRefresh is enabled by default, so we don't need to specify it
     }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
@@ -42,5 +41,12 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+  },
+  // Add specific configuration for HMR to help with the refresh issue
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+  },
+  esbuild: {
+    jsxInject: `import React from 'react'`,
   },
 }))
