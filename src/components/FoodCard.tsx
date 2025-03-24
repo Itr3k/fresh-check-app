@@ -18,62 +18,58 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const [imageLoaded, setImageLoaded] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Fixed fallback images for specific troublesome foods
-  const getFixedFallbackImage = (foodId: string): string | null => {
-    const fixedFallbacks: Record<string, string> = {
+  // Dedicated high-quality fallback images for specific food items
+  const getDedicatedFallbackImage = (foodId: string): string | null => {
+    const dedicatedFallbacks: Record<string, string> = {
+      // Previously troublesome foods with quality replacements
       "tofu": "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png", 
-      "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png", 
-      "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop&auto=format&q=75", 
-      "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop&auto=format&q=75", 
-      "chicken": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75", 
-      "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop&auto=format&q=75", 
-      "bananas": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=300&fit=crop&auto=format&q=75", 
-      "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75", 
-      "pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75", 
-      "apples": "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500&h=300&fit=crop&auto=format&q=75", 
-      "cheese": "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=500&h=300&fit=crop&auto=format&q=75", 
-      "milk": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&h=300&fit=crop&auto=format&q=75", 
-      "bread": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=300&fit=crop&auto=format&q=75", 
+      "eggs": "/lovable-uploads/60ba4433-ac0b-400f-8dcd-ee43d80883df.png",
+      
+      // Add dedicated fallbacks for foods shown in the screenshot
+      "chicken-raw": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500&h=300&fit=crop&auto=format&q=75",
+      "bacon": "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop&auto=format&q=75",
+      "salmon": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop&auto=format&q=75",
+      "milk": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&h=300&fit=crop&auto=format&q=75",
+      "cheddar-cheese": "https://images.unsplash.com/photo-1552767059-ce182eda88cc?w=500&h=300&fit=crop&auto=format&q=75",
+      "apple": "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?w=500&h=300&fit=crop&auto=format&q=75",
+      "bananas": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&h=300&fit=crop&auto=format&q=75",
+      "lettuce": "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=500&h=300&fit=crop&auto=format&q=75",
+      "tomatoes": "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=500&h=300&fit=crop&auto=format&q=75",
+      "bread": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=300&fit=crop&auto=format&q=75",
+      "pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop&auto=format&q=75",
+      "rice": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500&h=300&fit=crop&auto=format&q=75",
+      "orange-juice": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop&auto=format&q=75",
+      "ice-cream": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=300&fit=crop&auto=format&q=75"
     };
     
-    return fixedFallbacks[foodId] || null;
+    return dedicatedFallbacks[foodId] || null;
   };
   
-  // Find related foods for fallback images with semantically meaningful matches
-  const findRelatedImageUrl = (): string => {
-    // First check if we have a fixed fallback for this specific food
-    const fixedFallback = getFixedFallbackImage(id);
-    if (fixedFallback) {
-      return fixedFallback;
+  // Find alternative image when primary image fails
+  const findFallbackImage = (): string => {
+    // First check if we have a dedicated high-quality fallback for this specific food
+    const dedicatedFallback = getDedicatedFallbackImage(id);
+    if (dedicatedFallback) {
+      return dedicatedFallback;
     }
     
-    // Simplified fallback method for better performance
-    // Get the current food item to access its tags and name
-    const currentFood = foodData.find(food => food.id === id);
-    
-    if (!currentFood) {
-      // Use a known working image from Unsplash as fallback
-      return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
-    }
-    
-    // Find foods with matching category for efficiency
+    // If no dedicated fallback exists, find a food with a similar category
     const sameCategoryFoods = foodData.filter(food => 
       food.id !== id && 
       food.category === category &&
       food.imageUrl && 
-      food.imageUrl.length > 10 // Skip foods with invalid images
+      food.imageUrl.length > 10
     );
     
     if (sameCategoryFoods.length > 0) {
-      // Use the first working image to avoid random selection that might cause LCP issues
       return sameCategoryFoods[0].imageUrl;
     }
     
-    // Last resort: generic food image (using one from the available placeholder images)
+    // Last resort fallback - generic food image
     return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
   };
   
-  const fallbackImageUrl = findRelatedImageUrl();
+  const fallbackImageUrl = findFallbackImage();
   
   const handleImageError = () => {
     setImageError(true);
@@ -93,7 +89,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
       if (!imageLoaded) {
         setImageError(true);
       }
-    }, 2000); // Reduced from 3000ms to 2000ms for faster fallback
+    }, 2000);
 
     return () => {
       if (loadingTimeoutRef.current) {
@@ -102,17 +98,17 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
     };
   }, [imageLoaded]);
 
-  // Add auto=format&q=75 to the image URLs if they're from Unsplash
+  // Optimize and normalize image URLs
   const optimizeImageUrl = (url: string): string => {
     if (!url) return fallbackImageUrl;
     
-    // Replace the problematic URLs that are showing 404 errors
+    // Replace problematic URLs
     if (url.includes('photo-160') || url.includes('photo-162')) {
-      return "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&h=300&fit=crop&auto=format&q=75";
+      return fallbackImageUrl;
     }
     
+    // Optimize Unsplash URLs
     if (url.includes('unsplash.com') && !url.includes('auto=format')) {
-      // Add auto format and quality optimization
       const separator = url.includes('?') ? '&' : '?';
       return `${url}${separator}auto=format&q=75&w=500&h=300&fit=crop`;
     }
