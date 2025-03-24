@@ -16,11 +16,9 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-      <Analytics />
-      <SpeedInsights />
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <App />
+    <Analytics />
+    <SpeedInsights />
+  </BrowserRouter>
 );

@@ -11,7 +11,18 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
+    react({
+      swcOptions: {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic',
+              useBuiltins: true
+            }
+          }
+        }
+      }
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
