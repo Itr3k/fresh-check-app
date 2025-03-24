@@ -1,5 +1,5 @@
 
-import React, { useRef, lazy, Suspense } from "react";
+import React, { useRef, lazy, Suspense, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -20,19 +20,26 @@ const FoodSafetyEducation = lazy(() => import("../components/FoodSafetyEducation
 const FoodLabelsPreview = lazy(() => import("../components/FoodLabelsPreview"));
 const AdUnit = lazy(() => import("../components/AdUnit"));
 
+// Custom loading with explicit dimensions to prevent CLS
+const SkeletonLoader = ({ height = "200px", className = "" }) => (
+  <Skeleton className={`w-full rounded-lg ${className}`} style={{ height }} />
+);
+
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const scrollToSearch = () => {
+  // Memoize scroll handler to prevent unnecessary re-renders
+  const scrollToSearch = useCallback(() => {
     searchRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
-  const handleSearch = (query: string) => {
+  // Memoize search handler to prevent unnecessary re-renders
+  const handleSearch = useCallback((query: string) => {
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query)}`);
     }
-  };
+  }, [navigate]);
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -125,39 +132,39 @@ const Index = () => {
 
           {/* Ad placement - top */}
           <div className="my-8">
-            <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit slotId="home-top" format="leaderboard" />
             </Suspense>
           </div>
 
           {/* Non-critical UI components - lazy load */}
-          <Suspense fallback={<Skeleton className="h-[300px] w-full rounded-lg" />}>
+          <Suspense fallback={<SkeletonLoader height="300px" />}>
             <FoodLabelsPreview />
           </Suspense>
 
           <div id="browse-categories">
-            <Suspense fallback={<Skeleton className="h-[300px] w-full rounded-lg mt-8" />}>
+            <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
               <CategoryCards />
             </Suspense>
           </div>
           
           <div id="food-safety-education">
-            <Suspense fallback={<Skeleton className="h-[200px] w-full rounded-lg mt-8" />}>
+            <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
               <FoodSafetyEducation />
             </Suspense>
           </div>
 
-          <Suspense fallback={<Skeleton className="h-[250px] w-full rounded-lg mt-8" />}>
+          <Suspense fallback={<SkeletonLoader height="250px" className="mt-8" />}>
             <FoodSafetyFacts />
           </Suspense>
           
-          <Suspense fallback={<Skeleton className="h-[200px] w-full rounded-lg mt-8" />}>
+          <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
             <SavedFoods />
           </Suspense>
 
           {/* Ad placement - bottom */}
           <div className="mt-8">
-            <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
             </Suspense>
           </div>

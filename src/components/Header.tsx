@@ -11,7 +11,30 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { memo } from "react";
+import { memo, useCallback } from "react";
+
+// Optimize icons to reduce bundle size
+const OptimizedIcons = {
+  Search: memo(Search),
+  AlertOctagon: memo(AlertOctagon),
+  Tag: memo(Tag)
+};
+
+// Extract navigation items to prevent unnecessary re-renders
+const foodSafetyLinks = [
+  {
+    to: "/food-safety/understanding-food-labels",
+    icon: <OptimizedIcons.Tag className="h-4 w-4 text-primary" />,
+    title: "Understanding Food Labels",
+    description: "Learn the difference between "Best By," "Use By," and "Sell By" dates"
+  },
+  {
+    to: "/food-safety/temperature-danger-zone",
+    icon: <OptimizedIcons.AlertOctagon className="h-4 w-4 text-primary" />,
+    title: "Temperature Danger Zone",
+    description: "Safe food temperatures and avoiding bacterial growth"
+  }
+];
 
 // Memoize the header to prevent unnecessary rerenders
 const Header = memo(() => {
@@ -35,7 +58,7 @@ const Header = memo(() => {
                   size="sm" 
                   className="gap-1 px-3 py-1.5 rounded-full"
                 >
-                  <AlertOctagon size={16} />
+                  <OptimizedIcons.AlertOctagon size={16} />
                   <span className="text-xs font-medium">Recalls</span>
                 </Button>
               </Link>
@@ -43,7 +66,7 @@ const Header = memo(() => {
                 to="/food-safety/understanding-food-labels" 
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
               >
-                <Tag size={16} />
+                <OptimizedIcons.Tag size={16} />
               </Link>
             </>
           ) : (
@@ -54,24 +77,21 @@ const Header = memo(() => {
                     <NavigationMenuTrigger className="h-auto px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors">Food Safety</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                        <Link to="/food-safety/understanding-food-labels" className="flex p-2 hover:bg-muted rounded-md transition-colors">
-                          <div className="mt-1 mr-2">
-                            <Tag className="h-4 w-4 text-primary" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-medium">Understanding Food Labels</div>
-                            <p className="text-xs text-muted-foreground">Learn the difference between "Best By," "Use By," and "Sell By" dates</p>
-                          </div>
-                        </Link>
-                        <Link to="/food-safety/temperature-danger-zone" className="flex p-2 hover:bg-muted rounded-md transition-colors">
-                          <div className="mt-1 mr-2">
-                            <AlertOctagon className="h-4 w-4 text-primary" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-medium">Temperature Danger Zone</div>
-                            <p className="text-xs text-muted-foreground">Safe food temperatures and avoiding bacterial growth</p>
-                          </div>
-                        </Link>
+                        {foodSafetyLinks.map((link) => (
+                          <Link 
+                            key={link.to}
+                            to={link.to} 
+                            className="flex p-2 hover:bg-muted rounded-md transition-colors"
+                          >
+                            <div className="mt-1 mr-2">
+                              {link.icon}
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">{link.title}</div>
+                              <p className="text-xs text-muted-foreground">{link.description}</p>
+                            </div>
+                          </Link>
+                        ))}
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
@@ -81,7 +101,7 @@ const Header = memo(() => {
                 to="/recalls" 
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
               >
-                <AlertOctagon size={16} />
+                <OptimizedIcons.AlertOctagon size={16} />
                 <span className="text-sm font-medium">Recalls</span>
               </Link>
             </>
@@ -89,8 +109,9 @@ const Header = memo(() => {
           <Link 
             to="/search" 
             className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
+            aria-label="Search for foods"
           >
-            <Search size={20} />
+            <OptimizedIcons.Search size={20} />
           </Link>
         </div>
       </div>

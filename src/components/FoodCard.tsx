@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { foodData } from "../data/foodData";
 
 interface FoodCardProps {
@@ -12,7 +12,8 @@ interface FoodCardProps {
   index?: number;
 }
 
-const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
+// Memoize FoodCard to prevent unnecessary re-renders
+const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   
@@ -87,26 +88,29 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
     
     if (url.includes('unsplash.com') && !url.includes('auto=format')) {
       // Add auto format and quality optimization
-      return url.includes('?') ? 
-        `${url}&auto=format&q=75` : 
-        `${url}?auto=format&q=75`;
+      const separator = url.includes('?') ? '&' : '?';
+      return `${url}${separator}auto=format&q=75&w=500&h=300&fit=crop`;
     }
     
     return url;
   };
 
+  // Performance optimization: reduce motion for users with reduced motion preference
+  const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }} // Cap delay to improve performance
+      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.2) }} // Cap delay even lower
+      className="food-card-container" // Add class for potential CSS optimizations
     >
       <Link to={`/food/${id}`} className="block" aria-label={`View details about ${name}`}>
         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          <div className="h-32 w-full bg-gray-100 overflow-hidden relative">
-            {/* Placeholder while image loads */}
+          <div className="h-32 w-full bg-gray-100 overflow-hidden relative" style={{ aspectRatio: '16/9' }}>
+            {/* Placeholder with exact dimensions to prevent layout shift */}
             {!imageLoaded && !imageError && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gray-200 animate-pulse" aria-hidden="true"></div>
             )}
             
             <img 
@@ -115,11 +119,11 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
               width="500"
               height="300"
               className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              loading={index > 3 ? "lazy" : "eager"} 
+              loading={index > 2 ? "lazy" : "eager"} // Load fewer images eagerly
               onError={handleImageError}
               onLoad={handleImageLoad}
-              fetchPriority={index < 4 ? "high" : "auto"}
-              decoding={index < 4 ? "sync" : "async"}
+              fetchPriority={index < 3 ? "high" : "auto"}
+              decoding={index < 3 ? "sync" : "async"}
             />
           </div>
           <div className="p-4">
@@ -130,6 +134,8 @@ const FoodCard = ({ id, name, imageUrl, category, index = 0 }: FoodCardProps) =>
       </Link>
     </motion.div>
   );
-};
+});
+
+FoodCard.displayName = "FoodCard";
 
 export default FoodCard;

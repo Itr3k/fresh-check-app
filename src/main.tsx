@@ -28,15 +28,44 @@ const renderApp = async () => {
     const measure = performance.getEntriesByName('React App Render')[0];
     console.log(`App rendered in ${measure.duration.toFixed(2)}ms`);
   }
+  
+  // Register performance observer for Cumulative Layout Shift
+  if ('PerformanceObserver' in window) {
+    try {
+      // Create CLS observer
+      const clsObserver = new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (entry.hadRecentInput) continue;
+          if (import.meta.env.DEV) {
+            console.log('CLS:', entry);
+          }
+        }
+      });
+      clsObserver.observe({ type: 'layout-shift', buffered: true });
+      
+      // Create LCP observer to track largest contentful paint
+      const lcpObserver = new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        if (import.meta.env.DEV) {
+          console.log('LCP:', lastEntry.startTime.toFixed(1), 'ms');
+        }
+      });
+      lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch (e) {
+      console.error('Performance observer error:', e);
+    }
+  }
 };
 
 // Define critical preconnect URLs
 const criticalPreconnects = [
   'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com'
+  'https://fonts.gstatic.com',
+  'https://images.unsplash.com'
 ];
 
-// Add preconnect for critical domains first
+// Add preconnect for critical domains right away
 criticalPreconnects.forEach(url => {
   const link = document.createElement('link');
   link.rel = 'preconnect';
@@ -48,45 +77,33 @@ criticalPreconnects.forEach(url => {
 // Immediately render our app
 renderApp();
 
-// Add less critical preconnects after the app starts rendering
-const nonCriticalPreconnects = [
-  'https://images.unsplash.com'
-];
+// Add less critical resource hints during idle time
+const addResourceHints = () => {
+  // DNS prefetch for ad domains
+  ['https://pagead2.googlesyndication.com', 'https://www.googletagmanager.com'].forEach(url => {
+    const link = document.createElement('link');
+    link.rel = 'dns-prefetch';
+    link.href = url;
+    document.head.appendChild(link);
+  });
+  
+  // Preload hero image if on homepage
+  if (window.location.pathname === '/') {
+    const heroImage = document.querySelector('.hero-image') as HTMLImageElement;
+    if (heroImage && heroImage.src) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = heroImage.src;
+      document.head.appendChild(link);
+    }
+  }
+};
 
 // Use requestIdleCallback for non-critical initialization
 if ('requestIdleCallback' in window) {
-  window.requestIdleCallback(() => {
-    // Add non-critical preconnects during idle time
-    nonCriticalPreconnects.forEach(url => {
-      const link = document.createElement('link');
-      link.rel = 'preconnect';
-      link.href = url;
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
-    });
-    
-    // Register any non-critical observers or analytics here
-    if ('PerformanceObserver' in window) {
-      const perfObserver = new PerformanceObserver((list) => {
-        const lcpEntry = list.getEntries().at(-1);
-        if (lcpEntry && import.meta.env.DEV) {
-          console.log('LCP:', lcpEntry.startTime.toFixed(1), 'ms');
-        }
-      });
-      
-      perfObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-    }
-  });
+  window.requestIdleCallback(addResourceHints);
 } else {
   // Fallback for browsers that don't support requestIdleCallback
-  setTimeout(() => {
-    // Add non-critical preconnects
-    nonCriticalPreconnects.forEach(url => {
-      const link = document.createElement('link');
-      link.rel = 'preconnect';
-      link.href = url;
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
-    });
-  }, 200); // Delay by 200ms to prioritize initial render
+  setTimeout(addResourceHints, 200);
 }

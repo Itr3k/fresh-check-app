@@ -8,13 +8,25 @@
     <meta name="description" content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator." />
     <meta name="author" content="Fresh Check" />
 
-    <!-- Critical CSS Inline (will be added by a post-process) -->
+    <!-- Critical CSS Inline -->
     <style>
       /* Critical path CSS */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: 'Inter', sans-serif; line-height: 1.5; }
-      img { max-width: 100%; }
+      img { max-width: 100%; height: auto; }
       .hidden { display: none; }
+      
+      /* Add more critical CSS */
+      .bg-primary { background-color: hsl(142, 71%, 45%); }
+      .text-white { color: #fff; }
+      h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      
+      /* Optimize LCP */
+      .hero-section { min-height: 60vh; padding: 2rem 1rem; }
+      .glass { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+      
+      /* Prevent CLS for images */
+      img, [class*="card-"] img { aspect-ratio: 16/9; }
     </style>
 
     <!-- Preload critical resources -->
@@ -56,11 +68,11 @@
     <meta name="theme-color" content="#4CAF50">
     <meta name="msapplication-TileColor" content="#4CAF50">
     
-    <!-- Defer non-critical CSS -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+    <!-- Fetch critical fonts with display=swap for better performance -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"></noscript>
 
-    <!-- Google AdSense - Load with a small delay to avoid blocking critical rendering -->
+    <!-- Google AdSense - Optimized loading -->
     <script>
       window.addEventListener('load', function() {
         setTimeout(function() {
@@ -69,7 +81,7 @@
           script.async = true;
           script.crossOrigin = 'anonymous';
           document.head.appendChild(script);
-        }, 1000); // 1 second delay
+        }, 3000); // Increased delay to 3 seconds for better core web vitals
       });
     </script>
   </head>
