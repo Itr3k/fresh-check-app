@@ -7,7 +7,8 @@ import { AlertTriangle } from "lucide-react";
 
 // Define ad slot IDs as constants to ensure consistency
 const AD_SLOTS = {
-  MAIN: "404-main",
+  TOP: "404-top",
+  MIDDLE: "404-middle",
   BOTTOM: "404-bottom"
 };
 
@@ -40,6 +41,10 @@ const FOOD_SAFETY_LINKS = [
   { 
     title: "Emergency Food Safety", 
     url: "/food-safety/emergency" 
+  },
+  {
+    title: "Understanding Food Labels",
+    url: "/food-safety/understanding-food-labels"
   }
 ];
 
@@ -74,6 +79,11 @@ const NotFound = () => {
           We couldn't find the page you're looking for.
         </p>
         
+        {/* First ad placement - top */}
+        <div className="my-6">
+          <AdUnit slotId={AD_SLOTS.TOP} format="rectangle" />
+        </div>
+        
         {isFoodSafetyPath && (
           <div className="mb-6 text-left bg-blue-50 p-4 rounded-lg border border-blue-100">
             <h2 className="font-medium text-blue-800 mb-2">Looking for food safety information?</h2>
@@ -95,6 +105,11 @@ const NotFound = () => {
           </div>
         )}
         
+        {/* Second ad placement - middle */}
+        <div className="my-6">
+          <AdUnit slotId={AD_SLOTS.MIDDLE} format="rectangle" />
+        </div>
+        
         <Link 
           to="/" 
           className="bg-primary text-white px-6 py-2 rounded-md inline-block hover:bg-primary/90 transition-colors"
@@ -103,14 +118,9 @@ const NotFound = () => {
         </Link>
       </div>
       
-      {/* First Ad Unit - Using consistent slot ID constants */}
-      <div className="max-w-md w-full mb-8">
-        <AdUnit slotId={AD_SLOTS.MAIN} />
-      </div>
-      
-      {/* Second Ad Unit - Using consistent slot ID constants */}
+      {/* Third ad placement - bottom */}
       <div className="max-w-md w-full">
-        <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" />
+        <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" lazyLoad={true} />
       </div>
     </div>
   );

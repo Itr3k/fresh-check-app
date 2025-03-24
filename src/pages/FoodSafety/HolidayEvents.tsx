@@ -1,200 +1,137 @@
-
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Calendar, Gift, UtensilsCrossed, Tent, Thermometer, ClockIcon, AlertTriangle } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { Calendar, Utensils, Clock } from 'lucide-react';
 import FoodSafetyLayout from '@/components/FoodSafetyLayout';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import AdUnit from '@/components/AdUnit';
 
 const HolidayEvents = () => {
   return (
-    <FoodSafetyLayout
-      title="Holiday & Event Food Safety"
-      description="Keep your celebrations safe with proper food handling during holidays, picnics, and special events."
-      icon={<Calendar className="w-4 h-4 mr-1.5" />}
-      iconBgColor="bg-yellow-100"
-      iconTextColor="text-yellow-800"
-      keywords="holiday food safety, picnic safety, buffet food safety, thanksgiving, christmas dinner, event food safety"
-    >
-      <Tabs defaultValue="holidays" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="holidays">
-            <Gift className="mr-2 h-4 w-4" />
-            Holiday Meals
-          </TabsTrigger>
-          <TabsTrigger value="picnics">
-            <Tent className="mr-2 h-4 w-4" />
-            Picnics & Outdoors
-          </TabsTrigger>
-          <TabsTrigger value="buffets">
-            <UtensilsCrossed className="mr-2 h-4 w-4" />
-            Parties & Buffets
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="holidays" className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-semibold mb-4">Holiday Meal Safety</h2>
-              <p className="mb-4">
-                During the holidays, we often prepare large meals for many people. This increases the risk of foodborne illness 
-                from improper storage, handling, and cooking of food.
-              </p>
-              
-              <Accordion type="single" collapsible className="mt-4">
-                <AccordionItem value="thanksgiving">
-                  <AccordionTrigger>Thanksgiving & Christmas Dinner Safety</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4">
-                      <div className="rounded-lg bg-amber-50 p-4 border border-amber-100">
-                        <h3 className="font-medium text-amber-800 flex items-center">
-                          <Thermometer className="mr-2 h-4 w-4" /> Turkey Safety
-                        </h3>
-                        <ul className="mt-2 space-y-2 text-sm">
-                          <li>• Thaw turkey safely in the refrigerator, not on the counter</li>
-                          <li>• Allow 24 hours of thawing time for every 4-5 pounds of turkey</li>
-                          <li>• Cook turkey to an internal temperature of 165°F (74°C)</li>
-                          <li>• Use a food thermometer to check the innermost part of the thigh and wing and the thickest part of the breast</li>
-                        </ul>
-                      </div>
-                      
-                      <p>For stuffing, it's safest to cook it separately from the turkey. If you stuff your turkey:</p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>Stuff loosely – about ¾ cup per pound of turkey</li>
-                        <li>Ensure stuffing reaches 165°F (74°C)</li>
-                        <li>Stuff the turkey just before cooking, never in advance</li>
-                      </ul>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="leftovers">
-                  <AccordionTrigger>Managing Holiday Leftovers</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-3">
-                      <div className="flex items-start">
-                        <ClockIcon className="mt-1 mr-3 h-5 w-5 text-blue-500" />
-                        <div>
-                          <h4 className="font-medium">The Two-Hour Rule</h4>
-                          <p>Refrigerate or freeze leftovers within two hours of cooking to prevent bacteria growth.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="rounded-lg border p-4">
-                        <h4 className="font-medium mb-2">Proper Storage:</h4>
-                        <ul className="space-y-1 text-sm">
-                          <li>• Divide large amounts of food into shallow containers for quicker cooling</li>
-                          <li>• Remove stuffing from turkey and refrigerate separately</li>
-                          <li>• Use leftovers within 3-4 days or freeze for longer storage</li>
-                          <li>• Reheat all leftovers to 165°F (74°C) before eating</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="picnics" className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-semibold mb-4">Picnic & Outdoor Event Safety</h2>
-              <p className="mb-4">
-                Outdoor events present unique food safety challenges. Higher temperatures and limited 
-                refrigeration increase the risk of foodborne illness.
-              </p>
-
-              <div className="grid gap-6 mt-6">
-                <div className="p-4 rounded-lg bg-green-50 border border-green-100">
-                  <h3 className="font-medium text-green-800 mb-2">Packing & Transportation</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Use insulated coolers with plenty of ice or freezer packs</li>
-                    <li>• Pack raw meat separately from ready-to-eat foods</li>
-                    <li>• Keep coolers in the air-conditioned car, not the hot trunk</li>
-                    <li>• Keep coolers in the shade and closed as much as possible</li>
-                  </ul>
-                </div>
-                
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Temperature</TableHead>
-                      <TableHead>Max Time Food Can Be Left Out</TableHead>
-                      <TableHead>Risk Level</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Below 90°F (32°C)</TableCell>
-                      <TableCell>2 hours</TableCell>
-                      <TableCell>Medium</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Above 90°F (32°C)</TableCell>
-                      <TableCell>1 hour</TableCell>
-                      <TableCell className="text-red-500 font-medium">High</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-                
-                <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
-                  <div className="flex items-center mb-2">
-                    <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
-                    <h3 className="font-medium text-orange-800">Foods That Need Extra Caution</h3>
-                  </div>
-                  <p className="text-sm mb-2">These foods are particularly risky at outdoor events:</p>
-                  <ul className="grid grid-cols-2 gap-2 text-sm">
-                    <li>• Meat salads (chicken, tuna, egg)</li>
-                    <li>• Dairy products</li>
-                    <li>• Cut melons</li>
-                    <li>• Potato and pasta salads</li>
-                    <li>• Seafood</li>
-                    <li>• Dips and sauces</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="buffets" className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-semibold mb-4">Party & Buffet Safety</h2>
-              <p className="mb-4">
-                Buffets and party spreads often involve food sitting at room temperature for extended periods, 
-                creating an opportunity for bacteria to multiply.
-              </p>
-
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
-                <h3 className="font-medium text-blue-800 mb-2">Temperature Control for Buffets</h3>
-                <div className="space-y-2 text-sm">
-                  <p>• Hot foods should be kept at or above 140°F (60°C)</p>
-                  <p>• Cold foods should be kept at or below 40°F (4°C)</p>
-                  <p>• Replace empty platters rather than adding fresh food to a dish that already had food in it</p>
-                  <p>• Use chafing dishes, slow cookers, and warming trays to keep hot foods hot</p>
-                  <p>• Use ice or commercial freezer packs to keep cold foods cold</p>
-                </div>
-              </div>
-              
-              <div className="rounded-lg border p-4">
-                <h3 className="font-medium mb-3">Buffet Service Tips</h3>
-                <ul className="space-y-2 text-sm">
-                  <li>• Provide serving utensils for each dish to prevent cross-contamination</li>
-                  <li>• Arrange food in small serving dishes and replenish them frequently</li>
-                  <li>• Monitor how long food has been sitting out and remove items after 2 hours</li>
-                  <li>• Consider using smaller plates to encourage guests to take less at once and return for seconds</li>
-                  <li>• Assign a "food safety" person to monitor time and temperatures during the event</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </FoodSafetyLayout>
+    <>
+      <FoodSafetyLayout
+        title="Holiday & Event Food Safety"
+        description="Ensure food safety during holidays and special events with these guidelines for safe food preparation, handling, and storage."
+        icon={<Calendar className="w-4 h-4" />}
+        iconBgColor="bg-orange-100"
+        iconTextColor="text-orange-700"
+        keywords="holiday food safety, event food safety, party food safety, safe food handling, holiday cooking, buffet safety"
+      >
+        <div className="prose prose-sm sm:prose max-w-none text-foreground">
+          <h2 className="text-xl font-semibold mb-4">Holiday Food Safety Challenges</h2>
+          
+          <p>
+            Holidays and special events often involve preparing larger quantities of food, 
+            cooking unfamiliar dishes, and managing complex timing with multiple dishes. 
+            These factors can increase food safety risks if proper precautions aren't taken.
+          </p>
+          
+          {/* First ad placement - top of content */}
+          <div className="my-6">
+            <AdUnit slotId="holiday-top" format="leaderboard" />
+          </div>
+          
+          <Alert variant="destructive">
+            <AlertTitle>Increased Risk During Holidays</AlertTitle>
+            <AlertDescription>
+              During holidays, the risk of foodborne illness increases due to large-scale cooking and serving.
+            </AlertDescription>
+          </Alert>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Planning Ahead for Food Safety</h2>
+          
+          <p>
+            Proper planning is essential for ensuring food safety during holidays and events. 
+            Consider these steps:
+          </p>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Menu Planning:</strong> Choose dishes that can be safely prepared and held at proper temperatures.</li>
+            <li><strong>Shopping:</strong> Buy perishable foods last and refrigerate them promptly.</li>
+            <li><strong>Preparation Timeline:</strong> Plan your cooking schedule to avoid cross-contamination and ensure foods are cooked to safe internal temperatures.</li>
+          </ul>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Safe Food Handling for Large Gatherings</h2>
+          
+          <p>
+            When preparing food for a large group, follow these guidelines to minimize the risk of foodborne illness:
+          </p>
+          
+          <ul className="list-decimal pl-5 mb-6">
+            <li><strong>Wash Hands:</strong> Wash hands thoroughly with soap and water before and after handling food.</li>
+            <li><strong>Prevent Cross-Contamination:</strong> Use separate cutting boards and utensils for raw and cooked foods.</li>
+            <li><strong>Cook to Safe Temperatures:</strong> Use a food thermometer to ensure foods reach safe internal temperatures.</li>
+            <li><strong>Keep Hot Foods Hot:</strong> Hold hot foods at 140°F (60°C) or higher.</li>
+            <li><strong>Keep Cold Foods Cold:</strong> Hold cold foods at 40°F (4°C) or lower.</li>
+          </ul>
+          
+          <h3 className="text-lg font-semibold mb-3">Buffet Table Safety</h3>
+          
+          <p>
+            Buffet tables can be a breeding ground for bacteria if not managed properly. Follow these tips:
+          </p>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Use Chafing Dishes and Ice Baths:</strong> Keep hot foods hot with chafing dishes and cold foods cold with ice baths.</li>
+            <li><strong>Small Portions:</strong> Serve food in small portions and replenish frequently to ensure freshness.</li>
+            <li><strong>Time Limit:</strong> Don't leave food at room temperature for more than 2 hours (1 hour if the temperature is above 90°F/32°C).</li>
+            <li><strong>Label Foods:</strong> Clearly label each dish to avoid confusion and prevent allergic reactions.</li>
+          </ul>
+          
+          {/* Second ad placement - middle of content */}
+          <div className="my-6">
+            <AdUnit slotId="holiday-middle" format="rectangle" />
+          </div>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Specific Holiday Food Safety Tips</h2>
+          
+          <h3 className="text-lg font-semibold mb-3">Thanksgiving</h3>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Thawing Turkey:</strong> Thaw turkey safely in the refrigerator, in cold water (changing every 30 minutes), or in the microwave. Never thaw at room temperature.</li>
+            <li><strong>Stuffing:</strong> Cook stuffing separately or ensure it reaches 165°F (74°C) inside the turkey.</li>
+            <li><strong>Turkey Cooking:</strong> Cook turkey to an internal temperature of 165°F (74°C) in the thickest part of the thigh.</li>
+          </ul>
+          
+          <h3 className="text-lg font-semibold mb-3">Christmas / Hanukkah</h3>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Ham and Roasts:</strong> Cook ham and roasts to safe internal temperatures.</li>
+            <li><strong>Potluck Dishes:</strong> Ensure potluck dishes are transported and held at safe temperatures.</li>
+            <li><strong>Eggnog:</strong> Use pasteurized eggs for homemade eggnog to avoid Salmonella.</li>
+          </ul>
+          
+          <h3 className="text-lg font-semibold mb-3">Summer BBQs</h3>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Marinating:</strong> Marinate foods in the refrigerator, not at room temperature.</li>
+            <li><strong>Grilling:</strong> Use a food thermometer to ensure meats are cooked to safe internal temperatures.</li>
+            <li><strong>Picnic Safety:</strong> Keep cold foods cold in insulated coolers with ice packs.</li>
+          </ul>
+          
+          {/* Third ad placement - bottom of content */}
+          <div className="my-6">
+            <AdUnit slotId="holiday-bottom" format="leaderboard" lazyLoad={true} />
+          </div>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Safely Handling Leftovers</h2>
+          
+          <p>
+            Leftovers can be a delicious reminder of a great meal, but they must be handled properly to prevent foodborne illness:
+          </p>
+          
+          <ul className="list-disc pl-5 mb-6">
+            <li><strong>Cool Quickly:</strong> Cool leftovers quickly by dividing them into shallow containers.</li>
+            <li><strong>Refrigerate Promptly:</strong> Refrigerate leftovers within 2 hours of cooking.</li>
+            <li><strong>Use Within 3-4 Days:</strong> Use leftovers within 3-4 days or freeze them for longer storage.</li>
+            <li><strong>Reheat Thoroughly:</strong> Reheat leftovers to 165°F (74°C) before serving.</li>
+          </ul>
+          
+          <p>
+            By following these food safety guidelines, you can help ensure that your holidays and special events are remembered for the right reasons – good food and good company, not foodborne illness.
+          </p>
+        </div>
+      </FoodSafetyLayout>
+    </>
   );
 };
 

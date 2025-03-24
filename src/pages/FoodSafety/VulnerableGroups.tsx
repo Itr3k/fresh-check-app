@@ -1,315 +1,218 @@
-import React from "react";
-import { 
-  Users, 
-  Baby, 
-  Heart, 
-  ShieldAlert, 
-  Utensils
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent 
-} from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import FoodSafetyLayout from "@/components/FoodSafetyLayout";
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Shield, Baby, UserCheck } from 'lucide-react';
+import FoodSafetyLayout from '@/components/FoodSafetyLayout';
+import AdUnit from '@/components/AdUnit';
 
 const VulnerableGroups = () => {
   return (
-    <FoodSafetyLayout
-      title="Food Safety for Vulnerable Groups"
-      description="Specific food safety guidelines for pregnant women, older adults, children, and people with weakened immune systems."
-      icon={<Users className="w-4 h-4 mr-1.5" />}
-      iconBgColor="bg-purple-100"
-      iconTextColor="text-purple-800"
-      keywords="pregnant women food safety, children food safety, elderly food safety, immunocompromised food safety, vulnerable populations"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8"
+    <>
+      <FoodSafetyLayout
+        title="Food Safety for Vulnerable Groups"
+        description="Learn about food safety guidelines for vulnerable populations, including pregnant women, young children, older adults, and individuals with compromised immune systems."
+        icon={<Shield className="w-4 h-4" />}
+        iconBgColor="bg-orange-100"
+        iconTextColor="text-orange-700"
+        keywords="food safety, vulnerable groups, pregnancy, children, elderly, immunocompromised, foodborne illness prevention"
       >
-        <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Users size={32} className="text-purple-600" />
-        </div>
-      </motion.div>
-
-      <div className="space-y-8">
-        <Alert className="bg-amber-50 border-amber-200">
-          <ShieldAlert className="h-5 w-5 text-amber-600" />
-          <AlertTitle className="text-amber-800">Why some people are at greater risk</AlertTitle>
-          <AlertDescription className="text-amber-700">
-            Certain groups face higher risks from foodborne illness due to differences in immune function, 
-            physiological changes, or developing systems. Extra precautions can help protect these vulnerable populations.
-          </AlertDescription>
-        </Alert>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="border-l-4 border-l-pink-400">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="bg-pink-100 p-2 rounded-full">
-                  <Heart className="h-5 w-5 text-pink-500" />
-                </div>
-                <CardTitle>Pregnant Women</CardTitle>
+        <div className="prose prose-sm sm:prose max-w-none text-foreground">
+          <h2 className="text-xl font-semibold mb-4">Who is at Higher Risk?</h2>
+          
+          <p>
+            While foodborne illness can affect anyone, certain groups face higher risks of severe 
+            complications, hospitalization, and potentially life-threatening conditions. Understanding 
+            these risks can help vulnerable individuals take appropriate precautions.
+          </p>
+          
+          {/* First ad placement - top of content */}
+          <div className="my-6">
+            <AdUnit slotId="vulnerable-top" format="leaderboard" />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Pregnant Women */}
+            <div className="bg-pink-50 p-6 rounded-lg border border-pink-100">
+              <div className="flex items-center mb-3">
+                <Baby className="text-pink-600 mr-2 h-5 w-5" />
+                <h3 className="text-lg font-medium text-pink-800">Pregnant Women</h3>
               </div>
-              <CardDescription>
-                Pregnancy alters the immune system, making women more susceptible to foodborne illness.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-l-4 border-l-blue-400">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <Baby className="h-5 w-5 text-blue-500" />
-                </div>
-                <CardTitle>Young Children</CardTitle>
-              </div>
-              <CardDescription>
-                Developing immune systems make children under 5 especially vulnerable to foodborne pathogens.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-l-4 border-l-amber-400">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="bg-amber-100 p-2 rounded-full">
-                  <Users className="h-5 w-5 text-amber-500" />
-                </div>
-                <CardTitle>Older Adults</CardTitle>
-              </div>
-              <CardDescription>
-                Adults 65+ have weakening immune systems and may have underlying conditions that increase risk.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-l-4 border-l-emerald-400">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="bg-emerald-100 p-2 rounded-full">
-                  <ShieldAlert className="h-5 w-5 text-emerald-500" />
-                </div>
-                <CardTitle>Immunocompromised People</CardTitle>
-              </div>
-              <CardDescription>
-                Those with conditions like diabetes, cancer, HIV/AIDS, or on certain medications have reduced immunity.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="pregnant-women">
-            <AccordionTrigger className="text-lg font-medium">
-              Guidelines for Pregnant Women
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <p>
-                Pregnancy affects your immune system, making you and your unborn baby more susceptible to the bacteria, viruses, and parasites that cause foodborne illness.
+              <p className="text-sm text-gray-700 mb-3">
+                Pregnant women are more susceptible to certain foodborne illnesses, such as listeriosis, 
+                which can cause miscarriage, stillbirth, or severe illness in newborns.
               </p>
-              
-              <div className="bg-red-50 p-4 rounded-md border border-red-100 mb-4">
-                <h4 className="font-medium text-red-800 mb-2">Foods to Avoid During Pregnancy</h4>
-                <ul className="list-disc list-inside space-y-1 text-red-700">
-                  <li>Raw or undercooked meat, poultry, seafood, and eggs</li>
-                  <li>Unpasteurized (raw) milk and products made with raw milk</li>
-                  <li>Soft cheeses like queso fresco, Brie, Camembert, feta, and blue-veined cheeses unless labeled as made with pasteurized milk</li>
-                  <li>Raw sprouts (including alfalfa, clover, radish, and mung bean)</li>
-                  <li>Deli meats and hot dogs unless heated until steaming hot</li>
-                  <li>High-mercury fish like shark, swordfish, king mackerel, and tilefish</li>
-                </ul>
-              </div>
-              
-              <p>
-                Pregnant women are particularly susceptible to <strong>Listeria monocytogenes</strong>, which can cause miscarriage, stillbirth, or severe illness in newborns. Listeria can grow even in refrigerated temperatures.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="children">
-            <AccordionTrigger className="text-lg font-medium">
-              Guidelines for Young Children
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <p>
-                Children under 5 years old are at an increased risk of foodborne illness because their immune systems are still developing. Additionally, young children produce less stomach acid, making it easier for harmful bacteria to survive in their digestive systems.
-              </p>
-              
-              <div className="bg-blue-50 p-4 rounded-md border border-blue-100 mb-4">
-                <h4 className="font-medium text-blue-800 mb-2">Foods to Avoid for Young Children</h4>
-                <ul className="list-disc list-inside space-y-1 text-blue-700">
-                  <li>Raw or undercooked eggs or foods containing raw eggs</li>
-                  <li>Raw or undercooked meat, poultry, or seafood</li>
-                  <li>Raw milk or products made from raw milk</li>
-                  <li>Raw or partially cooked sprouts</li>
-                  <li>Honey (for infants under 12 months) - risk of botulism</li>
-                  <li>Unpasteurized juices</li>
-                </ul>
-              </div>
-              
-              <p>
-                Children are especially vulnerable to <strong>E. coli O157:H7</strong>, which can cause severe complications including hemolytic uremic syndrome (HUS), a type of kidney failure.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="older-adults">
-            <AccordionTrigger className="text-lg font-medium">
-              Guidelines for Older Adults (65+)
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <p>
-                As adults age, their immune systems and organs don't recognize and get rid of harmful bacteria as well as they once did. The digestive system holds food longer, allowing bacteria to grow, while the stomach may not produce enough acid to limit the number of intestinal bacteria.
-              </p>
-              
-              <div className="bg-amber-50 p-4 rounded-md border border-amber-100 mb-4">
-                <h4 className="font-medium text-amber-800 mb-2">Recommendations for Older Adults</h4>
-                <ul className="list-disc list-inside space-y-1 text-amber-700">
-                  <li>Avoid raw or undercooked seafood</li>
-                  <li>Cook eggs until both the yolk and white are firm</li>
-                  <li>Do not consume unpasteurized milk or juices</li>
-                  <li>Avoid soft cheeses made from unpasteurized milk</li>
-                  <li>Heat deli meats and hot dogs until steaming hot</li>
-                  <li>Be particularly careful with leftovers - reheat to 165°F</li>
-                </ul>
-              </div>
-              
-              <p>
-                Older adults are at particular risk from <strong>Listeria</strong> infections, which have a higher fatality rate among the elderly.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="immunocompromised">
-            <AccordionTrigger className="text-lg font-medium">
-              Guidelines for People with Weakened Immune Systems
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <p>
-                People with weakened immune systems are more susceptible to foodborne illnesses and may experience more severe symptoms. This includes individuals with HIV/AIDS, cancer, diabetes, kidney disease, organ transplants, or those taking certain medications (steroids, immunosuppressants, some arthritis drugs).
-              </p>
-              
-              <div className="bg-emerald-50 p-4 rounded-md border border-emerald-100 mb-4">
-                <h4 className="font-medium text-emerald-800 mb-2">Special Precautions</h4>
-                <ul className="list-disc list-inside space-y-1 text-emerald-700">
-                  <li>Avoid raw or undercooked eggs, meat, poultry, fish, and shellfish</li>
-                  <li>Avoid all unpasteurized dairy products and juices</li>
-                  <li>Avoid raw sprouts of any kind</li>
-                  <li>Heat deli meats and hot dogs to steaming hot</li>
-                  <li>Be extra vigilant about keeping food preparation areas clean</li>
-                  <li>Separate raw meats from other foods completely</li>
-                  <li>Consider using separate cutting boards for meat and produce</li>
-                </ul>
-              </div>
-              
-              <p>
-                People with compromised immune systems should be particularly cautious about <strong>Cryptosporidium</strong>, <strong>Cyclospora</strong>, <strong>Listeria</strong>, and <strong>Toxoplasma</strong> infections.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
-        <Card className="mt-8">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <Utensils className="h-5 w-5 text-primary" />
-              </div>
-              <CardTitle>Core Food Safety Practices for Everyone</CardTitle>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                <li>Avoid unpasteurized dairy products</li>
+                <li>Avoid raw or undercooked meat, poultry, and seafood</li>
+                <li>Avoid deli meats and hot dogs unless reheated until steaming hot</li>
+              </ul>
             </div>
-            <CardDescription>
-              These fundamental practices are especially important for vulnerable populations.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Practice</TableHead>
-                  <TableHead>Key Points</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">Clean</TableCell>
-                  <TableCell>
-                    Wash hands for 20 seconds with soap and water before, during, and after preparing food. 
-                    Clean surfaces and utensils after each use.
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Separate</TableCell>
-                  <TableCell>
-                    Use separate cutting boards for meat, poultry, seafood and produce.
-                    Keep raw meat away from other foods in shopping cart and refrigerator.
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Cook</TableCell>
-                  <TableCell>
-                    Use a food thermometer to ensure foods are cooked to a safe internal temperature.
-                    For vulnerable groups, eggs should be cooked until yolks are firm.
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Chill</TableCell>
-                  <TableCell>
-                    Refrigerate perishable food within 2 hours (1 hour if temperature is above 90°F).
-                    Thaw food in the refrigerator, not on the counter.
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-
-        <div className="bg-muted/40 p-6 rounded-lg mt-8">
-          <h3 className="text-lg font-medium mb-3">Sources and Further Information</h3>
-          <ul className="space-y-2">
-            <li className="flex gap-2">
-              <span>•</span>
-              <a href="https://www.fda.gov/food/people-risk-foodborne-illness" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                FDA: Food Safety for People at Higher Risk
-              </a>
+            
+            {/* Young Children */}
+            <div className="bg-blue-50 p-6 rounded-lg border border-blue-100">
+              <div className="flex items-center mb-3">
+                <Baby className="text-blue-600 mr-2 h-5 w-5" />
+                <h3 className="text-lg font-medium text-blue-800">Young Children</h3>
+              </div>
+              <p className="text-sm text-gray-700 mb-3">
+                Children under the age of 5 have developing immune systems, making them more vulnerable 
+                to foodborne illnesses. They are also more likely to develop severe symptoms.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                <li>Ensure all foods are thoroughly cooked</li>
+                <li>Avoid raw milk and products made from it</li>
+                <li>Wash fruits and vegetables carefully</li>
+              </ul>
+            </div>
+            
+            {/* Older Adults */}
+            <div className="bg-purple-50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center mb-3">
+                <UserCheck className="text-purple-600 mr-2 h-5 w-5" />
+                <h3 className="text-lg font-medium text-purple-800">Older Adults</h3>
+              </div>
+              <p className="text-sm text-gray-700 mb-3">
+                As people age, their immune systems may weaken, making them more susceptible to foodborne 
+                illnesses. They may also have underlying health conditions that increase their risk.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                <li>Cook foods to safe internal temperatures</li>
+                <li>Avoid raw or partially cooked eggs</li>
+                <li>Refrigerate leftovers promptly</li>
+              </ul>
+            </div>
+            
+            {/* Immunocompromised Individuals */}
+            <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-100">
+              <div className="flex items-center mb-3">
+                <Shield className="text-yellow-600 mr-2 h-5 w-5" />
+                <h3 className="text-lg font-medium text-yellow-800">Immunocompromised Individuals</h3>
+              </div>
+              <p className="text-sm text-gray-700 mb-3">
+                People with weakened immune systems due to conditions like HIV/AIDS, cancer treatment, 
+                or organ transplantation are at higher risk of severe foodborne illnesses.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                <li>Follow strict food safety practices</li>
+                <li>Avoid high-risk foods like raw sprouts</li>
+                <li>Consult with a healthcare provider for specific dietary recommendations</li>
+              </ul>
+            </div>
+          </div>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Special Food Safety Guidelines for Vulnerable Groups</h2>
+          
+          <ul className="list-disc pl-5 space-y-3 text-foreground">
+            <li>
+              <strong>Wash Hands Thoroughly:</strong> Always wash hands with soap and water for at least 20 seconds 
+              before and after handling food.
             </li>
-            <li className="flex gap-2">
-              <span>•</span>
-              <a href="https://www.cdc.gov/foodsafety/people-at-risk-food-poisoning.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                CDC: Food Safety During Pregnancy and for Other At-Risk Groups
-              </a>
+            <li>
+              <strong>Cook Foods to Safe Temperatures:</strong> Use a food thermometer to ensure that meat, poultry, 
+              seafood, and eggs are cooked to the recommended internal temperatures.
             </li>
-            <li className="flex gap-2">
-              <span>•</span>
-              <a href="https://www.foodsafety.gov/people-at-risk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                FoodSafety.gov: People at Risk
-              </a>
+            <li>
+              <strong>Avoid Raw or Undercooked Foods:</strong> Vulnerable groups should avoid consuming raw or 
+              undercooked meat, poultry, seafood, eggs, and sprouts.
+            </li>
+            <li>
+              <strong>Prevent Cross-Contamination:</strong> Use separate cutting boards and utensils for raw and 
+              cooked foods. Store raw meat, poultry, and seafood separately from other foods in the refrigerator.
+            </li>
+            <li>
+              <strong>Refrigerate Foods Promptly:</strong> Refrigerate perishable foods within two hours (or one hour 
+              if the ambient temperature is above 90°F/32°C).
+            </li>
+            <li>
+              <strong>Avoid Unpasteurized Dairy Products and Juices:</strong> These products may contain harmful bacteria.
+            </li>
+          </ul>
+          
+          {/* Second ad placement - middle of content */}
+          <div className="my-6">
+            <AdUnit slotId="vulnerable-middle" format="rectangle" />
+          </div>
+          
+          <h2 className="text-xl font-semibold mb-4">Foods to Avoid for High-Risk Individuals</h2>
+          
+          <ul className="list-disc pl-5 space-y-3 text-foreground">
+            <li>
+              <strong>Raw or Undercooked Meats and Poultry:</strong> These can harbor harmful bacteria like Salmonella and E. coli.
+            </li>
+            <li>
+              <strong>Raw Seafood:</strong> Includes sushi, sashimi, and raw oysters, which may contain Vibrio bacteria or parasites.
+            </li>
+            <li>
+              <strong>Raw or Undercooked Eggs:</strong> Can contain Salmonella. Avoid homemade mayonnaise, Caesar salad dressing, and other foods made with raw eggs.
+            </li>
+            <li>
+              <strong>Unpasteurized Dairy Products:</strong> May contain Listeria, E. coli, or Salmonella.
+            </li>
+            <li>
+              <strong>Soft Cheeses:</strong> Such as Brie, feta, and Camembert, which may contain Listeria.
+            </li>
+            <li>
+              <strong>Deli Meats and Hot Dogs:</strong> These can be contaminated with Listeria. Reheat until steaming hot before consuming.
+            </li>
+            <li>
+              <strong>Raw Sprouts:</strong> Such as alfalfa, clover, and radish sprouts, which can harbor bacteria.
+            </li>
+            <li>
+              <strong>Unwashed Fruits and Vegetables:</strong> Always wash produce thoroughly to remove dirt and bacteria.
+            </li>
+          </ul>
+          
+          {/* Third ad placement - bottom of content */}
+          <div className="my-6">
+            <AdUnit slotId="vulnerable-bottom" format="leaderboard" lazyLoad={true} />
+          </div>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Creating a Food Safety Plan</h2>
+          
+          <p>
+            For vulnerable individuals, creating a personalized food safety plan can help minimize risks. 
+            Consider the following steps:
+          </p>
+          
+          <ol className="list-decimal pl-5 space-y-3 text-foreground">
+            <li>
+              <strong>Consult with a Healthcare Provider:</strong> Discuss any specific dietary restrictions or 
+              recommendations based on your health condition.
+            </li>
+            <li>
+              <strong>Educate Yourself:</strong> Learn about food safety risks and best practices for vulnerable groups.
+            </li>
+            <li>
+              <strong>Implement Strict Food Safety Practices:</strong> Follow the guidelines outlined above, including 
+              thorough handwashing, cooking foods to safe temperatures, and avoiding high-risk foods.
+            </li>
+            <li>
+              <strong>Monitor for Symptoms:</strong> Be aware of the symptoms of foodborne illness and seek medical 
+              attention promptly if you experience any concerns.
+            </li>
+          </ol>
+          
+          <h2 className="text-xl font-semibold mb-4 mt-8">Additional Resources</h2>
+          
+          <ul className="list-disc pl-5 space-y-3 text-foreground">
+            <li>
+              <a href="https://www.foodsafety.gov/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                FoodSafety.gov
+              </a> - Provides comprehensive information on food safety for consumers.
+            </li>
+            <li>
+              <a href="https://www.cdc.gov/foodsafety/index.html" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                CDC Food Safety
+              </a> - Offers resources on preventing foodborne illnesses.
+            </li>
+            <li>
+              <a href="https://www.fda.gov/food/resourcesforyou/ucm078750.htm" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                FDA Food Safety for Vulnerable Populations
+              </a> - Provides specific guidance for pregnant women, children, and older adults.
             </li>
           </ul>
         </div>
-      </div>
-    </FoodSafetyLayout>
+      </FoodSafetyLayout>
+    </>
   );
 };
 
