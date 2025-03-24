@@ -70,7 +70,7 @@ const NotFound = () => {
         {/* First ad placement - top - wrap in Suspense */}
         <div className="my-6">
           <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
-            <AdUnit slotId={AD_SLOTS.TOP} format="rectangle" />
+            <AdUnit slotId={AD_SLOTS.TOP} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
         
@@ -98,7 +98,7 @@ const NotFound = () => {
         {/* Second ad placement - middle */}
         <div className="my-6">
           <Suspense fallback={<Skeleton className="h-[180px] w-full" />}>
-            <AdUnit slotId={AD_SLOTS.MIDDLE} format="rectangle" />
+            <AdUnit slotId={AD_SLOTS.MIDDLE} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
         
@@ -113,7 +113,7 @@ const NotFound = () => {
       {/* Third ad placement - bottom */}
       <div className="max-w-md w-full">
         <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
-          <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" lazyLoad={true} />
+          <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
         </Suspense>
       </div>
     </div>

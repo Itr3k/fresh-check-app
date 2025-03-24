@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { ShieldAlert, AlertTriangle } from 'lucide-react';
@@ -26,7 +27,7 @@ const FoodborneIllnessPrevention = () => {
           
           {/* First ad placement - top of content */}
           <div className="my-6">
-            <AdUnit slotId="foodborne-top" format="leaderboard" />
+            <AdUnit slotId="foodborne-top" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Common Pathogens Causing Foodborne Illness</h2>
@@ -70,7 +71,7 @@ const FoodborneIllnessPrevention = () => {
           
           {/* Second ad placement - middle of content */}
           <div className="my-6">
-            <AdUnit slotId="foodborne-middle" format="rectangle" />
+            <AdUnit slotId="foodborne-middle" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Recognizing Symptoms of Foodborne Illness</h2>
@@ -108,7 +109,7 @@ const FoodborneIllnessPrevention = () => {
           
           {/* Third ad placement - bottom of content */}
           <div className="my-6">
-            <AdUnit slotId="foodborne-bottom" format="leaderboard" lazyLoad={true} />
+            <AdUnit slotId="foodborne-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">When to Seek Medical Attention</h2>

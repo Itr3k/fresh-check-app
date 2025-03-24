@@ -27,7 +27,7 @@ const ScienceOfSpoilage = () => {
           
           {/* First ad placement - top of content */}
           <div className="my-6">
-            <AdUnit slotId="spoilage-top" format="leaderboard" />
+            <AdUnit slotId="spoilage-top" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Causes of Food Spoilage</h2>
@@ -84,7 +84,7 @@ const ScienceOfSpoilage = () => {
           
           {/* Second ad placement - middle of content */}
           <div className="my-6">
-            <AdUnit slotId="spoilage-middle" format="rectangle" />
+            <AdUnit slotId="spoilage-middle" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">The Science of Food Preservation</h2>
@@ -123,7 +123,7 @@ const ScienceOfSpoilage = () => {
           
           {/* Third ad placement - bottom of content */}
           <div className="my-6">
-            <AdUnit slotId="spoilage-bottom" format="leaderboard" lazyLoad={true} />
+            <AdUnit slotId="spoilage-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Common Misconceptions About Food Spoilage</h2>

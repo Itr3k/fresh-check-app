@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Standard AdSense display ad sizes
 const AD_FORMAT_DIMENSIONS = {
@@ -18,12 +19,14 @@ interface AdUnitProps {
   format?: keyof typeof AD_FORMAT_DIMENSIONS;
   lazyLoad?: boolean;
   responsive?: boolean;
+  mobileFormat?: keyof typeof AD_FORMAT_DIMENSIONS;
 }
 
 const AdUnit: React.FC<AdUnitProps> = ({ 
   slotId = "default-ad-slot", 
   className = "",
-  format = "rectangle",
+  format = "leaderboard",
+  mobileFormat = "rectangle",
   lazyLoad = true,
   responsive = true
 }) => {
@@ -33,9 +36,11 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const [isError, setIsError] = useState(false);
   const initializedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMobile = useIsMobile();
   
-  // Get dimensions for the selected format
-  const adDimensions = AD_FORMAT_DIMENSIONS[format];
+  // Get dimensions for the selected format based on device
+  const activeFormat = isMobile ? mobileFormat : format;
+  const adDimensions = AD_FORMAT_DIMENSIONS[activeFormat];
   
   // Generate responsive or fixed size classes
   const sizeClass = responsive
@@ -195,11 +200,11 @@ const AdUnit: React.FC<AdUnitProps> = ({
   // Use a more efficient DOM structure
   return (
     <div 
-      className={`overflow-hidden ${className} print:hidden ad-unit ad-${format}`} 
+      className={`overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
       role="complementary" 
       aria-label="Advertisement"
       data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
-      data-ad-format={format}
+      data-ad-format={activeFormat}
       style={{
         width: responsive ? '100%' : `${adDimensions.width}px`,
         height: responsive ? 'auto' : `${adDimensions.height}px`,

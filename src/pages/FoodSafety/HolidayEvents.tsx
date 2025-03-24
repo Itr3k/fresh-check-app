@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Calendar, Utensils, Clock } from 'lucide-react';
@@ -27,7 +28,7 @@ const HolidayEvents = () => {
           
           {/* First ad placement - top of content */}
           <div className="my-6">
-            <AdUnit slotId="holiday-top" format="leaderboard" />
+            <AdUnit slotId="holiday-top" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <Alert variant="destructive">
@@ -79,7 +80,7 @@ const HolidayEvents = () => {
           
           {/* Second ad placement - middle of content */}
           <div className="my-6">
-            <AdUnit slotId="holiday-middle" format="rectangle" />
+            <AdUnit slotId="holiday-middle" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Specific Holiday Food Safety Tips</h2>
@@ -110,7 +111,7 @@ const HolidayEvents = () => {
           
           {/* Third ad placement - bottom of content */}
           <div className="my-6">
-            <AdUnit slotId="holiday-bottom" format="leaderboard" lazyLoad={true} />
+            <AdUnit slotId="holiday-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8">Safely Handling Leftovers</h2>
