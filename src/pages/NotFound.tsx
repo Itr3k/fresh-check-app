@@ -62,7 +62,7 @@ const NotFound = () => {
       location.pathname
     );
     
-    // Send to Google Analytics if available
+    // Send to Google Analytics if available - fixed type checking
     if (typeof window.gtag === 'function') {
       window.gtag('event', '404_error', {
         'event_category': 'Error',
