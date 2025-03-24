@@ -1,7 +1,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Reduced height dimensions for better performance
 const AD_FORMAT_DIMENSIONS = {
@@ -165,7 +164,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   // Use a simpler, more performant render approach
   return (
-    <div className={`overflow-hidden ${sizeClass} ${className}`}>
+    <div className={`overflow-hidden ${sizeClass} ${className}`} role="complementary" aria-label="Advertisement">
       <div className="relative h-full w-full">
         {(isError || isDevelopment) && renderPlaceholder()}
         
@@ -176,6 +175,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           }`}
           id={`ad-container-${slotId}`}
           ref={adRef}
+          aria-hidden="true"
         />
       </div>
     </div>

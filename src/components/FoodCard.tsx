@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useRef } from "react";
 import { foodData } from "../data/foodData";
 
 interface FoodCardProps {
@@ -16,6 +16,7 @@ interface FoodCardProps {
 const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProps) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Fixed fallback images for specific troublesome foods
   const getFixedFallbackImage = (foodId: string): string | null => {
@@ -80,7 +81,26 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
 
   const handleImageLoad = () => {
     setImageLoaded(true);
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
+    }
   };
+
+  // Set a timeout to show fallback if image takes too long to load
+  useEffect(() => {
+    loadingTimeoutRef.current = setTimeout(() => {
+      if (!imageLoaded) {
+        setImageError(true);
+      }
+    }, 3000); // 3 second timeout
+
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, [imageLoaded]);
 
   // Add auto=format&q=75 to the image URLs if they're from Unsplash
   const optimizeImageUrl = (url: string): string => {

@@ -1,5 +1,5 @@
 
-import { Search, Bell, AlertOctagon, Tag } from "lucide-react";
+import { Search, AlertOctagon, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { memo, useCallback } from "react";
+import { memo } from "react";
 
 // Optimize icons to reduce bundle size
 const OptimizedIcons = {
@@ -65,6 +65,7 @@ const Header = memo(() => {
               <Link 
                 to="/food-safety/understanding-food-labels" 
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
+                aria-label="Food Labels Guide"
               >
                 <OptimizedIcons.Tag size={16} />
               </Link>

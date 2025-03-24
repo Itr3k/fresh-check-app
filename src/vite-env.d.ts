@@ -12,3 +12,14 @@ interface LayoutShift extends PerformanceEntry {
     currentRect: DOMRectReadOnly;
   }>;
 }
+
+// Define performance timing interfaces
+interface PerformanceEventTiming extends PerformanceEntry {
+  interactionId?: number;
+  interactionCount?: number;
+  processingStart: DOMHighResTimeStamp;
+  processingEnd: DOMHighResTimeStamp;
+  duration: DOMHighResTimeStamp;
+  cancelable: boolean;
+  target?: Node;
+}

@@ -54,6 +54,27 @@ const renderApp = async () => {
         }
       });
       lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+      
+      // Add FID observer to track First Input Delay
+      const fidObserver = new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (import.meta.env.DEV) {
+            console.log('FID:', entry);
+          }
+        }
+      });
+      fidObserver.observe({ type: 'first-input', buffered: true });
+      
+      // Add INP observer for Interaction to Next Paint metric
+      const inpObserver = new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        if (entries.length > 0 && import.meta.env.DEV) {
+          console.log('INP:', entries);
+        }
+      });
+      if ('interactionCount' in PerformanceEventTiming.prototype) {
+        inpObserver.observe({ type: 'event', buffered: true, durationThreshold: 16 });
+      }
     } catch (e) {
       console.error('Performance observer error:', e);
     }
@@ -99,6 +120,15 @@ const addResourceHints = () => {
       link.href = heroImage.src;
       document.head.appendChild(link);
     }
+  }
+  
+  // Register service worker for offline support
+  if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(error => {
+        console.error('ServiceWorker registration failed:', error);
+      });
+    });
   }
 };
 
