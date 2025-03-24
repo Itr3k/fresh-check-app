@@ -1388,11 +1388,12 @@ const FoodDetail = () => {
                       <div className="bg-background rounded overflow-hidden border hover:shadow-md transition-all">
                         <div className="h-20 overflow-hidden">
                           <img 
-                            src={FOOD_IMAGES[food.id] || FOOD_IMAGES.default} 
+                            src={food.imageUrl} 
                             alt={food.name} 
                             className="w-full h-full object-cover"
                             loading="lazy"
                             onError={(e) => {
+                              console.error(`Image error for ${food.id}: ${food.imageUrl}`);
                               const target = e.target as HTMLImageElement;
                               target.src = FOOD_IMAGES.default;
                             }}

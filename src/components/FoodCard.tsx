@@ -13,13 +13,13 @@ export const FOOD_IMAGES: Record<string, string> = {
   bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=400&fit=crop",
   bananas: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop",
   lettuce: "https://images.unsplash.com/photo-1622205313162-be1d5712a43f?w=800&h=400&fit=crop",
-  tomatoes: "https://images.unsplash.com/photo-1546093787-6b4e0a75ddbd?w=800&h=400&fit=crop",
+  tomatoes: "https://images.unsplash.com/photo-1546093787-af9955702365?w=800&h=400&fit=crop", // High-quality tomatoes image
   avocados: "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=800&h=400&fit=crop",
   apples: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&h=400&fit=crop",
   tofu: "/lovable-uploads/6c5503aa-28d2-470d-ad58-fbc91a069ea0.png",
   bacon: "https://images.unsplash.com/photo-1528607929212-2636ec44253e?w=500&h=300&fit=crop",
   cheese: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=800&h=400&fit=crop",
-  yogurt: "https://images.unsplash.com/photo-1571212515416-fca988083f35?w=800&h=400&fit=crop",
+  yogurt: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&h=400&fit=crop", // High-quality yogurt image
   oranges: "https://images.unsplash.com/photo-1611080626919-7cf5a9b834c8?w=800&h=400&fit=crop",
   peppers: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&h=400&fit=crop",
   onions: "https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=800&h=400&fit=crop",
