@@ -25,6 +25,7 @@ const SkeletonLoader = ({ height = "200px", className = "" }) => (
 
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
+  const heroSearchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const adsInitializedRef = useRef(false);
   const isMountedRef = useRef(true);
@@ -45,7 +46,7 @@ const Index = () => {
   }, []);
 
   const scrollToSearch = useCallback(() => {
-    searchRef.current?.scrollIntoView({ behavior: "smooth" });
+    heroSearchRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   const handleSearch = useCallback((query: string) => {
@@ -197,7 +198,9 @@ const Index = () => {
         <Header />
 
         <main id="main-content" className="container mx-auto px-4 py-8 pt-24 flex-grow" aria-label="Main content">
-          <HeroSection onSearch={handleSearch} />
+          <div ref={heroSearchRef}>
+            <HeroSection onSearch={handleSearch} />
+          </div>
 
           <div className="flex flex-col lg:flex-row gap-6 mt-8">
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
