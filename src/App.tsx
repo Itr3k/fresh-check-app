@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -51,13 +51,13 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <HelmetProvider>
-          <RecallsProvider>
-            <WebhookReceiver />
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+      <HelmetProvider>
+        <RecallsProvider>
+          <WebhookReceiver />
+          <Toaster />
+          <Sonner />
+          <Router>
+            <TooltipProvider>
               <Suspense fallback={<PageLoading />}>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -86,10 +86,10 @@ const App = () => {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
-            </BrowserRouter>
-          </RecallsProvider>
-        </HelmetProvider>
-      </TooltipProvider>
+            </TooltipProvider>
+          </Router>
+        </RecallsProvider>
+      </HelmetProvider>
     </QueryClientProvider>
   );
 };
