@@ -192,14 +192,12 @@ const FoodInfoResult: React.FC<FoodInfoResultProps> = ({
             >
               New Scan
             </Button>
-            {onSearch && (
-              <Button 
-                onClick={() => onSearch(foodInfo.name)}
-                className="flex-1"
-              >
-                Find Similar
-              </Button>
-            )}
+            <Button 
+              onClick={() => onSearch && onSearch(foodInfo.name)}
+              className="flex-1"
+            >
+              Find Similar
+            </Button>
           </div>
         </CardContent>
       </Card>
