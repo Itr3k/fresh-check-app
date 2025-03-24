@@ -1,4 +1,3 @@
-
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -14,14 +13,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import FoodLabelsPreview from "../components/FoodLabelsPreview";
 import SkipToContent from "../components/SkipToContent";
 
-// Lazy-loaded components to improve initial render performance
 const SavedFoods = lazy(() => import("../components/SavedFoods"));
 const CategoryCards = lazy(() => import("../components/CategoryCards"));
 const FoodSafetyFacts = lazy(() => import("../components/FoodSafetyFacts"));
 const FoodSafetyEducation = lazy(() => import("../components/FoodSafetyEducation"));
 const AdUnit = lazy(() => import("../components/AdUnit"));
 
-// Custom loading with explicit dimensions to prevent CLS
 const SkeletonLoader = ({ height = "200px", className = "" }) => (
   <Skeleton className={`w-full rounded-lg ${className}`} style={{ height }} />
 );
@@ -32,12 +29,10 @@ const Index = () => {
   const adsInitializedRef = useRef(false);
   const isMountedRef = useRef(true);
 
-  // Only load a single ad on first render to improve performance
   useEffect(() => {
     if (!adsInitializedRef.current) {
       adsInitializedRef.current = true;
       
-      // Use session storage to track if ads have been shown
       const adsViewed = sessionStorage.getItem('homepage-ads-viewed');
       if (!adsViewed) {
         sessionStorage.setItem('homepage-ads-viewed', 'true');
@@ -49,17 +44,65 @@ const Index = () => {
     };
   }, []);
 
-  // Memoize scroll handler to prevent unnecessary re-renders
   const scrollToSearch = useCallback(() => {
     searchRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  // Memoize search handler to prevent unnecessary re-renders
   const handleSearch = useCallback((query: string) => {
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query)}`);
     }
   }, [navigate]);
+
+  const foodItemSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Food",
+          "name": "Chicken",
+          "description": "Storage guidelines for raw and cooked chicken",
+          "url": "https://freshcheck.app/food/chicken"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Food",
+          "name": "Milk",
+          "description": "Storage guidelines for dairy products",
+          "url": "https://freshcheck.app/food/milk"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "Food",
+          "name": "Eggs",
+          "description": "Storage guidelines for fresh eggs",
+          "url": "https://freshcheck.app/food/eggs"
+        }
+      }
+    ]
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://freshcheck.app/"
+      }
+    ]
+  };
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -139,19 +182,24 @@ const Index = () => {
         <script type="application/ld+json">
           {JSON.stringify(websiteSchema)}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify(foodItemSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </Helmet>
 
       <div className="min-h-screen bg-background flex flex-col">
         <SkipToContent />
         <Header />
 
-        <main id="main-content" className="container mx-auto px-4 py-8 pt-24 flex-grow">
-          {/* Critical content for first paint - Load immediately */}
+        <main id="main-content" className="container mx-auto px-4 py-8 pt-24 flex-grow" aria-label="Main content">
           <HeroSection onSearch={handleSearch} />
 
-          {/* Main content area - Desktop view with sidebars */}
           <div className="flex flex-col lg:flex-row gap-6 mt-8">
-            {/* Left sidebar ad - desktop only */}
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
@@ -160,14 +208,11 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Main content column */}
             <div className="flex-1">
               <PopularFoods />
               
-              {/* Food Labels Preview - Load eagerly */}
               <FoodLabelsPreview />
 
-              {/* Horizontal ad after popular content - all devices */}
               <div className="my-8 print:hidden">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
@@ -203,7 +248,6 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              {/* Content ad - convert rectangle to leaderboard */}
               <div className="my-8 print:hidden">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
@@ -239,7 +283,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right sidebar ad - desktop only */}
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>

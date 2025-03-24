@@ -8,11 +8,24 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 
+// Performance monitoring
+if (process.env.NODE_ENV === 'development') {
+  const reportWebVitals = (metric: any) => {
+    console.log(metric);
+  };
+  
+  // @ts-ignore - Making window.__reportWebVitals available for development
+  window.__reportWebVitals = reportWebVitals;
+}
+
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
   throw new Error("Root element not found");
 }
+
+// Add performance marks for debugging
+performance.mark('app-start');
 
 const root = createRoot(rootElement);
 
@@ -27,3 +40,7 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Measure initial render performance
+performance.mark('app-rendered');
+performance.measure('app-startup', 'app-start', 'app-rendered');
