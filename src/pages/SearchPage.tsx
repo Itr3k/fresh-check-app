@@ -1,4 +1,3 @@
-
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
@@ -128,8 +127,14 @@ const SearchPage = () => {
         </motion.div>
 
         <div className="mb-8">
-          <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
-            <AdUnit slotId="search-top" className="mb-8" format="leaderboard" />
+          <Suspense fallback={<Skeleton className="h-[90px] w-full max-w-[728px] mx-auto" />}>
+            <AdUnit 
+              slotId="search-top" 
+              className="mb-8" 
+              format="leaderboard" 
+              lazyLoad={false}
+              responsive={true}
+            />
           </Suspense>
         </div>
 
@@ -192,9 +197,22 @@ const SearchPage = () => {
           )}
         </div>
 
-        <Suspense fallback={<Skeleton className="h-[180px] w-full" />}>
-          <AdUnit slotId="search-bottom" className="mt-8" format="rectangle" />
-        </Suspense>
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
+          <Suspense fallback={<Skeleton className="h-[250px] w-full" />}>
+            <AdUnit 
+              slotId="search-bottom-left" 
+              format="rectangle"
+              responsive={true}
+            />
+          </Suspense>
+          <Suspense fallback={<Skeleton className="h-[250px] w-full" />}>
+            <AdUnit 
+              slotId="search-bottom-right" 
+              format="rectangle"
+              responsive={true}
+            />
+          </Suspense>
+        </div>
       </div>
     </PageTransition>
   );

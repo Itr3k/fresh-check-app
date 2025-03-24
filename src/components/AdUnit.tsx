@@ -2,25 +2,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Optimized dimensions for better performance
+// Standard AdSense display ad sizes
 const AD_FORMAT_DIMENSIONS = {
-  rectangle: { width: "300px", height: "180px" },
-  leaderboard: { width: "728px", height: "60px" },
-  skyscraper: { width: "160px", height: "400px" }
+  rectangle: { width: 300, height: 250, name: "Medium Rectangle" },
+  leaderboard: { width: 728, height: 90, name: "Leaderboard" },
+  skyscraper: { width: 160, height: 600, name: "Wide Skyscraper" },
+  large_mobile: { width: 320, height: 100, name: "Large Mobile Banner" },
+  mobile_banner: { width: 320, height: 50, name: "Mobile Banner" },
+  billboard: { width: 970, height: 250, name: "Billboard" }
 };
 
 interface AdUnitProps {
   slotId?: string;
   className?: string;
-  format?: "rectangle" | "leaderboard" | "skyscraper";
+  format?: keyof typeof AD_FORMAT_DIMENSIONS;
   lazyLoad?: boolean;
+  responsive?: boolean;
 }
 
 const AdUnit: React.FC<AdUnitProps> = ({ 
   slotId = "default-ad-slot", 
   className = "",
   format = "rectangle",
-  lazyLoad = true
+  lazyLoad = true,
+  responsive = true
 }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
@@ -29,15 +34,14 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const initializedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
-  // Size based on format
-  let sizeClass = "h-[180px] w-full max-w-[300px] mx-auto"; // default rectangle
+  // Get dimensions for the selected format
+  const adDimensions = AD_FORMAT_DIMENSIONS[format];
   
-  if (format === "leaderboard") {
-    sizeClass = "h-[60px] w-full max-w-[728px] mx-auto";
-  } else if (format === "skyscraper") {
-    sizeClass = "h-[400px] w-[160px] md:w-[300px]";
-  }
-
+  // Generate responsive or fixed size classes
+  const sizeClass = responsive
+    ? `h-auto w-full max-w-[${adDimensions.width}px] mx-auto aspect-[${adDimensions.width}/${adDimensions.height}]`
+    : `h-[${adDimensions.height}px] w-[${adDimensions.width}px] mx-auto`;
+  
   // Check if in development mode
   const isDevelopment = process.env.NODE_ENV === 'development' || 
                          window.location.hostname === 'localhost' ||
@@ -173,26 +177,35 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // Lightweight placeholder
+  // Enhanced placeholder with ad size information
   const renderPlaceholder = () => (
-    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/20 rounded-lg border border-border/30">
+    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/30 rounded-lg border border-border/30">
       <p className="text-xs text-muted-foreground mb-1 font-medium">
-        {isDevelopment ? "Advertisement Placeholder" : "Advertisement"}
+        {isDevelopment ? "Advertisement" : "Advertisement"}
       </p>
-      <Skeleton className={`w-[90%] h-[70%] rounded-md`} />
-      {isDevelopment && (
-        <p className="text-xs text-muted-foreground mt-1">ID: {slotId} ({format})</p>
-      )}
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        <Skeleton className="w-[90%] h-[70%] rounded-md" />
+        <p className="text-xs text-muted-foreground mt-2 italic">
+          {adDimensions.name} ({adDimensions.width}×{adDimensions.height})
+        </p>
+      </div>
     </div>
   );
 
   // Use a more efficient DOM structure
   return (
     <div 
-      className={`overflow-hidden ${sizeClass} ${className} print:hidden`} 
+      className={`overflow-hidden ${className} print:hidden ad-unit ad-${format}`} 
       role="complementary" 
       aria-label="Advertisement"
       data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
+      data-ad-format={format}
+      style={{
+        width: responsive ? '100%' : `${adDimensions.width}px`,
+        height: responsive ? 'auto' : `${adDimensions.height}px`,
+        maxWidth: responsive ? `${adDimensions.width}px` : undefined,
+        aspectRatio: responsive ? `${adDimensions.width}/${adDimensions.height}` : undefined
+      }}
     >
       <div className="relative h-full w-full">
         {(isError || isDevelopment) && renderPlaceholder()}

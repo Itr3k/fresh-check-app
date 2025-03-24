@@ -1,4 +1,3 @@
-
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -147,53 +146,97 @@ const Index = () => {
           {/* Critical content for first paint - Load immediately */}
           <HeroSection onSearch={handleSearch} />
 
-          <PopularFoods />
-          
-          {/* Food Labels Preview - Load eagerly */}
-          <FoodLabelsPreview />
-
-          <div id="browse-categories">
-            <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
-              <CategoryCards />
-            </Suspense>
-          </div>
-          
-          {/* Only show ONE ad, and only after content has loaded */}
-          <div className="my-8 print:hidden">
-            <Suspense fallback={<SkeletonLoader height="90px" />}>
-              <AdUnit slotId="home-content" format="leaderboard" lazyLoad={true} />
-            </Suspense>
-          </div>
-          
-          <div id="food-safety-education">
-            <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
-              <FoodSafetyEducation />
-            </Suspense>
-          </div>
-
-          <Suspense fallback={<SkeletonLoader height="250px" className="mt-8" />}>
-            <FoodSafetyFacts />
-          </Suspense>
-          
-          <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
-            <SavedFoods />
-          </Suspense>
-
-          <div 
-            className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
-            onClick={scrollToSearch}
-            ref={searchRef}
-          >
-            <div className="flex items-start gap-3">
-              <div className="bg-primary/20 p-2 rounded-lg">
-                <Search size={20} className="text-primary" />
+          {/* Main content area - Desktop view with sidebars */}
+          <div className="flex flex-col lg:flex-row gap-6 mt-8">
+            {/* Left sidebar ad - desktop only */}
+            <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
+              <div className="sticky top-24">
+                <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
+                  <AdUnit slotId="left-sidebar" format="skyscraper" className="hidden lg:block" responsive={false} />
+                </Suspense>
               </div>
-              <div>
-                <h2 className="text-lg font-medium mb-1">Can't find what you're looking for?</h2>
-                <p className="text-sm text-muted-foreground">
-                  Try searching for a specific food or browse our categories. We have storage
-                  information for hundreds of food items.
-                </p>
+            </div>
+
+            {/* Main content column */}
+            <div className="flex-1">
+              <PopularFoods />
+              
+              {/* Food Labels Preview - Load eagerly */}
+              <FoodLabelsPreview />
+
+              {/* Horizontal ad after popular content - all devices */}
+              <div className="my-8 print:hidden">
+                <Suspense fallback={<SkeletonLoader height="90px" />}>
+                  <AdUnit 
+                    slotId="home-leaderboard" 
+                    format="leaderboard" 
+                    className="hidden md:block" 
+                    lazyLoad={true} 
+                    responsive={true}
+                  />
+                  <AdUnit 
+                    slotId="home-mobile-banner" 
+                    format="mobile_banner" 
+                    className="md:hidden" 
+                    lazyLoad={true} 
+                    responsive={true}
+                  />
+                </Suspense>
+              </div>
+
+              <div id="browse-categories">
+                <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
+                  <CategoryCards />
+                </Suspense>
+              </div>
+              
+              <div id="food-safety-education">
+                <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
+                  <FoodSafetyEducation />
+                </Suspense>
+              </div>
+
+              <Suspense fallback={<SkeletonLoader height="250px" className="mt-8" />}>
+                <FoodSafetyFacts />
+              </Suspense>
+              
+              {/* Rectangle ad in content - all devices */}
+              <div className="my-8 print:hidden">
+                <Suspense fallback={<SkeletonLoader height="250px" className="w-full max-w-[300px] mx-auto" />}>
+                  <AdUnit slotId="home-rectangle" format="rectangle" lazyLoad={true} />
+                </Suspense>
+              </div>
+              
+              <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
+                <SavedFoods />
+              </Suspense>
+
+              <div 
+                className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
+                onClick={scrollToSearch}
+                ref={searchRef}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/20 p-2 rounded-lg">
+                    <Search size={20} className="text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-medium mb-1">Can't find what you're looking for?</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Try searching for a specific food or browse our categories. We have storage
+                      information for hundreds of food items.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right sidebar ad - desktop only */}
+            <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
+              <div className="sticky top-24">
+                <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
+                  <AdUnit slotId="right-sidebar" format="skyscraper" className="hidden lg:block" responsive={false} />
+                </Suspense>
               </div>
             </div>
           </div>
