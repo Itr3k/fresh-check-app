@@ -67,9 +67,9 @@ const NotFound = () => {
           We couldn't find the page you're looking for.
         </p>
         
-        {/* First ad placement - top - wrap in Suspense */}
+        {/* First ad placement - top - always leaderboard (desktop) or rectangle (mobile) */}
         <div className="my-6">
-          <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
             <AdUnit slotId={AD_SLOTS.TOP} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
@@ -95,9 +95,9 @@ const NotFound = () => {
           </div>
         )}
         
-        {/* Second ad placement - middle */}
+        {/* Second ad placement - middle - always leaderboard (desktop) or rectangle (mobile) */}
         <div className="my-6">
-          <Suspense fallback={<Skeleton className="h-[180px] w-full" />}>
+          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
             <AdUnit slotId={AD_SLOTS.MIDDLE} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
@@ -110,9 +110,9 @@ const NotFound = () => {
         </Link>
       </div>
       
-      {/* Third ad placement - bottom */}
+      {/* Third ad placement - bottom - always leaderboard (desktop) or rectangle (mobile) */}
       <div className="max-w-md w-full">
-        <Suspense fallback={<Skeleton className="h-[60px] w-full" />}>
+        <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
           <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
         </Suspense>
       </div>

@@ -1,3 +1,4 @@
+
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -200,10 +201,15 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              {/* Rectangle ad in content - all devices */}
+              {/* Content ad - convert rectangle to leaderboard */}
               <div className="my-8 print:hidden">
-                <Suspense fallback={<SkeletonLoader height="250px" className="w-full max-w-[300px] mx-auto" />}>
-                  <AdUnit slotId="home-rectangle" format="rectangle" lazyLoad={true} />
+                <Suspense fallback={<SkeletonLoader height="90px" />}>
+                  <AdUnit 
+                    slotId="home-content-ad" 
+                    format="leaderboard"
+                    mobileFormat="rectangle" 
+                    lazyLoad={true}
+                  />
                 </Suspense>
               </div>
               

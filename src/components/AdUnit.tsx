@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Square } from "lucide-react";
 
 // Standard AdSense display ad sizes
 const AD_FORMAT_DIMENSIONS = {
@@ -182,14 +183,16 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // Enhanced placeholder with ad size information
+  // Enhanced placeholder with ad size information and visual representation
   const renderPlaceholder = () => (
-    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/30 rounded-lg border border-border/30">
+    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/20 rounded-lg border border-border/40">
       <p className="text-xs text-muted-foreground mb-1 font-medium">
-        {isDevelopment ? "Advertisement" : "Advertisement"}
+        Advertisement
       </p>
       <div className="flex flex-col items-center justify-center w-full h-full">
-        <Skeleton className="w-[90%] h-[70%] rounded-md" />
+        <div className="flex items-center justify-center w-[90%] h-[70%] bg-secondary/30 rounded-md border border-dashed border-border/50">
+          <Square className="w-6 h-6 text-muted-foreground/60" />
+        </div>
         <p className="text-xs text-muted-foreground mt-2 italic">
           {adDimensions.name} ({adDimensions.width}×{adDimensions.height})
         </p>

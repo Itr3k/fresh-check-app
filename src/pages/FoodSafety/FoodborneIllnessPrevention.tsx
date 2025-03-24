@@ -25,7 +25,7 @@ const FoodborneIllnessPrevention = () => {
             or their toxins. Understanding the causes and prevention methods can help keep you and your family safe.
           </p>
           
-          {/* First ad placement - top of content */}
+          {/* First ad placement - top of content - leaderboard format */}
           <div className="my-6">
             <AdUnit slotId="foodborne-top" format="leaderboard" mobileFormat="rectangle" />
           </div>
@@ -69,7 +69,7 @@ const FoodborneIllnessPrevention = () => {
             </li>
           </ol>
           
-          {/* Second ad placement - middle of content */}
+          {/* Second ad placement - middle of content - leaderboard format */}
           <div className="my-6">
             <AdUnit slotId="foodborne-middle" format="leaderboard" mobileFormat="rectangle" />
           </div>
@@ -107,7 +107,7 @@ const FoodborneIllnessPrevention = () => {
             <li>Unwashed fruits and vegetables</li>
           </ul>
           
-          {/* Third ad placement - bottom of content */}
+          {/* Third ad placement - bottom of content - leaderboard format */}
           <div className="my-6">
             <AdUnit slotId="foodborne-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
           </div>
