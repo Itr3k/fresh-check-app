@@ -7,7 +7,15 @@ import { componentTagger } from "lovable-tagger"
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react(),
+    react({
+      // Configure React plugin with explicit options
+      jsxRuntime: 'automatic',
+      babel: {
+        plugins: [],
+        babelrc: false,
+        configFile: false,
+      }
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
@@ -18,6 +26,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    hmr: {
+      protocol: 'ws',
+      timeout: 30000,
+    },
     // SPA fallback for client-side routing
     proxy: {
       '/*': {
