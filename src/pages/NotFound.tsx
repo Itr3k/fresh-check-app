@@ -56,7 +56,7 @@ const NotFound = () => {
         <link rel="canonical" href="https://freshcheck.app/404" />
       </Helmet>
       
-      <div className="text-center mb-8 max-w-md">
+      <div className="text-center mb-8 max-w-md w-full">
         <div className="flex justify-center mb-4">
           <div className="bg-amber-100 p-3 rounded-full">
             <AlertTriangle className="h-8 w-8 text-amber-600" />
@@ -68,8 +68,8 @@ const NotFound = () => {
         </p>
         
         {/* First ad placement - top - always leaderboard (desktop) or rectangle (mobile) */}
-        <div className="my-6">
-          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
+        <div className="my-6 flex justify-center">
+          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px] max-w-[728px] mx-auto" />}>
             <AdUnit slotId={AD_SLOTS.TOP} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
@@ -96,8 +96,8 @@ const NotFound = () => {
         )}
         
         {/* Second ad placement - middle - always leaderboard (desktop) or rectangle (mobile) */}
-        <div className="my-6">
-          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
+        <div className="my-6 flex justify-center">
+          <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px] max-w-[728px] mx-auto" />}>
             <AdUnit slotId={AD_SLOTS.MIDDLE} format="leaderboard" mobileFormat="rectangle" />
           </Suspense>
         </div>
@@ -111,8 +111,8 @@ const NotFound = () => {
       </div>
       
       {/* Third ad placement - bottom - always leaderboard (desktop) or rectangle (mobile) */}
-      <div className="max-w-md w-full">
-        <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px]" />}>
+      <div className="max-w-[728px] w-full flex justify-center">
+        <Suspense fallback={<Skeleton className="h-[90px] w-full md:h-[90px] max-w-[728px] mx-auto" />}>
           <AdUnit slotId={AD_SLOTS.BOTTOM} format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
         </Suspense>
       </div>

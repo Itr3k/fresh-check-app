@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -200,22 +199,29 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </div>
   );
 
-  // Use a more efficient DOM structure
+  // Use a more efficient DOM structure with improved centering
   return (
     <div 
-      className={`overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
+      className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
       role="complementary" 
       aria-label="Advertisement"
       data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
       data-ad-format={activeFormat}
       style={{
-        width: responsive ? '100%' : `${adDimensions.width}px`,
-        height: responsive ? 'auto' : `${adDimensions.height}px`,
-        maxWidth: responsive ? `${adDimensions.width}px` : undefined,
-        aspectRatio: responsive ? `${adDimensions.width}/${adDimensions.height}` : undefined
+        width: '100%',
+        maxWidth: responsive ? undefined : `${adDimensions.width}px`,
+        margin: '0 auto'
       }}
     >
-      <div className="relative h-full w-full">
+      <div 
+        className="relative"
+        style={{
+          width: responsive ? '100%' : `${adDimensions.width}px`,
+          height: responsive ? 'auto' : `${adDimensions.height}px`,
+          maxWidth: responsive ? `${adDimensions.width}px` : undefined,
+          aspectRatio: responsive ? `${adDimensions.width}/${adDimensions.height}` : undefined
+        }}
+      >
         {(isError || isDevelopment) && renderPlaceholder()}
         
         <div 

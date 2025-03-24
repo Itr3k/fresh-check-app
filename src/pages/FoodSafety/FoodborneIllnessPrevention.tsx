@@ -26,7 +26,7 @@ const FoodborneIllnessPrevention = () => {
           </p>
           
           {/* First ad placement - top of content - leaderboard format */}
-          <div className="my-6">
+          <div className="my-6 flex justify-center">
             <AdUnit slotId="foodborne-top" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
@@ -70,7 +70,7 @@ const FoodborneIllnessPrevention = () => {
           </ol>
           
           {/* Second ad placement - middle of content - leaderboard format */}
-          <div className="my-6">
+          <div className="my-6 flex justify-center">
             <AdUnit slotId="foodborne-middle" format="leaderboard" mobileFormat="rectangle" />
           </div>
           
@@ -108,7 +108,7 @@ const FoodborneIllnessPrevention = () => {
           </ul>
           
           {/* Third ad placement - bottom of content - leaderboard format */}
-          <div className="my-6">
+          <div className="my-6 flex justify-center">
             <AdUnit slotId="foodborne-bottom" format="leaderboard" mobileFormat="rectangle" lazyLoad={true} />
           </div>
           
