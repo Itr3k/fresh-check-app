@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { getFoodById } from "../data/foodData";
 import { useImages } from "../contexts/ImagesContext";
 
-const getFoodDetails = (id: string) => {
+const getFoodDetails = (id: string, getImageUrl: (id: string) => string) => {
   const foodFromDatabase = getFoodById(id);
 
   const getStorageOptions = (id: string, category?: string) => {
@@ -1019,20 +1019,20 @@ const getFoodDetails = (id: string) => {
 
   const getRelatedFoods = (id: string) => {
     const allFoods = [
-      { id: "chicken", name: "Chicken", category: "Meat", imageUrl: FOOD_IMAGES.chicken || FOOD_IMAGES.default },
-      { id: "milk", name: "Milk", category: "Dairy", imageUrl: FOOD_IMAGES.milk || FOOD_IMAGES.default },
-      { id: "eggs", name: "Eggs", category: "Dairy", imageUrl: FOOD_IMAGES.eggs || FOOD_IMAGES.default },
-      { id: "bread", name: "Bread", category: "Bakery", imageUrl: FOOD_IMAGES.bread || FOOD_IMAGES.default },
-      { id: "bananas", name: "Bananas", category: "Fruits", imageUrl: FOOD_IMAGES.bananas || FOOD_IMAGES.default },
-      { id: "apples", name: "Apples", category: "Fruits", imageUrl: FOOD_IMAGES.apples || FOOD_IMAGES.default },
-      { id: "cheese", name: "Cheese", category: "Dairy", imageUrl: FOOD_IMAGES.cheese || FOOD_IMAGES.default },
-      { id: "lettuce", name: "Lettuce", category: "Vegetables", imageUrl: FOOD_IMAGES.lettuce || FOOD_IMAGES.default },
-      { id: "tomatoes", name: "Tomatoes", category: "Vegetables", imageUrl: FOOD_IMAGES.tomatoes || FOOD_IMAGES.default },
-      { id: "bacon", name: "Bacon", category: "Meat", imageUrl: FOOD_IMAGES.bacon || FOOD_IMAGES.default },
-      { id: "yogurt", name: "Yogurt", category: "Dairy", imageUrl: FOOD_IMAGES.yogurt || FOOD_IMAGES.default },
-      { id: "tofu", name: "Tofu", category: "Specialty Items", imageUrl: FOOD_IMAGES.tofu || FOOD_IMAGES.default },
-      { id: "oranges", name: "Oranges", category: "Fruits", imageUrl: FOOD_IMAGES.oranges || FOOD_IMAGES.default },
-      { id: "onions", name: "Onions", category: "Vegetables", imageUrl: FOOD_IMAGES.onions || FOOD_IMAGES.default }
+      { id: "chicken", name: "Chicken", category: "Meat" },
+      { id: "milk", name: "Milk", category: "Dairy" },
+      { id: "eggs", name: "Eggs", category: "Dairy" },
+      { id: "bread", name: "Bread", category: "Bakery" },
+      { id: "bananas", name: "Bananas", category: "Fruits" },
+      { id: "apples", name: "Apples", category: "Fruits" },
+      { id: "cheese", name: "Cheese", category: "Dairy" },
+      { id: "lettuce", name: "Lettuce", category: "Vegetables" },
+      { id: "tomatoes", name: "Tomatoes", category: "Vegetables" },
+      { id: "bacon", name: "Bacon", category: "Meat" },
+      { id: "yogurt", name: "Yogurt", category: "Dairy" },
+      { id: "tofu", name: "Tofu", category: "Specialty Items" },
+      { id: "oranges", name: "Oranges", category: "Fruits" },
+      { id: "onions", name: "Onions", category: "Vegetables" }
     ].filter(food => food.id !== id);
     
     const sameCategory = allFoods.filter(food => foodFromDatabase && food.category === foodFromDatabase.category);
@@ -1047,7 +1047,7 @@ const getFoodDetails = (id: string) => {
     }
   };
 
-  const imageUrl = FOOD_IMAGES[id] || FOOD_IMAGES.default;
+  const imageUrl = getImageUrl(id);
   const storageOptions = getStorageOptions(id, foodFromDatabase?.category);
   const freshness = calculateFreshness("refrigerator", false);
   const relatedFoods = getRelatedFoods(id);
@@ -1075,13 +1075,13 @@ const FoodDetail = () => {
 
   useEffect(() => {
     if (id) {
-      const details = getFoodDetails(id);
+      const details = getFoodDetails(id, getImageUrl);
       setFoodDetails(details);
       // Calculate initial freshness state
       const initialFreshness = details.calculateFreshness(selectedStorage, isOpened);
       setFreshness(initialFreshness);
     }
-  }, [id]);
+  }, [id, getImageUrl]);
 
   // Update freshness when storage type or opened state changes
   useEffect(() => {
@@ -1114,9 +1114,6 @@ const FoodDetail = () => {
     toast.success("Printing food storage information");
   };
 
-  // Get proper image URL using context
-  const imageUrl = getImageUrl(id);
-
   return (
     <PageTransition>
       <Helmet>
@@ -1127,7 +1124,7 @@ const FoodDetail = () => {
         />
         <meta property="og:title" content={`${name} Storage Guide - FreshCheck`} />
         <meta property="og:description" content={`Learn how to properly store ${name}.`} />
-        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image" content={getImageUrl(id)} />
         <link rel="canonical" href={`https://freshcheck.app/food/${id}`} />
       </Helmet>
       
@@ -1143,7 +1140,7 @@ const FoodDetail = () => {
           <div>
             <div className="bg-gray-100 rounded-xl overflow-hidden mb-4">
               <img 
-                src={imageUrl}
+                src={getImageUrl(id)}
                 alt={`${name} - food storage information`}
                 width="800"
                 height="500"
