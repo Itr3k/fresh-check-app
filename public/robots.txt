@@ -1,7 +1,9 @@
 
+# Global crawl rules
 User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://freshcheck.app/sitemap.xml
 Sitemap: https://freshcheck.app/news-sitemap.xml
 
@@ -11,7 +13,7 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /internal/
 
-# Ensure these important paths are explicitly allowed
+# Ensure high-value pages are crawled with priority
 Allow: /food-safety/temperature-danger-zone
 Allow: /food-safety/foodborne-illness-prevention
 Allow: /food-safety/cross-contamination
@@ -25,9 +27,21 @@ Allow: /food/*
 Allow: /recalls/*
 Allow: /search
 
-# Crawl delay for specific bots (optional)
+# Rate limiting for specific crawlers
 User-agent: AdsBot-Google
 Allow: /
+Crawl-delay: 1
 
 User-agent: Googlebot-Image
 Allow: /
+Crawl-delay: 1
+
+# Bing specific instructions
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Rules for specific directories with special handling
+User-agent: Googlebot
+Allow: /food-safety/
+Crawl-delay: 1

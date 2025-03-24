@@ -75,7 +75,6 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const fallbackImageUrl = findRelatedImageUrl();
   
   const handleImageError = () => {
-    console.error(`Image failed to load for ${name}:`, imageUrl);
     setImageError(true);
   };
 
@@ -93,7 +92,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
       if (!imageLoaded) {
         setImageError(true);
       }
-    }, 3000); // 3 second timeout
+    }, 2000); // Reduced from 3000ms to 2000ms for faster fallback
 
     return () => {
       if (loadingTimeoutRef.current) {
@@ -118,13 +117,30 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   // Performance optimization: reduce motion for users with reduced motion preference
   const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Prepare structured data for this food item
+  const foodItemSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": name,
+    "category": category,
+    "image": imageError ? optimizeImageUrl(fallbackImageUrl) : optimizeImageUrl(imageUrl),
+    "url": `https://freshcheck.app/food/${id}`
+  };
+
   return (
     <motion.div
       initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.2) }} // Cap delay even lower
-      className="food-card-container" // Add class for potential CSS optimizations
+      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.2) }}
+      className="food-card-container"
     >
+      {/* Structured data for this food product */}
+      {index < 10 && (
+        <script type="application/ld+json">
+          {JSON.stringify(foodItemSchema)}
+        </script>
+      )}
+      
       <Link to={`/food/${id}`} className="block" aria-label={`View details about ${name}`}>
         <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
           <div className="h-32 w-full bg-gray-100 overflow-hidden relative" style={{ aspectRatio: '16/9' }}>
@@ -135,11 +151,11 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
             
             <img 
               src={imageError ? optimizeImageUrl(fallbackImageUrl) : optimizeImageUrl(imageUrl)}
-              alt={name} 
+              alt={`${name} - food storage information`}
               width="500"
               height="300"
               className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              loading={index > 2 ? "lazy" : "eager"} // Load fewer images eagerly
+              loading={index > 2 ? "lazy" : "eager"} 
               onError={handleImageError}
               onLoad={handleImageLoad}
               fetchPriority={index < 3 ? "high" : "auto"}
