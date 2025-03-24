@@ -1,7 +1,6 @@
-
 import React, { useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { Search } from "lucide-react";
+import { Search, Tag, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
@@ -15,6 +14,7 @@ import FoodSafetyEducation from "../components/FoodSafetyEducation";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
+import FoodLabelsPreview from "../components/FoodLabelsPreview";
 
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,6 @@ const Index = () => {
     }
   };
 
-  // FAQ schema for the homepage
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -70,7 +69,6 @@ const Index = () => {
     ]
   };
 
-  // Website schema for organization information
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -106,7 +104,6 @@ const Index = () => {
         <link rel="canonical" href="https://freshcheck.app/" />
       </Helmet>
 
-      {/* Add structured data */}
       <script type="application/ld+json">
         {JSON.stringify(faqSchema)}
       </script>
@@ -119,34 +116,28 @@ const Index = () => {
         <Header />
 
         <main className="container mx-auto px-4 py-8 pt-24 flex-grow">
-          {/* New Hero Section */}
           <HeroSection onSearch={handleSearch} />
 
-          {/* Popular Foods section */}
+          <FoodLabelsPreview />
+
           <PopularFoods />
 
-          {/* AdUnit - optimized size */}
           <div className="my-8">
             <AdUnit slotId="home-top" format="leaderboard" />
           </div>
 
-          {/* CategoryCards below AdUnit */}
           <div id="browse-categories">
             <CategoryCards />
           </div>
           
-          {/* Food Safety Education section */}
           <div id="food-safety-education">
             <FoodSafetyEducation />
           </div>
 
-          {/* Food Safety Facts section */}
           <FoodSafetyFacts />
           
-          {/* SavedFoods after Food Safety Facts */}
           <SavedFoods />
 
-          {/* AdUnit - optimized size */}
           <div className="mt-8">
             <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
           </div>
