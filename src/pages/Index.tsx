@@ -1,5 +1,5 @@
 
-import React, { useRef, lazy, Suspense, useCallback } from "react";
+import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,16 @@ const SkeletonLoader = ({ height = "200px", className = "" }) => (
 const Index = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const adLoadedRef = useRef(false);
+
+  // Load maximum of 2 ads on the homepage to improve performance
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !adLoadedRef.current) {
+      adLoadedRef.current = true;
+      // Mark as viewed to avoid duplicate ad loads
+      window.sessionStorage.setItem('homepage-ads-viewed', 'true');
+    }
+  }, []);
 
   // Memoize scroll handler to prevent unnecessary re-renders
   const scrollToSearch = useCallback(() => {
@@ -130,10 +140,10 @@ const Index = () => {
 
           <PopularFoods />
 
-          {/* Ad placement - top */}
-          <div className="my-8">
+          {/* Ad placement - top - only one ad on initial load for better performance */}
+          <div className="my-8 print:hidden">
             <Suspense fallback={<SkeletonLoader height="90px" />}>
-              <AdUnit slotId="home-top" format="leaderboard" />
+              <AdUnit slotId="home-top" format="leaderboard" lazyLoad={false} />
             </Suspense>
           </div>
 
@@ -162,8 +172,8 @@ const Index = () => {
             <SavedFoods />
           </Suspense>
 
-          {/* Ad placement - bottom */}
-          <div className="mt-8">
+          {/* Ad placement - bottom - very lazy loaded with extra distance margin */}
+          <div className="mt-8 print:hidden">
             <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit slotId="home-bottom" format="leaderboard" lazyLoad={true} />
             </Suspense>

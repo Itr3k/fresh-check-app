@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -61,6 +60,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin />
 
     <!-- Preload critical fonts -->
     <link 
@@ -112,17 +112,60 @@
     <meta name="theme-color" content="#4CAF50">
     <meta name="msapplication-TileColor" content="#4CAF50">
     
-    <!-- Optimized Google AdSense loading -->
-    <script>
-      window.addEventListener('load', function() {
+    <!-- Optimized Google AdSense loading - improved for performance -->
+    <script type="text/javascript">
+      // Create a centralized AdSense loader function
+      window.loadAdSense = function() {
+        if (document.getElementById('adsense-script')) return; // Prevent duplicate loading
+        
+        var script = document.createElement('script');
+        script.id = 'adsense-script';
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.setAttribute('data-ad-frequency-hint', 'automated');
+        script.setAttribute('data-ad-channel', 'freshcheck-optimized');
+        document.head.appendChild(script);
+        
+        // Mark that AdSense is loading
+        window.adsenseLoading = true;
+      };
+      
+      // Load AdSense when the page becomes idle or after user interaction
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(function() {
+          // Check if the user has scrolled
+          if (window.adsenseLoaded || window.scrollY > 100) {
+            window.loadAdSense();
+          } else {
+            // Wait for first interaction or scroll
+            var delayedAdLoad = function() {
+              window.loadAdSense();
+              window.removeEventListener('scroll', scrollHandler);
+              window.removeEventListener('click', delayedAdLoad);
+              window.removeEventListener('touchstart', delayedAdLoad);
+            };
+            
+            var scrollHandler = function() {
+              if (window.scrollY > 100) {
+                delayedAdLoad();
+              }
+            };
+            
+            window.addEventListener('scroll', scrollHandler, {passive: true});
+            window.addEventListener('click', delayedAdLoad, {passive: true});
+            window.addEventListener('touchstart', delayedAdLoad, {passive: true});
+            
+            // Fallback if no interaction after 5 seconds
+            setTimeout(delayedAdLoad, 5000);
+          }
+        }, {timeout: 3000});
+      } else {
+        // Fallback for browsers without requestIdleCallback
         setTimeout(function() {
-          var script = document.createElement('script');
-          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
-          script.async = true;
-          script.crossOrigin = 'anonymous';
-          document.head.appendChild(script);
-        }, 3000); // Delayed load for better core web vitals
-      });
+          window.loadAdSense();
+        }, 3000);
+      }
     </script>
   </head>
 

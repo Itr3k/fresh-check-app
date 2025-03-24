@@ -56,7 +56,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           }
         },
         // Increased rootMargin to start loading earlier
-        { threshold: 0.1, rootMargin: "300px" }
+        { threshold: 0.1, rootMargin: "350px" }
       );
       
       if (adRef.current) {
@@ -84,15 +84,20 @@ const AdUnit: React.FC<AdUnitProps> = ({
     if (isDevelopment) {
       timeoutRef.current = setTimeout(() => {
         setAdLoaded(true);
-      }, 500); // Reduced from 1000ms to 500ms
+      }, 500);
       return;
     }
     
     // Show the placeholder immediately
     setAdLoaded(true);
     
-    // Load actual ads if not in development
+    // Use the centralized AdSense loader
     if (typeof window !== 'undefined' && !isDevelopment) {
+      // Ensure the AdSense script is loaded
+      if (window.loadAdSense && typeof window.loadAdSense === 'function') {
+        window.loadAdSense();
+      }
+      
       timeoutRef.current = setTimeout(() => {
         try {
           if (!adRef.current) return;
@@ -107,6 +112,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
           adElement.setAttribute('data-ad-slot', slotId);
           adElement.setAttribute('data-ad-format', 'auto');
           adElement.setAttribute('data-full-width-responsive', 'true');
+          // Add performance hints
+          adElement.setAttribute('data-ad-region', `ad-${slotId}-${Date.now()}`);
           
           // Clear existing content and append ad
           if (adRef.current) {
@@ -128,7 +135,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           setIsError(true);
           console.error('Error initializing ad:', error);
         }
-      }, 100); // Reduced timeout to load ads sooner
+      }, 150); // Slightly delayed to ensure main content loads first
     }
     
     return () => {
@@ -164,7 +171,12 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   // Use a simpler, more performant render approach
   return (
-    <div className={`overflow-hidden ${sizeClass} ${className}`} role="complementary" aria-label="Advertisement">
+    <div 
+      className={`overflow-hidden ${sizeClass} ${className}`} 
+      role="complementary" 
+      aria-label="Advertisement"
+      data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
+    >
       <div className="relative h-full w-full">
         {(isError || isDevelopment) && renderPlaceholder()}
         
@@ -186,6 +198,9 @@ const AdUnit: React.FC<AdUnitProps> = ({
 declare global {
   interface Window {
     adsbygoogle: any[];
+    loadAdSense: () => void;
+    adsenseLoading: boolean;
+    adsenseLoaded: boolean;
   }
 }
 
