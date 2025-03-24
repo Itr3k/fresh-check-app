@@ -1,8 +1,10 @@
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import React from 'react'
 
 const rootElement = document.getElementById("root");
 
@@ -15,13 +17,15 @@ const renderApp = async () => {
   performance.mark('react-app-start');
   
   // Create a React component to properly wrap Analytics and SpeedInsights
-  const AppWithAnalytics = () => (
-    <>
-      <App />
-      <Analytics />
-      <SpeedInsights />
-    </>
-  );
+  const AppWithAnalytics = () => {
+    return (
+      <React.StrictMode>
+        <App />
+        <Analytics />
+        <SpeedInsights />
+      </React.StrictMode>
+    );
+  };
   
   root.render(<AppWithAnalytics />);
   
