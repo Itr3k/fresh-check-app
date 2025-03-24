@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -168,17 +169,29 @@ function toast({ ...props }: Toast) {
   }
 }
 
+// Ensure there's a default state that doesn't depend on React context
+const defaultState = {
+  ...memoryState,
+  toast,
+  dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+}
+
+let canUseDOM = typeof window !== "undefined"
+
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
-    listeners.push(setState)
-    return () => {
-      const index = listeners.indexOf(setState)
-      if (index > -1) {
-        listeners.splice(index, 1)
+    if (canUseDOM) {
+      listeners.push(setState)
+      return () => {
+        const index = listeners.indexOf(setState)
+        if (index > -1) {
+          listeners.splice(index, 1)
+        }
       }
     }
+    return undefined
   }, [state])
 
   return {

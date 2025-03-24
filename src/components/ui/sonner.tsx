@@ -1,10 +1,15 @@
+
+"use client"
+
 import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  // We'll use a safer way to get the theme - with a fallback
+  const { resolvedTheme } = useTheme()
+  const theme = resolvedTheme || "light"
 
   return (
     <Sonner
