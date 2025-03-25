@@ -112,7 +112,7 @@ const FoodDetail: React.FC = () => {
       'Fruit': 'Look for mold, unusual soft spots, fermented smell, or dramatic color changes.',
       'Vegetables': 'Watch for wilting, sliminess, mold, or strong off-odors.',
       'Bakery': 'Check for mold growth, hard texture, or unusual odor. Stale bread is not necessarily spoiled.',
-      'Prepared Foods': 'If it smells off, looks discolored, or has been in the refrigerator longer than 3-4 days, it's best to discard it.',
+      'Prepared Foods': "If it smells off, looks discolored, or has been in the refrigerator longer than 3-4 days, it's best to discard it.",
       'Pantry': 'Look for rancid odors, mold, or insect activity. Check for broken seals on packages.',
       'Frozen Foods': 'Severe freezer burn, unusual odors, or changes in texture may indicate quality loss.',
       'Condiments': 'Watch for separation, discoloration, unusual odors, or mold growth on the surface.'
