@@ -34,9 +34,35 @@ const hideLoader = () => {
   }
 }
 
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful:', registration.scope)
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error)
+      })
+  })
+}
+
 // Render with error handling
 try {
   console.log('Rendering application...')
+  
+  // Create a global error handler for uncaught errors
+  window.addEventListener('error', (event) => {
+    console.error('Global error caught:', event.error)
+    handleError(event.error, 'window-onerror')
+  })
+  
+  // Also handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise rejection:', event.reason)
+    handleError(event.reason, 'unhandled-promise')
+  })
+  
   root.render(
     <React.StrictMode>
       <BrowserRouter>
@@ -49,6 +75,7 @@ try {
       </BrowserRouter>
     </React.StrictMode>
   )
+  
   // App rendered successfully, hide loader after a short delay
   setTimeout(hideLoader, 500)
 } catch (error) {

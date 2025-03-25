@@ -8,14 +8,25 @@ export const handleError = (error: unknown, context: string = 'unknown'): void =
   console.error(`[Error in ${context}]:`, error);
   
   // Report to analytics if available
-  if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
-    window.gtag('event', 'error', {
+  if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as any).gtag === 'function') {
+    (window as any).gtag('event', 'error', {
       error_message: error instanceof Error ? error.message : String(error),
       error_context: context,
       event_category: 'Error',
       event_label: context,
       non_interaction: true
     });
+  }
+  
+  // If we have a DOM, update the UI to show the error
+  if (typeof document !== 'undefined') {
+    const appError = document.getElementById('app-error');
+    const loader = document.getElementById('loading-indicator');
+    
+    if (appError && loader) {
+      loader.style.display = 'none';
+      appError.classList.remove('hidden');
+    }
   }
 };
 
@@ -37,3 +48,25 @@ export const withErrorHandling = <T extends (...args: any[]) => Promise<any>>(
     }
   };
 };
+
+/**
+ * Helper to check if the app is running in production
+ */
+export const isProduction = (): boolean => {
+  return process.env.NODE_ENV === 'production';
+};
+
+/**
+ * Helper to determine if we're running in a browser environment
+ */
+export const isBrowser = (): boolean => {
+  return typeof window !== 'undefined';
+};
+
+// Declare gtag for TypeScript
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    appLoaded?: boolean;
+  }
+}

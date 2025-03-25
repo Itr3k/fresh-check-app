@@ -17,6 +17,7 @@
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         background: white;
@@ -30,8 +31,24 @@
         border-top-color: #4CAF50;
         animation: spin 1s ease-in-out infinite;
       }
+      .loading-text {
+        margin-top: 16px;
+        font-size: 16px;
+        color: #4CAF50;
+      }
       @keyframes spin {
         to { transform: rotate(360deg); }
+      }
+      .app-error {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        padding: 20px;
+        z-index: 9998;
       }
     </style>
 
@@ -44,53 +61,67 @@
     <link rel="stylesheet" href="/src/index.css" />
     
     <!-- SEO & Meta Tags -->
-    <meta name="author" content="Fresh Check" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#4CAF50" />
-    <meta name="google-site-verification" content="your-verification-code" />
-    
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Fresh Check - Food Storage Guide" />
-    <meta property="og:description" content="Find out if your food is still good to eat." />
-    <meta property="og:image" content="https://freshcheck.app/og-image.png" />
-    <meta property="og:url" content="https://freshcheck.app/" />
-    <meta name="twitter:card" content="summary_large_image" />
     
     <!-- App Icons -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="canonical" href="https://freshcheck.app" />
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "FreshCheck",
-      "url": "https://freshcheck.app",
-      "logo": "https://freshcheck.app/logo.png",
-      "description": "FreshCheck provides accurate food storage information."
-    }
-    </script>
   </head>
 
   <body>
-    <!-- Loading indicator that will be hidden once the app loads -->
+    <!-- Loading indicator -->
     <div id="loading-indicator" class="loading-indicator">
       <div class="spinner"></div>
+      <p class="loading-text">Loading Fresh Check...</p>
     </div>
     
+    <!-- Error display for early JS errors -->
+    <div id="app-error" class="app-error hidden">
+      <h2 style="color: #e53e3e; margin-bottom: 16px; font-size: 20px;">Sorry, there was a problem</h2>
+      <p style="margin-bottom: 20px; text-align: center;">We're having trouble loading the application. Please try refreshing the page.</p>
+      <button onclick="window.location.reload()" style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+        Refresh Page
+      </button>
+    </div>
+    
+    <!-- React root element -->
     <div id="root"></div>
     
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-    
+    <!-- Error handling before app loads -->
     <script>
-      // Hide loading indicator when app is ready
+      window.addEventListener('error', function(event) {
+        // Only show the error UI if it's a critical error before app loads
+        if (!window.appLoaded) {
+          var appError = document.getElementById('app-error');
+          var loader = document.getElementById('loading-indicator');
+          
+          if (appError && loader) {
+            loader.style.display = 'none';
+            appError.classList.remove('hidden');
+          }
+        }
+      });
+      
+      // Hide loading indicator when app is ready or after timeout
       window.addEventListener('load', function() {
+        // Set a maximum time to wait before showing error
+        setTimeout(function() {
+          const loader = document.getElementById('loading-indicator');
+          const root = document.getElementById('root');
+          const appError = document.getElementById('app-error');
+          
+          // If after 8 seconds we still see the loader but no content in root,
+          // show the error message
+          if (loader && root && root.children.length === 0) {
+            loader.style.display = 'none';
+            appError.classList.remove('hidden');
+          }
+        }, 8000);
+        
+        // Normal flow - hide loader when loaded
         setTimeout(function() {
           const loader = document.getElementById('loading-indicator');
           if (loader) {
@@ -98,10 +129,15 @@
             loader.style.transition = 'opacity 0.3s';
             setTimeout(function() {
               loader.style.display = 'none';
+              window.appLoaded = true;
             }, 300);
           }
         }, 100);
       });
     </script>
+    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

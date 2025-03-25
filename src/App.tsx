@@ -11,6 +11,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import SkipToContent from './components/SkipToContent'
 import ErrorBoundary from './components/ErrorBoundary'
+import AppStatusChecker from './components/AppStatusChecker'
 
 // Core pages
 import Index from './pages/Index'
@@ -59,6 +60,7 @@ function App() {
       <RecallsProvider>
         <ImagesProvider>
           <div className="flex flex-col min-h-screen">
+            <AppStatusChecker />
             <SkipToContent />
             <Header />
             <main id="main-content" className="flex-grow">
