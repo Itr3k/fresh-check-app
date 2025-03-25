@@ -12,8 +12,10 @@ Disallow: /assets/
 Disallow: /api/
 Disallow: /admin/
 Disallow: /internal/
+Disallow: /preview/
+Disallow: /beta/
 
-# Ensure high-value pages are crawled with priority
+# High-value content (ensure these are crawled with priority)
 Allow: /food-safety/temperature-danger-zone
 Allow: /food-safety/foodborne-illness-prevention
 Allow: /food-safety/cross-contamination
@@ -48,3 +50,7 @@ Crawl-delay: 2
 User-agent: Googlebot
 Allow: /food-safety/
 Crawl-delay: 1
+
+# Special instructions for mobile crawler
+User-agent: Googlebot-Mobile
+Allow: /
