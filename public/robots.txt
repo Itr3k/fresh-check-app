@@ -27,6 +27,9 @@ Allow: /food/*
 Allow: /recalls/*
 Allow: /search
 
+# Ad-related directives
+Allow: /ads.txt
+
 # Rate limiting for specific crawlers
 User-agent: AdsBot-Google
 Allow: /

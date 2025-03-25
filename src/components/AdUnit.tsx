@@ -247,11 +247,25 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </div>
   );
 
+  // Default publisher content if none provided
+  const defaultContentBefore = !contentBefore ? (
+    <div className="mb-2 p-2 bg-secondary/10 rounded text-sm">
+      <h4 className="text-xs font-medium">Food Storage Information</h4>
+      <p className="text-xs text-muted-foreground">Learn about safe storage times for your food.</p>
+    </div>
+  ) : contentBefore;
+
+  const defaultContentAfter = !contentAfter ? (
+    <div className="mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground">
+      <p>Always check food for signs of spoilage before consuming.</p>
+    </div>
+  ) : contentAfter;
+
   // Use AspectRatio for responsive ads to prevent layout shifts
   return (
-    <div className="ad-wrapper">
+    <div className="ad-wrapper my-4 px-2">
       {/* Required publisher content before ad */}
-      {contentBefore}
+      {defaultContentBefore}
       
       <div 
         className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
@@ -313,7 +327,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
       </div>
       
       {/* Required publisher content after ad */}
-      {contentAfter}
+      {defaultContentAfter}
     </div>
   );
 };

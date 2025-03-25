@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Search, Filter, AlertTriangle, AlertCircle, AlertOctagon, RefreshCw } from "lucide-react";
+import { Search, Filter, AlertTriangle, AlertCircle, AlertOctagon, RefreshCw, Info } from "lucide-react";
 import Header from "../components/Header";
 import PageTransition from "../components/PageTransition";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emailjs from 'emailjs-com';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Email validation schema
 const emailSchema = z.object({
@@ -115,7 +116,7 @@ const RecallsPage = () => {
         />
         <meta 
           name="keywords" 
-          content="food recall, product recall, food safety, FDA recall, USDA recall"
+          content="food recall, product recall, food safety, FDA recall, USDA recall, food alert, foodborne illness, contamination, allergen alert"
         />
         <link rel="canonical" href="https://freshcheck.app/recalls" />
         <script type="application/ld+json">
@@ -132,6 +133,29 @@ const RecallsPage = () => {
                   "@type": "ImageObject",
                   "url": "https://freshcheck.app/logo.png"
                 }
+              },
+              "mainEntity": {
+                "@type": "ItemList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "item": {
+                      "@type": "Thing",
+                      "name": "Food Recall Alerts",
+                      "description": "Critical food safety recall information from government agencies"
+                    }
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "item": {
+                      "@type": "Thing",
+                      "name": "Product Safety Information",
+                      "description": "Details about recalled products including affected lot numbers and dates"
+                    }
+                  }
+                ]
               }
             }
           `}
@@ -147,8 +171,34 @@ const RecallsPage = () => {
           </h1>
           <p className="text-center text-muted-foreground mb-6 max-w-xl mx-auto">
             Stay informed about the latest food recalls and safety alerts from official government agencies.
-            Check if products in your kitchen have been affected.
+            Check if products in your kitchen have been affected by recent recalls.
           </p>
+          
+          {/* Educational Content for Recalls */}
+          <Card className="max-w-3xl mx-auto mb-8 bg-secondary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-primary" />
+                <span>Why Food Recalls Matter</span>
+              </CardTitle>
+              <CardDescription>
+                Food recalls are issued when there's a potential risk to consumer health or when products don't meet safety standards
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Food recalls are typically issued for one of three main reasons:
+              </p>
+              <ul className="list-disc pl-5 space-y-2 text-sm mb-4">
+                <li><strong>Contamination:</strong> Presence of harmful bacteria like E. coli, Salmonella, or Listeria; physical contaminants like plastic or metal; or chemical contaminants.</li>
+                <li><strong>Mislabeling:</strong> Undeclared allergens that pose serious health risks to those with allergies or food sensitivities.</li>
+                <li><strong>Quality/Manufacturing Issues:</strong> Products that don't meet quality or manufacturing standards and may pose safety risks.</li>
+              </ul>
+              <p className="text-sm text-muted-foreground">
+                Checking for recalls regularly helps protect you and your family from potentially hazardous food products.
+              </p>
+            </CardContent>
+          </Card>
           
           {/* Coming Soon Banner */}
           <div className="max-w-3xl mx-auto mb-8 bg-primary/10 border-2 border-primary/30 rounded-lg p-4 text-center">
@@ -213,12 +263,54 @@ const RecallsPage = () => {
           
           <RecallsList searchQuery={searchQuery} />
           
-          <AdUnit slotId="recalls-bottom" className="mt-8" format="leaderboard" lazyLoad={true} />
+          {/* Publisher content and relevant AdUnit */}
+          <div className="mt-8 max-w-3xl mx-auto">
+            <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-blue-500" />
+                <span>What To Do If You Have a Recalled Product</span>
+              </h3>
+              <p className="text-muted-foreground mb-3">
+                If you discover that you have purchased a recalled food product, follow these steps to protect yourself and your family:
+              </p>
+              <ol className="list-decimal pl-5 space-y-1 text-sm">
+                <li><strong>Stop using the product immediately</strong> and do not consume it</li>
+                <li><strong>Check the recall details</strong> to confirm if your specific product is affected (lot numbers, expiration dates, etc.)</li>
+                <li><strong>Follow the recall instructions</strong> for returning or disposing of the product</li>
+                <li><strong>Keep proof of purchase</strong> if you plan to request a refund</li>
+                <li><strong>Monitor for symptoms</strong> if you've already consumed the product</li>
+                <li><strong>Contact your healthcare provider</strong> if you experience any illness symptoms</li>
+              </ol>
+            </div>
+            
+            <AdUnit 
+              slotId="recalls-bottom" 
+              className="mt-4" 
+              format="leaderboard" 
+              lazyLoad={true} 
+              contentBefore={
+                <div className="mb-3 p-3 bg-secondary/20 rounded-lg">
+                  <h3 className="text-sm font-medium">Food Recall Resources</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Stay informed with the latest recall information from government agencies to keep your family safe.
+                  </p>
+                </div>
+              }
+              contentAfter={
+                <div className="mt-3 p-3 bg-secondary/20 rounded-lg">
+                  <p className="text-xs text-muted-foreground">
+                    According to the CDC, 1 in 6 Americans gets sick from contaminated food each year, making food recall awareness critical for public health.
+                  </p>
+                </div>
+              }
+            />
+          </div>
           
           <div className="mt-8 mb-6 max-w-lg mx-auto p-6 bg-secondary/20 rounded-lg text-center">
             <h2 className="text-xl font-semibold mb-3">Stay Updated on Food Recalls</h2>
             <p className="text-muted-foreground mb-4">
               Get alerts when new recalls are issued for the foods you care about.
+              We'll notify you about important recalls that could affect your health.
             </p>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmitEmail)} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">

@@ -7,15 +7,25 @@ import { useLocation } from 'react-router-dom';
  * This should be placed near the root of the application
  */
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // Don't scroll to top if there's a hash in the URL (anchor link)
+    if (hash) return;
+
     // Scroll to top when the pathname changes
     window.scrollTo({
       top: 0,
       behavior: 'instant' // Use 'instant' instead of 'smooth' to avoid visual lag
     });
-  }, [pathname]);
+    
+    // Also report to analytics that a page navigation occurred
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', {
+        page_path: pathname,
+      });
+    }
+  }, [pathname, hash]);
 
   return null; // This component doesn't render anything
 };

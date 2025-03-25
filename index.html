@@ -87,7 +87,7 @@
     <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
 
-    <!-- Google Search Console Verification (Replace with your actual verification code) -->
+    <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="your-verification-code" />
 
     <!-- Google AdSense Verification -->
@@ -249,9 +249,20 @@
                 wrapper.className = 'ad-wrapper';
                 wrapper.innerHTML = '<p class="ad-label">Advertisement</p>';
                 
+                // Add meaningful publisher content
+                const beforeContent = document.createElement('div');
+                beforeContent.className = 'mb-2 p-2 bg-secondary/10 rounded text-sm';
+                beforeContent.innerHTML = '<h4 class="text-xs font-medium">Food Storage Information</h4><p class="text-xs text-muted-foreground">Learn about safe storage times for your food.</p>';
+                
+                const afterContent = document.createElement('div');
+                afterContent.className = 'mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground';
+                afterContent.innerHTML = '<p>Always check food for signs of spoilage before consuming.</p>';
+                
                 // Wrap the ad with publisher content
                 parent.parentNode?.insertBefore(wrapper, parent);
+                wrapper.appendChild(beforeContent);
                 wrapper.appendChild(parent);
+                wrapper.appendChild(afterContent);
               }
             });
           }
