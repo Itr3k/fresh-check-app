@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -40,14 +39,11 @@ const AdUnit: React.FC<AdUnitProps> = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const isMobile = useIsMobile();
   
-  // Get dimensions for the selected format based on device
   const activeFormat = isMobile ? mobileFormat : format;
   const adDimensions = AD_FORMAT_DIMENSIONS[activeFormat];
   
-  // Check if in development mode
   const isDevelopment = isDevelopmentEnv();
   
-  // Handle AdSense script loaded event
   useEffect(() => {
     const handleAdsenseLoaded = () => {
       if (adRef.current && initializedRef.current && !adLoaded) {
@@ -67,18 +63,15 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [adLoaded, slotId, responsive]);
   
-  // Listen for viewport visibility with intersection observer
   useEffect(() => {
     if (!lazyLoad || isVisible || !waitForViewport) return;
     
     try {
-      // Cleanup previous observer if exists
       if (observerRef.current) {
         observerRef.current.disconnect();
         observerRef.current = null;
       }
       
-      // Create new observer that triggers when ad becomes visible
       observerRef.current = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -86,11 +79,9 @@ const AdUnit: React.FC<AdUnitProps> = ({
             observerRef.current?.disconnect();
             observerRef.current = null;
             
-            // Track performance
             reportPerformance(`ad-visible-${slotId}`, performance.now());
           }
         },
-        // Use more aggressive rootMargin but lower threshold to start loading earlier
         { threshold: 0.01, rootMargin: "200px" }
       );
       
@@ -98,7 +89,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
         observerRef.current.observe(adRef.current);
       }
     } catch (e) {
-      // Fallback to visible if observer fails
       setIsVisible(true);
       console.warn("AdUnit: IntersectionObserver not available");
     }
@@ -111,27 +101,20 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [lazyLoad, isVisible, waitForViewport, slotId]);
   
-  // Load ad when visible
   useEffect(() => {
     if (!isVisible || initializedRef.current) return;
     
-    // Flag to prevent multiple initializations
     initializedRef.current = true;
     
-    // Development fallback
     if (isDevelopment) {
-      // Quick placeholder in dev mode
       setAdLoaded(true);
       return;
     }
     
-    // Set placeholder immediately
     setAdLoaded(true);
     
-    // Adaptive timeout depending on if page is still loading
     const loadWaitTime = document.readyState === 'complete' ? 100 : 1000;
     
-    // Delayed ad load to avoid competing with critical resources
     timeoutRef.current = setTimeout(() => {
       initializeAdSlot(
         adRef,
@@ -150,7 +133,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [isVisible, isDevelopment, slotId, responsive]);
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -165,7 +147,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, []);
 
-  // Default publisher content if none provided
   const defaultContentBefore = !contentBefore ? (
     <div className="mb-2 p-2 bg-secondary/10 rounded text-sm">
       <h4 className="text-xs font-medium">Food Storage Information</h4>
@@ -179,27 +160,20 @@ const AdUnit: React.FC<AdUnitProps> = ({
     </div>
   ) : contentAfter;
 
-  // Use AspectRatio for responsive ads to prevent layout shifts
   return (
     <div className="ad-wrapper my-4 px-2 w-full flex flex-col items-center">
-      {/* Required publisher content before ad */}
       {defaultContentBefore}
       
       <div 
-        className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
+        className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat} w-full`} 
         role="complementary" 
         aria-label="Advertisement"
         data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
         data-ad-format={activeFormat}
-        style={{
-          width: '100%',
-          maxWidth: responsive ? undefined : `${adDimensions.width}px`,
-          margin: '0 auto'
-        }}
       >
         {responsive ? (
           <div 
-            className="relative w-full flex justify-center"
+            className="relative w-full flex justify-center items-center"
             style={{
               maxWidth: `${adDimensions.width}px`,
             }}
@@ -217,7 +191,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
               }
               
               <div 
-                className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full ${
+                className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full flex items-center justify-center ${
                   isError || isDevelopment ? 'hidden' : ''
                 }`}
                 id={`ad-container-${slotId}`}
@@ -229,7 +203,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
           </div>
         ) : (
           <div 
-            className="relative"
+            className="relative flex items-center justify-center"
             style={{
               width: `${adDimensions.width}px`,
               height: `${adDimensions.height}px`,
@@ -244,7 +218,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
             }
             
             <div 
-              className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full ${
+              className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full flex items-center justify-center ${
                 isError || isDevelopment ? 'hidden' : ''
               }`}
               id={`ad-container-${slotId}`}
@@ -256,7 +230,6 @@ const AdUnit: React.FC<AdUnitProps> = ({
         )}
       </div>
       
-      {/* Required publisher content after ad */}
       {defaultContentAfter}
     </div>
   );

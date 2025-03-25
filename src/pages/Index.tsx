@@ -1,4 +1,3 @@
-
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -228,8 +227,7 @@ const Index = () => {
               
               <FoodLabelsPreview />
 
-              {/* Updated Ad unit container with center alignment */}
-              <div className="my-8 print:hidden flex flex-col items-center justify-center w-full">
+              <div className="my-8 print:hidden w-full flex justify-center">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
                     slotId="home-leaderboard" 
@@ -276,8 +274,7 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              {/* Updated second Ad unit container with center alignment */}
-              <div className="my-8 print:hidden flex flex-col items-center justify-center w-full">
+              <div className="my-8 print:hidden w-full flex justify-center">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
                     slotId="home-content-ad" 
