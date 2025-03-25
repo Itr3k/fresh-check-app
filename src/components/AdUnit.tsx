@@ -263,7 +263,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   // Use AspectRatio for responsive ads to prevent layout shifts
   return (
-    <div className="ad-wrapper my-4 px-2">
+    <div className="ad-wrapper my-4 px-2 w-full flex flex-col items-center">
       {/* Required publisher content before ad */}
       {defaultContentBefore}
       
@@ -281,7 +281,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
       >
         {responsive ? (
           <div 
-            className="relative w-full"
+            className="relative w-full flex justify-center"
             style={{
               maxWidth: `${adDimensions.width}px`,
             }}

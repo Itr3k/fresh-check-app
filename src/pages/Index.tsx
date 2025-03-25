@@ -228,7 +228,8 @@ const Index = () => {
               
               <FoodLabelsPreview />
 
-              <div className="my-8 print:hidden">
+              {/* Updated Ad unit container with center alignment */}
+              <div className="my-8 print:hidden flex flex-col items-center justify-center w-full">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
                     slotId="home-leaderboard" 
@@ -237,7 +238,7 @@ const Index = () => {
                     lazyLoad={true} 
                     responsive={true}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
                         <h3 className="text-sm font-medium">Food Safety Tips</h3>
                         <p className="text-xs text-muted-foreground mt-1">Learn about proper food storage techniques to extend shelf life.</p>
                       </div>
@@ -250,7 +251,7 @@ const Index = () => {
                     lazyLoad={true} 
                     responsive={true}
                     contentBefore={
-                      <div className="mb-3 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mb-3 p-3 bg-secondary/20 rounded-lg w-full text-center">
                         <h3 className="text-sm font-medium">Food Safety Tips</h3>
                         <p className="text-xs text-muted-foreground mt-1">Learn proper storage techniques.</p>
                       </div>
@@ -275,7 +276,8 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              <div className="my-8 print:hidden">
+              {/* Updated second Ad unit container with center alignment */}
+              <div className="my-8 print:hidden flex flex-col items-center justify-center w-full">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
                     slotId="home-content-ad" 
@@ -283,13 +285,13 @@ const Index = () => {
                     mobileFormat="rectangle" 
                     lazyLoad={true}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
                         <h3 className="text-sm font-medium">Expiration Date Calculator</h3>
                         <p className="text-xs text-muted-foreground mt-1">Use our calculator to determine how long your food will stay fresh.</p>
                       </div>
                     }
                     contentAfter={
-                      <div className="mt-4 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mt-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
                         <p className="text-xs text-muted-foreground">Remember to always check for signs of spoilage before consuming food, regardless of the expiration date.</p>
                       </div>
                     }
