@@ -1,14 +1,11 @@
-
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import SearchBar from "../components/SearchBar";
 import PopularFoods from "../components/PopularFoods";
 import PageTransition from "../components/PageTransition";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import FoodLabelsPreview from "../components/FoodLabelsPreview";
@@ -34,13 +31,13 @@ const Index = () => {
   useEffect(() => {
     if (!adsInitializedRef.current) {
       adsInitializedRef.current = true;
-      
+
       const adsViewed = sessionStorage.getItem('homepage-ads-viewed');
       if (!adsViewed) {
         sessionStorage.setItem('homepage-ads-viewed', 'true');
       }
     }
-    
+
     return () => {
       isMountedRef.current = false;
     };
@@ -203,38 +200,6 @@ const Index = () => {
             <HeroSection onSearch={handleSearch} />
           </div>
 
-          {/* Top leaderboard ad after hero section */}
-          <div className="mt-6 mb-8 print:hidden flex justify-center">
-            <Suspense fallback={<SkeletonLoader height="90px" />}>
-              <AdUnit 
-                slotId="home-top-leaderboard" 
-                format="leaderboard" 
-                className="hidden md:flex" 
-                lazyLoad={false}
-                responsive={true}
-                contentBefore={
-                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
-                    <h4 className="text-xs font-medium">Food Storage Guide</h4>
-                    <p className="text-xs text-muted-foreground">Find accurate storage times for all your foods</p>
-                  </div>
-                }
-              />
-              <AdUnit 
-                slotId="home-top-mobile-banner" 
-                format="mobile_banner" 
-                className="md:hidden" 
-                lazyLoad={false}
-                responsive={true}
-                contentBefore={
-                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
-                    <h4 className="text-xs font-medium">Food Storage Guide</h4>
-                    <p className="text-xs text-muted-foreground">Find accurate storage times for your foods</p>
-                  </div>
-                }
-              />
-            </Suspense>
-          </div>
-
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
@@ -277,7 +242,6 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              {/* Mid-content leaderboard ad */}
               <div className="my-8 print:hidden flex justify-center">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
@@ -305,7 +269,6 @@ const Index = () => {
                 <SavedFoods />
               </Suspense>
 
-              {/* Search box at the bottom */}
               <div 
                 className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
                 onClick={scrollToSearch}
@@ -347,7 +310,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Bottom leaderboard ad */}
           <div className="mt-10 mb-4 print:hidden flex justify-center">
             <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit 
@@ -366,7 +328,7 @@ const Index = () => {
             </Suspense>
           </div>
         </main>
-        
+
         <Footer />
       </div>
     </PageTransition>
