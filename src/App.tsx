@@ -1,99 +1,99 @@
-import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import { RecallsProvider } from "./contexts/RecallsContext";
-import WebhookReceiver from "./components/WebhookReceiver";
-import { ImagesProvider } from './contexts/ImagesContext';
-import ScrollToTop from "./components/ScrollToTop";
 
-// Lazy load non-critical pages
-const FoodDetail = lazy(() => import("./pages/FoodDetail"));
-const SearchPage = lazy(() => import("./pages/SearchPage"));
-const CategoryPage = lazy(() => import("./pages/CategoryPage"));
-const AboutPage = lazy(() => import("./pages/AboutPage"));
-const RecallsPage = lazy(() => import("./pages/RecallsPage"));
-const RecallDetailPage = lazy(() => import("./pages/RecallDetailPage"));
+import { Suspense, lazy } from 'react'
+import { Route, Routes } from 'react-router-dom'
 
-// Lazy load Food Safety Educational Pages
-const TemperatureDangerZone = lazy(() => import("./pages/FoodSafety/TemperatureDangerZone"));
-const FoodborneIllnessPrevention = lazy(() => import("./pages/FoodSafety/FoodborneIllnessPrevention"));
-const PreventCrossContamination = lazy(() => import("./pages/FoodSafety/PreventCrossContamination"));
-const VulnerableGroups = lazy(() => import("./pages/FoodSafety/VulnerableGroups"));
-const HolidayEvents = lazy(() => import("./pages/FoodSafety/HolidayEvents"));
-const ScienceOfSpoilage = lazy(() => import("./pages/FoodSafety/ScienceOfSpoilage"));
-const EmergencyFoodSafety = lazy(() => import("./pages/FoodSafety/EmergencyFoodSafety"));
-const UnderstandingFoodLabels = lazy(() => import("./pages/FoodSafety/UnderstandingFoodLabels"));
+// Contexts
+import { ImagesProvider } from './contexts/ImagesContext'
+import { RecallsProvider } from './contexts/RecallsContext'
 
-// Create a fallback loading component
-const PageLoading = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="animate-pulse flex flex-col items-center gap-2">
-      <div className="h-8 w-8 rounded-full bg-primary/30"></div>
-      <div className="h-4 w-32 rounded bg-primary/20"></div>
-    </div>
-  </div>
-);
+// Components
+import Header from './components/Header'
+import Footer from './components/Footer'
+import SkipToContent from './components/SkipToContent'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: 300000, // 5 minutes
-    },
-  },
-});
+// Core pages
+import Index from './pages/Index'
+import NotFound from './pages/NotFound'
+
+// Food Safety pages
+import TemperatureDangerZone from './pages/FoodSafety/TemperatureDangerZone'
+import FoodborneIllnessPrevention from './pages/FoodSafety/FoodborneIllnessPrevention'
+import PreventCrossContamination from './pages/FoodSafety/PreventCrossContamination'
+import VulnerableGroups from './pages/FoodSafety/VulnerableGroups'
+import HolidayEvents from './pages/FoodSafety/HolidayEvents'
+import ScienceOfSpoilage from './pages/FoodSafety/ScienceOfSpoilage'
+import EmergencyFoodSafety from './pages/FoodSafety/EmergencyFoodSafety'
+import UnderstandingFoodLabels from './pages/FoodSafety/UnderstandingFoodLabels'
+
+// Ingredients pages
+import IngredientsPage from './pages/IngredientsPage'
+import BHAArticle from './pages/ingredients/BHAArticle'
+import Red40Article from './pages/ingredients/Red40Article'
+
+// Use dynamic imports for non-critical pages to improve initial load time
+const FoodDetail = lazy(() => import('./pages/FoodDetail'))
+const CategoryPage = lazy(() => import('./pages/CategoryPage'))
+const RecallsPage = lazy(() => import('./pages/RecallsPage'))
+const RecallDetailPage = lazy(() => import('./pages/RecallDetailPage'))
+const SearchPage = lazy(() => import('./pages/SearchPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+
+// Lazy load the other ingredient articles
+const NaturalFlavorsArticle = lazy(() => import('./pages/ingredients/NaturalFlavorsArticle'))
+const AspartameArticle = lazy(() => import('./pages/ingredients/AspartameArticle'))
+
+const loadingFallback = <div className="p-8 text-center">Loading...</div>
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <RecallsProvider>
-          <ImagesProvider>
-            <WebhookReceiver />
-            <ScrollToTop />
-            <Toaster />
-            <Sonner />
-            <TooltipProvider>
-              <Suspense fallback={<PageLoading />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/food/:id" element={<FoodDetail />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/categories/:categoryId" element={<CategoryPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/recalls" element={<RecallsPage />} />
-                  <Route path="/recalls/:id" element={<RecallDetailPage />} />
-                  
-                  {/* Food Safety Educational Pages */}
-                  <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
-                  <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
-                  <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
-                  <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
-                  <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
-                  <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
-                  <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
-                  <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
-                  
-                  {/* Redirect paths to maintain backward compatibility */}
-                  <Route path="/food-safety/prevent-cross-contamination" element={<Navigate to="/food-safety/cross-contamination" replace />} />
-                  <Route path="/food-safety/holiday-event-safety" element={<Navigate to="/food-safety/holiday-events" replace />} />
-                  
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </TooltipProvider>
-          </ImagesProvider>
-        </RecallsProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+    <RecallsProvider>
+      <ImagesProvider>
+        <div className="flex flex-col min-h-screen">
+          <SkipToContent />
+          <Header />
+          <main id="main-content" className="flex-grow">
+            <Suspense fallback={loadingFallback}>
+              <Routes>
+                {/* Core pages */}
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/search" element={<SearchPage />} />
+                
+                {/* Food pages */}
+                <Route path="/food/:foodId" element={<FoodDetail />} />
+                <Route path="/categories/:categoryId?" element={<CategoryPage />} />
+                
+                {/* Recalls pages */}
+                <Route path="/recalls" element={<RecallsPage />} />
+                <Route path="/recalls/:recallId" element={<RecallDetailPage />} />
+                
+                {/* Food Safety pages */}
+                <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+                <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
+                <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
+                <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
+                <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
+                <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
+                <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+                <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
+                
+                {/* Food Ingredients pages */}
+                <Route path="/ingredients" element={<IngredientsPage />} />
+                <Route path="/ingredients/bha-butylated-hydroxyanisole" element={<BHAArticle />} />
+                <Route path="/ingredients/red-40-food-coloring" element={<Red40Article />} />
+                <Route path="/ingredients/natural-flavors" element={<NaturalFlavorsArticle />} />
+                <Route path="/ingredients/aspartame" element={<AspartameArticle />} />
+                
+                {/* Catch all 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
+      </ImagesProvider>
+    </RecallsProvider>
+  )
 }
 
-export default App;
+export default App

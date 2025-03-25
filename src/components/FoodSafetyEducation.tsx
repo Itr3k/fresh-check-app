@@ -1,141 +1,127 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Thermometer, AlertCircle, Utensils, Users, Cake, BookOpen, AlertTriangle, Tag } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
-
-const educationPages = [
-  {
-    id: 'temperature-danger-zone',
-    title: 'Temperature Danger Zone',
-    description: 'Learn about safe food temperatures and avoiding the 40°F-140°F danger zone',
-    icon: Thermometer,
-    url: '/food-safety/temperature-danger-zone',
-    color: 'bg-red-100'
-  },
-  {
-    id: 'foodborne-illness-prevention',
-    title: 'Foodborne Illness Prevention',
-    description: 'Recognize and prevent common foodborne illnesses like Salmonella and E. coli',
-    icon: AlertCircle,
-    url: '/food-safety/foodborne-illness-prevention',
-    color: 'bg-blue-100'
-  },
-  {
-    id: 'cross-contamination',
-    title: 'Cross-Contamination',
-    description: 'Essential practices to avoid spreading bacteria between foods in your kitchen',
-    icon: Utensils,
-    url: '/food-safety/cross-contamination',
-    color: 'bg-green-100'
-  },
-  {
-    id: 'understanding-food-labels',
-    title: 'Understanding Food Labels',
-    description: 'Learn the differences between "Best By," "Use By," and "Sell By" dates on packaging',
-    icon: Tag,
-    url: '/food-safety/understanding-food-labels',
-    color: 'bg-purple-100'
-  },
-  {
-    id: 'vulnerable-groups',
-    title: 'Food Safety for Vulnerable Groups',
-    description: 'Special precautions for pregnant women, elderly, children & immunocompromised',
-    icon: Users,
-    url: '/food-safety/vulnerable-groups',
-    color: 'bg-purple-100'
-  },
-  {
-    id: 'holiday-events',
-    title: 'Holiday & Event Food Safety',
-    description: 'Safe food handling for holidays, parties, picnics and outdoor gatherings',
-    icon: Cake,
-    url: '/food-safety/holiday-events',
-    color: 'bg-yellow-100'
-  },
-  {
-    id: 'science-of-spoilage',
-    title: 'Science of Food Spoilage',
-    description: 'Understanding bacteria, mold, and chemical changes that cause food to spoil',
-    icon: BookOpen,
-    url: '/food-safety/science-of-spoilage',
-    color: 'bg-teal-100'
-  },
-  {
-    id: 'emergency',
-    title: 'Emergency Food Safety',
-    description: 'Keeping food safe during power outages, floods, fires and natural disasters',
-    icon: AlertTriangle,
-    url: '/food-safety/emergency',
-    color: 'bg-orange-100'
-  }
-];
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, AlertTriangle, Thermometer, Utensils, Users, CalendarDays, Microscope, SirenIcon, Tags, Pill } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const FoodSafetyEducation = () => {
-  const isMobile = useIsMobile();
-  
-  // Reduce motion complexity on mobile
-  const initialAnimation = isMobile ? 
-    { opacity: 0 } : 
-    { opacity: 0, y: 20 };
-  
-  const animation = isMobile ? 
-    { opacity: 1 } : 
-    { opacity: 1, y: 0 };
-  
-  const transitionDuration = isMobile ? 0.3 : 0.4;
-  
-  // Pre-calculate icon dimensions for layout stability
-  const iconSize = isMobile ? 20 : 24;
-  
   return (
-    <div className="mt-8" id="food-safety-education">
-      <motion.h2 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="text-xl font-semibold mb-4"
-      >
-        Food Safety Education
-      </motion.h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {educationPages.map((page, index) => {
-          const Icon = page.icon;
+    <section className="py-12 bg-muted/30" id="food-safety-education">
+      <div className="container px-4 mx-auto">
+        <div className="max-w-3xl mx-auto text-center mb-10">
+          <h2 className="text-3xl font-bold tracking-tight">Food Safety Education</h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Learn essential food safety practices to keep you and your family healthy.
+          </p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <SafetyCard
+            icon={<Thermometer />}
+            title="Temperature Danger Zone"
+            description="Learn about the critical temperature range where bacteria multiply rapidly."
+            href="/food-safety/temperature-danger-zone"
+            color="bg-red-100 text-red-800"
+          />
           
-          // Stagger the animations less aggressively on mobile
-          const delay = isMobile ? Math.min(index * 0.05, 0.3) : index * 0.1;
+          <SafetyCard
+            icon={<AlertTriangle />}
+            title="Prevent Foodborne Illness"
+            description="Understand common causes of food poisoning and how to prevent them."
+            href="/food-safety/foodborne-illness-prevention"
+            color="bg-amber-100 text-amber-800"
+          />
           
-          return (
-            <motion.div
-              key={page.id}
-              initial={initialAnimation}
-              animate={animation}
-              transition={{ duration: transitionDuration, delay }}
-              style={{ display: 'flex', height: '100%' }} // Pre-allocate space
-            >
-              <Link
-                to={page.url}
-                className="flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-all bg-white border border-border h-full"
-                aria-label={`Learn about ${page.title}`}
-              >
-                <div 
-                  className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${page.color}`}
-                  style={{ minWidth: '3rem' }} // Prevent shrinking on mobile
-                >
-                  <Icon size={iconSize} className="text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-medium">{page.title}</h3>
-                  <p className="text-sm text-muted-foreground">{page.description}</p>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
+          <SafetyCard
+            icon={<Utensils />}
+            title="Cross-Contamination"
+            description="Discover how to prevent harmful bacteria from spreading between foods."
+            href="/food-safety/cross-contamination"
+            color="bg-blue-100 text-blue-800"
+          />
+          
+          <SafetyCard
+            icon={<Users />}
+            title="Vulnerable Groups"
+            description="Special considerations for pregnant women, children, elderly, and immunocompromised."
+            href="/food-safety/vulnerable-groups"
+            color="bg-purple-100 text-purple-800"
+          />
+          
+          <SafetyCard
+            icon={<CalendarDays />}
+            title="Holiday & Events"
+            description="Keep food safe during special occasions and gatherings."
+            href="/food-safety/holiday-events"
+            color="bg-green-100 text-green-800"
+          />
+          
+          <SafetyCard
+            icon={<Microscope />}
+            title="Science of Spoilage"
+            description="The biology and chemistry behind food spoilage and preservation."
+            href="/food-safety/science-of-spoilage"
+            color="bg-indigo-100 text-indigo-800"
+          />
+          
+          <SafetyCard
+            icon={<SirenIcon />}
+            title="Emergency Situations"
+            description="How to manage food safety during power outages and natural disasters."
+            href="/food-safety/emergency"
+            color="bg-orange-100 text-orange-800"
+          />
+          
+          <SafetyCard
+            icon={<Tags />}
+            title="Food Labels"
+            description="Understand date labels, nutrition facts, and ingredient listings."
+            href="/food-safety/understanding-food-labels"
+            color="bg-teal-100 text-teal-800"
+          />
+          
+          <SafetyCard
+            icon={<Pill />}
+            title="Food Ingredients Guide"
+            description="Learn about common food additives, preservatives, and their health impacts."
+            href="/ingredients"
+            color="bg-yellow-100 text-yellow-800"
+          />
+        </div>
       </div>
-    </div>
+    </section>
+  );
+};
+
+interface SafetyCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  href: string;
+  color: string;
+}
+
+const SafetyCard = ({ icon, title, description, href, color }: SafetyCardProps) => {
+  return (
+    <Card className="h-full flex flex-col">
+      <CardHeader>
+        <div className={`w-10 h-10 rounded-full ${color} flex items-center justify-center mb-2`}>
+          <span className="sr-only">{title} icon</span>
+          {icon}
+        </div>
+        <CardTitle className="text-xl">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow"></CardContent>
+      <CardFooter>
+        <Button asChild variant="outline" className="w-full justify-between">
+          <Link to={href}>
+            Learn more <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
