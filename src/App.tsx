@@ -10,6 +10,7 @@ import { RecallsProvider } from './contexts/RecallsContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import SkipToContent from './components/SkipToContent'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // Core pages
 import Index from './pages/Index'
@@ -48,49 +49,51 @@ function App() {
   return (
     <RecallsProvider>
       <ImagesProvider>
-        <div className="flex flex-col min-h-screen">
-          <SkipToContent />
-          <Header />
-          <main id="main-content" className="flex-grow">
-            <Suspense fallback={loadingFallback}>
-              <Routes>
-                {/* Core pages */}
-                <Route path="/" element={<Index />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/search" element={<SearchPage />} />
-                
-                {/* Food pages */}
-                <Route path="/food/:foodId" element={<FoodDetail />} />
-                <Route path="/categories/:categoryId?" element={<CategoryPage />} />
-                
-                {/* Recalls pages */}
-                <Route path="/recalls" element={<RecallsPage />} />
-                <Route path="/recalls/:recallId" element={<RecallDetailPage />} />
-                
-                {/* Food Safety pages */}
-                <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
-                <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
-                <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
-                <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
-                <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
-                <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
-                <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
-                <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
-                
-                {/* Food Ingredients pages */}
-                <Route path="/ingredients" element={<IngredientsPage />} />
-                <Route path="/ingredients/bha-butylated-hydroxyanisole" element={<BHAArticle />} />
-                <Route path="/ingredients/red-40-food-coloring" element={<Red40Article />} />
-                <Route path="/ingredients/natural-flavors" element={<NaturalFlavorsArticle />} />
-                <Route path="/ingredients/aspartame" element={<AspartameArticle />} />
-                
-                {/* Catch all 404 */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
+        <ErrorBoundary>
+          <div className="flex flex-col min-h-screen">
+            <SkipToContent />
+            <Header />
+            <main id="main-content" className="flex-grow">
+              <Suspense fallback={loadingFallback}>
+                <Routes>
+                  {/* Core pages */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  
+                  {/* Food pages */}
+                  <Route path="/food/:foodId" element={<FoodDetail />} />
+                  <Route path="/categories/:categoryId?" element={<CategoryPage />} />
+                  
+                  {/* Recalls pages */}
+                  <Route path="/recalls" element={<RecallsPage />} />
+                  <Route path="/recalls/:recallId" element={<RecallDetailPage />} />
+                  
+                  {/* Food Safety pages */}
+                  <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
+                  <Route path="/food-safety/foodborne-illness-prevention" element={<FoodborneIllnessPrevention />} />
+                  <Route path="/food-safety/cross-contamination" element={<PreventCrossContamination />} />
+                  <Route path="/food-safety/vulnerable-groups" element={<VulnerableGroups />} />
+                  <Route path="/food-safety/holiday-events" element={<HolidayEvents />} />
+                  <Route path="/food-safety/science-of-spoilage" element={<ScienceOfSpoilage />} />
+                  <Route path="/food-safety/emergency" element={<EmergencyFoodSafety />} />
+                  <Route path="/food-safety/understanding-food-labels" element={<UnderstandingFoodLabels />} />
+                  
+                  {/* Food Ingredients pages */}
+                  <Route path="/ingredients" element={<IngredientsPage />} />
+                  <Route path="/ingredients/bha-butylated-hydroxyanisole" element={<BHAArticle />} />
+                  <Route path="/ingredients/red-40-food-coloring" element={<Red40Article />} />
+                  <Route path="/ingredients/natural-flavors" element={<NaturalFlavorsArticle />} />
+                  <Route path="/ingredients/aspartame" element={<AspartameArticle />} />
+                  
+                  {/* Catch all 404 */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </main>
+            <Footer />
+          </div>
+        </ErrorBoundary>
       </ImagesProvider>
     </RecallsProvider>
   )
