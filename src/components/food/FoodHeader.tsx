@@ -25,7 +25,7 @@ const FoodHeader: React.FC<FoodHeaderProps> = ({ foodInfo }) => {
           </span>
         </div>
         <p className="text-gray-600 mb-4">
-          {foodInfo.description || 'No description available.'}
+          {foodInfo.description || `Learn about proper storage and shelf life for ${foodInfo.name} to reduce waste and ensure food safety.`}
         </p>
       </div>
     </div>

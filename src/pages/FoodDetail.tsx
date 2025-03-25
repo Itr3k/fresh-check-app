@@ -98,6 +98,30 @@ const FoodDetail: React.FC = () => {
   const daysRemaining = calculateDaysRemaining();
   const selectedOption = getSelectedStorageOption();
 
+  // Generate specific spoilage text for the food item
+  const getSpoilageText = () => {
+    if (foodInfo.spoilage) {
+      return foodInfo.spoilage;
+    }
+    
+    // Generate more specific spoilage info based on food category if none provided
+    const categorySpecificSpoilage = {
+      'Meat & Poultry': 'Look for discoloration, slimy texture, or a sour, ammonia-like smell. If the meat feels sticky or has a grayish color, it has likely spoiled.',
+      'Seafood': 'Fresh fish should not smell fishy. Look for cloudy eyes, discoloration, slimy texture, or a strong ammonia-like odor.',
+      'Dairy': 'Check for mold growth, sour smell, curdling, or unusual texture changes.',
+      'Fruit': 'Look for mold, unusual soft spots, fermented smell, or dramatic color changes.',
+      'Vegetables': 'Watch for wilting, sliminess, mold, or strong off-odors.',
+      'Bakery': 'Check for mold growth, hard texture, or unusual odor. Stale bread is not necessarily spoiled.',
+      'Prepared Foods': 'If it smells off, looks discolored, or has been in the refrigerator longer than 3-4 days, it's best to discard it.',
+      'Pantry': 'Look for rancid odors, mold, or insect activity. Check for broken seals on packages.',
+      'Frozen Foods': 'Severe freezer burn, unusual odors, or changes in texture may indicate quality loss.',
+      'Condiments': 'Watch for separation, discoloration, unusual odors, or mold growth on the surface.'
+    };
+    
+    return categorySpecificSpoilage[foodInfo.category as keyof typeof categorySpecificSpoilage] || 
+      'Look for mold, discoloration, sour smell, or slimy texture. When in doubt, throw it out.';
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Helmet>
@@ -117,7 +141,7 @@ const FoodDetail: React.FC = () => {
         
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <SpoilageInfo spoilageText={foodInfo.spoilage || ''} />
+            <SpoilageInfo spoilageText={getSpoilageText()} />
 
             <StorageOptions 
               selectedStorage={selectedStorage}

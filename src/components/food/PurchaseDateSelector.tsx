@@ -21,6 +21,9 @@ const PurchaseDateSelector: React.FC<PurchaseDateSelectorProps> = ({
         <Calendar size={20} className="mr-2 text-primary" />
         <h2 className="text-xl font-semibold">Typical Shelf Life</h2>
       </div>
+      <p className="text-gray-600 mb-3">
+        Select when you purchased this item to calculate remaining shelf life. The purchase date helps determine how long your food will stay fresh based on the storage method.
+      </p>
       <div className="flex justify-between items-center mb-4">
         <p className="text-gray-600">
           Varies based on storage method
@@ -38,6 +41,7 @@ const PurchaseDateSelector: React.FC<PurchaseDateSelectorProps> = ({
               selected={purchaseDate}
               onSelect={setPurchaseDate}
               initialFocus
+              className="p-3 pointer-events-auto"
             />
           </PopoverContent>
         </Popover>

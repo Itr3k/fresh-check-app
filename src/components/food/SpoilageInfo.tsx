@@ -14,7 +14,7 @@ const SpoilageInfo: React.FC<SpoilageInfoProps> = ({ spoilageText }) => {
         <h2 className="text-xl font-semibold">Signs of Spoilage</h2>
       </div>
       <p className="text-gray-600 mb-6">
-        {spoilageText || 'Look for mold, discoloration, sour smell, or slimy texture.'}
+        {spoilageText}
       </p>
     </div>
   );
