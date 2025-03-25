@@ -7,13 +7,13 @@ export interface FoodItem {
   imageUrl: string;
   category: string;
   tags?: string[]; // Optional tags for better searching
-  description?: string; // Added description property
+  description?: string; // Description property
   storageInfo?: {
     refrigerator?: { days: string; tips: string };
     freezer?: { days: string; tips: string };
     pantry?: { days: string; tips: string };
-  }; // Added storageInfo property
-  spoilage?: string; // Added spoilage property
+  }; // Storage information
+  spoilage?: string; // Spoilage signs
 }
 
 // Combined food data for the application

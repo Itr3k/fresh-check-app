@@ -2,25 +2,18 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { format, addDays } from 'date-fns';
-import { Calendar, Refrigerator, Snowflake, Home, AlertCircle, Clock } from 'lucide-react';
+import { addDays } from 'date-fns';
+import { Calendar, Refrigerator, Snowflake, Home } from 'lucide-react';
 import AdUnit from '@/components/AdUnit';
 import { getFoodById } from '@/data/foodData';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import StatusIndicator from '@/components/StatusIndicator';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
-import { cn } from '@/lib/utils';
-
-interface StorageOption {
-  name: string;
-  icon: React.ReactNode;
-  shelfLife: number;
-  description: string;
-}
+import FoodHeader from '@/components/food/FoodHeader';
+import PurchaseDateSelector from '@/components/food/PurchaseDateSelector';
+import StorageOptions, { StorageOption } from '@/components/food/StorageOptions';
+import StorageRecommendation from '@/components/food/StorageRecommendation';
+import SpoilageInfo from '@/components/food/SpoilageInfo';
 
 const FoodDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -115,122 +108,29 @@ const FoodDetail: React.FC = () => {
         <BreadcrumbNav items={breadcrumbItems} className="mb-4" />
         
         <h1 className="text-3xl font-bold mb-4">{foodInfo.name}</h1>
+        
         <Card className="p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/3">
-              <img 
-                src={foodInfo.imageUrl} 
-                alt={foodInfo.name} 
-                className="rounded-md w-full object-cover"
-                width={300}
-                height={300}
-              />
-            </div>
-            <div className="md:w-2/3">
-              <div className="mb-4">
-                <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                  {foodInfo.category}
-                </span>
-              </div>
-              <p className="text-gray-600 mb-4">
-                {foodInfo.description || 'No description available.'}
-              </p>
-              
-              <div className="border-t pt-4 mt-4">
-                <div className="flex items-center mb-2">
-                  <Calendar size={20} className="mr-2 text-primary" />
-                  <h2 className="text-xl font-semibold">Typical Shelf Life</h2>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                  <p className="text-gray-600">
-                    {foodInfo.storageInfo?.refrigerator?.days || "5-7"} days when refrigerated properly.
-                  </p>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {purchaseDate ? format(purchaseDate, 'PPP') : "Set purchase date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="end">
-                      <CalendarComponent
-                        mode="single"
-                        selected={purchaseDate}
-                        onSelect={setPurchaseDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-            </div>
-          </div>
+          <FoodHeader foodInfo={foodInfo} />
+          <PurchaseDateSelector purchaseDate={purchaseDate} setPurchaseDate={setPurchaseDate} />
         </Card>
         
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-center mb-4">
-              <AlertCircle size={20} className="mr-2 text-primary" />
-              <h2 className="text-xl font-semibold">Signs of Spoilage</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              {foodInfo.spoilage || 'Look for mold, discoloration, sour smell, or slimy texture.'}
-            </p>
+            <SpoilageInfo spoilageText={foodInfo.spoilage || ''} />
 
-            <div className="flex items-center mb-4">
-              <h2 className="text-xl font-semibold">Storage Options</h2>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Select storage method to see detailed recommendations
-            </p>
+            <StorageOptions 
+              selectedStorage={selectedStorage}
+              setSelectedStorage={setSelectedStorage}
+              isOpened={isOpened}
+              setIsOpened={setIsOpened}
+              storageOptions={storageOptions}
+            />
             
-            <div className="flex flex-wrap gap-3 mb-4">
-              {storageOptions.map((option) => (
-                <Button
-                  key={option.name}
-                  variant={selectedStorage === option.name ? "default" : "outline"}
-                  className="gap-2"
-                  onClick={() => setSelectedStorage(option.name)}
-                >
-                  {option.icon}
-                  {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
-                </Button>
-              ))}
-            </div>
-            
-            <div className="flex items-center gap-2 mb-6">
-              <Label htmlFor="opened-toggle" className="cursor-pointer">Opened/Cut</Label>
-              <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                <input
-                  type="checkbox"
-                  id="opened-toggle"
-                  checked={isOpened}
-                  onChange={() => setIsOpened(!isOpened)}
-                  className="sr-only"
-                />
-                <div className={`block h-6 rounded-full w-10 ${isOpened ? 'bg-primary' : 'bg-gray-300'}`}>
-                  <div className={`absolute left-0.5 top-0.5 bg-white rounded-full h-5 w-5 transition-transform ${isOpened ? 'transform translate-x-4' : ''}`} />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t pt-4">
-              <div>
-                <h3 className="text-lg font-medium">Shelf Life</h3>
-                <p className="text-gray-600">
-                  {isOpened && selectedStorage !== "freezer" 
-                    ? `${Math.floor(selectedOption.shelfLife / 2)} days when opened`
-                    : `${selectedOption.shelfLife} days`}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">{selectedOption.description}</p>
-              </div>
-              <StatusIndicator 
-                size="large"
-                daysRemaining={daysRemaining}
-                maxDays={selectedOption.shelfLife}
-                daysText={daysRemaining === 1 ? "1 day" : `${daysRemaining} days`}
-              />
-            </div>
+            <StorageRecommendation 
+              selectedOption={selectedOption}
+              isOpened={isOpened}
+              daysRemaining={daysRemaining}
+            />
           </CardContent>
         </Card>
 
