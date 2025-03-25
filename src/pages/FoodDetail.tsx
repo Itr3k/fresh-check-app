@@ -3,15 +3,18 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import AdUnit from '@/components/AdUnit';
+import { getFoodById } from '@/data/foodData';
+import { Card } from '@/components/ui/card';
 
 const FoodDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   
-  // Create a formatted name from the ID
-  const foodInfo = {
+  // Get food information from the database or use a formatted name from the ID
+  const foodItem = getFoodById(id || '');
+  const foodInfo = foodItem || {
     name: id ? id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Food Item',
     category: 'General',
-    image: '/placeholder.svg',
+    imageUrl: '/placeholder.svg',
     description: 'Information about food storage and shelf life.'
   };
 
@@ -24,11 +27,11 @@ const FoodDetail: React.FC = () => {
 
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">{foodInfo.name}</h1>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <Card className="p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="md:w-1/3">
               <img 
-                src={foodInfo.image} 
+                src={foodInfo.imageUrl} 
                 alt={foodInfo.name} 
                 className="rounded-md w-full object-cover"
                 width={300}
@@ -41,19 +44,19 @@ const FoodDetail: React.FC = () => {
                   {foodInfo.category}
                 </span>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <p className="text-gray-600 mb-4">
                 {foodInfo.description}
               </p>
               
               <div className="border-t pt-4 mt-4">
                 <h2 className="text-xl font-semibold mb-2">Storage Tips</h2>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600">
                   This content is still being developed. Please check back later for detailed information.
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
         
         {/* Ad placement with required publisher content */}
         <div className="my-8">
