@@ -9,19 +9,20 @@ import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import ScrollToTop from './components/ScrollToTop.tsx'
 
-// Get the root element once to avoid repeated DOM queries
+// Get the root element
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
+  console.error("Root element not found");
   throw new Error("Root element not found");
 }
 
 const root = createRoot(rootElement);
 
-// Render the app
+// Render the app with simplified error handling
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <ScrollToTop />
       <HelmetProvider>
         <App />
