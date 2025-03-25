@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -55,17 +54,14 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
   heroImageAlt,
   children
 }) => {
-  // Format metadata
   const finalMetaTitle = metaTitle || `${title} | Food Ingredients Guide | FreshCheck`;
   
-  // Create breadcrumb items
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Food Ingredients', href: '/ingredients' },
     { label: title, current: true }
   ];
   
-  // Create schema.org structured data
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -153,22 +149,20 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
         </header>
 
         <div id="ingredient-article-content" className="article-content">
-          {/* Introduction */}
           <div className="prose prose-slate max-w-none">
             {introduction}
           </div>
           
-          {/* First Ad Unit after introduction */}
           <AdUnit
             slotId="ingredient-intro-ad"
-            format="rectangle"
+            format="leaderboard"
+            mobileFormat="rectangle"
             lazyLoad={true}
             responsive={true}
             contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
             contentAfter={null}
           />
           
-          {/* Article Sections */}
           {sections.map((section, index) => (
             <React.Fragment key={section.id}>
               <section className="mt-8" id={section.id}>
@@ -178,11 +172,11 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
                 </div>
               </section>
               
-              {/* Insert middle ad after second section */}
               {index === 1 && (
                 <AdUnit
                   slotId="ingredient-middle-ad"
-                  format="rectangle"
+                  format="leaderboard"
+                  mobileFormat="rectangle"
                   lazyLoad={true}
                   responsive={true}
                   contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
@@ -192,10 +186,10 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
             </React.Fragment>
           ))}
           
-          {/* Conclusion with ad before it */}
           <AdUnit
             slotId="ingredient-conclusion-ad"
-            format="rectangle"
+            format="leaderboard"
+            mobileFormat="rectangle"
             lazyLoad={true}
             responsive={true}
             contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
@@ -209,7 +203,6 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
             </div>
           </section>
           
-          {/* Sources */}
           <section className="mt-8 pt-4 border-t">
             <h3 className="text-xl font-bold tracking-tight mb-4">Sources</h3>
             <div className="prose prose-slate max-w-none">
@@ -231,11 +224,9 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
             </div>
           </section>
           
-          {/* Additional content */}
           {children}
         </div>
 
-        {/* Related Ingredients */}
         {relatedIngredients && relatedIngredients.length > 0 && (
           <aside className="mt-12 pt-6 border-t">
             <h2 className="text-lg font-medium mb-4">Related Ingredients</h2>

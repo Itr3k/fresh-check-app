@@ -45,7 +45,7 @@ const IngredientsPage: React.FC = () => {
           <AdUnit
             slotId="ingredients-top-ad"
             format="leaderboard"
-            mobileFormat="large_mobile"
+            mobileFormat="rectangle"
             lazyLoad={true}
             responsive={true}
           />
@@ -74,7 +74,8 @@ const IngredientsPage: React.FC = () => {
 
           <AdUnit
             slotId="ingredients-middle-ad"
-            format="rectangle"
+            format="leaderboard"
+            mobileFormat="rectangle"
             lazyLoad={true}
             responsive={true}
           />
@@ -126,7 +127,7 @@ const IngredientsPage: React.FC = () => {
           <AdUnit
             slotId="ingredients-bottom-ad"
             format="leaderboard"
-            mobileFormat="large_mobile"
+            mobileFormat="rectangle"
             lazyLoad={true}
             responsive={true}
           />
