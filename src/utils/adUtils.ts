@@ -8,7 +8,28 @@ export const isAdSenseLoaded = (): boolean => {
          window.adsenseLoaded === true;
 };
 
-// Initialize an ad slot
+// Check if we're in an environment where ads should be shown
+export const shouldShowAds = (): boolean => {
+  // Don't show ads in development or if user opted out
+  if (process.env.NODE_ENV === 'development') {
+    return false;
+  }
+  
+  // Check for ad blockers or user's DNT preference
+  const dntEnabled = 
+    navigator.doNotTrack === "1" || 
+    navigator.doNotTrack === "yes" ||
+    window.doNotTrack === "1";
+    
+  if (dntEnabled) {
+    console.log('AdUnit: User has Do Not Track enabled, respecting preference');
+    return false;
+  }
+  
+  return true;
+};
+
+// Initialize an ad slot with proper error handling and compliance
 export const initializeAdSlot = (
   adRef: React.RefObject<HTMLDivElement>,
   slotId: string,
@@ -48,6 +69,9 @@ export const initializeAdSlot = (
         const uniqueId = `ad-${slotId}-${Math.random().toString(36).substring(2, 11)}`;
         adElement.setAttribute('data-ad-region', uniqueId);
         
+        // Add clear labeling for ad (AdSense compliance)
+        adElement.setAttribute('aria-label', 'Advertisement');
+        
         // Add data-ad-test attribute in development or staging environments
         if (window.location.hostname !== 'freshcheck.app') {
           adElement.setAttribute('data-adtest', 'on');
@@ -82,6 +106,40 @@ export const initializeAdSlot = (
   }
 };
 
+// Detect ad blockers (for analytics, not to block content)
+export const detectAdBlocker = (callback: (blocked: boolean) => void): void => {
+  if (typeof window === 'undefined') return;
+  
+  const testAd = document.createElement('div');
+  testAd.innerHTML = '&nbsp;';
+  testAd.className = 'adsbox';
+  testAd.style.position = 'absolute';
+  testAd.style.top = '-999px';
+  testAd.style.left = '-999px';
+  testAd.style.height = '1px';
+  testAd.style.width = '1px';
+  
+  document.body.appendChild(testAd);
+  
+  window.setTimeout(() => {
+    let blocked = true;
+    
+    if (testAd.offsetHeight === 0) {
+      console.log('AdBlocker detected');
+      blocked = true;
+    } else {
+      console.log('No AdBlocker detected');
+      blocked = false;
+    }
+    
+    if (testAd.parentNode) {
+      testAd.parentNode.removeChild(testAd);
+    }
+    
+    callback(blocked);
+  }, 100);
+};
+
 // Add window augmentation for TypeScript
 declare global {
   interface Window {
@@ -91,5 +149,6 @@ declare global {
     adsenseLoaded: boolean;
     adsenseRetries: number;
     MAX_ADSENSE_RETRIES: number;
+    doNotTrack?: string;
   }
 }

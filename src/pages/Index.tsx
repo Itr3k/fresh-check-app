@@ -1,3 +1,4 @@
+
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -201,6 +202,7 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left sidebar ad */}
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
@@ -221,6 +223,7 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Main content area */}
             <div className="flex-1">
               <PopularFoods />
               
@@ -242,6 +245,7 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
+              {/* Mid-content ad unit with proper spacing */}
               <div className="my-8 print:hidden flex justify-center">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
@@ -269,6 +273,7 @@ const Index = () => {
                 <SavedFoods />
               </Suspense>
 
+              {/* Search prompt */}
               <div 
                 className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
                 onClick={scrollToSearch}
@@ -289,6 +294,7 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Right sidebar ad */}
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
@@ -310,6 +316,7 @@ const Index = () => {
             </div>
           </div>
 
+          {/* Bottom leaderboard ad with proper spacing */}
           <div className="mt-10 mb-4 print:hidden flex justify-center">
             <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit 
