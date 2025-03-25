@@ -1,5 +1,5 @@
 
-import { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, useContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
 import { FOOD_IMAGES } from '../components/FoodCard';
 
 type ImagesContextType = {
@@ -10,18 +10,45 @@ type ImagesContextType = {
 
 const ImagesContext = createContext<ImagesContextType | undefined>(undefined);
 
-export function ImagesProvider({ children }: { children: ReactNode }) {
-  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+// Use a cache outside component to persist between re-renders
+const IMAGE_CACHE: Record<string, boolean> = {};
 
-  // Preload the most common food images on mount
+export function ImagesProvider({ children }: { children: ReactNode }) {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>(IMAGE_CACHE);
+
+  // Preload the most common food images on mount - with idle callback
   useEffect(() => {
-    const commonFoods = ['milk', 'eggs', 'bread', 'chicken', 'apples', 'bananas', 'tomatoes', 'cheese'];
-    commonFoods.forEach(foodId => {
-      preloadImage(foodId);
-    });
+    const commonFoods = ['milk', 'eggs', 'bread', 'chicken', 'apples', 'bananas'];
+    
+    // Use requestIdleCallback for better performance
+    const preloadQueue = () => {
+      if (commonFoods.length === 0) return;
+      
+      const foodId = commonFoods.shift();
+      if (foodId) {
+        preloadImage(foodId);
+      }
+      
+      // Schedule next preload in queue
+      if (commonFoods.length > 0) {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(preloadQueue, { timeout: 1000 });
+        } else {
+          setTimeout(preloadQueue, 150);
+        }
+      }
+    };
+    
+    // Start preloading when browser is idle
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(preloadQueue, { timeout: 1000 });
+    } else {
+      setTimeout(preloadQueue, 150);
+    }
   }, []);
 
-  const getImageUrl = (foodId: string): string => {
+  // Memoize getImageUrl to prevent unnecessary re-renders
+  const getImageUrl = useCallback((foodId: string): string => {
     // First check if we have a direct match in our central mapping
     if (FOOD_IMAGES[foodId]) {
       return FOOD_IMAGES[foodId];
@@ -29,14 +56,20 @@ export function ImagesProvider({ children }: { children: ReactNode }) {
 
     // If no direct match, return the default image
     return FOOD_IMAGES.default;
-  };
+  }, []);
 
-  const preloadImage = (foodId: string) => {
+  // Memoize preloadImage to prevent unnecessary re-renders
+  const preloadImage = useCallback((foodId: string) => {
     const imageUrl = getImageUrl(foodId);
     
-    if (imageUrl && !loadedImages[foodId]) {
+    // Skip if already loaded or loading
+    if (imageUrl && !loadedImages[foodId] && !IMAGE_CACHE[foodId]) {
+      // Mark as loading to prevent duplicate loads
+      IMAGE_CACHE[foodId] = true;
+      
       const img = new Image();
       img.onload = () => {
+        IMAGE_CACHE[foodId] = true;
         setLoadedImages(prev => ({
           ...prev,
           [foodId]: true
@@ -44,14 +77,21 @@ export function ImagesProvider({ children }: { children: ReactNode }) {
       };
       img.src = imageUrl;
     }
-  };
+  }, [getImageUrl, loadedImages]);
 
-  const isImageLoaded = (foodId: string): boolean => {
+  const isImageLoaded = useCallback((foodId: string): boolean => {
     return !!loadedImages[foodId];
-  };
+  }, [loadedImages]);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    getImageUrl,
+    preloadImage,
+    isImageLoaded
+  }), [getImageUrl, preloadImage, isImageLoaded]);
 
   return (
-    <ImagesContext.Provider value={{ getImageUrl, preloadImage, isImageLoaded }}>
+    <ImagesContext.Provider value={contextValue}>
       {children}
     </ImagesContext.Provider>
   );

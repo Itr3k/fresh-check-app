@@ -1,18 +1,15 @@
 
 // Service Worker for Fresh Check app
-const CACHE_NAME = 'freshcheck-cache-v2';
-const RUNTIME_CACHE = 'freshcheck-runtime-v2';
+const CACHE_NAME = 'freshcheck-cache-v3';
+const RUNTIME_CACHE = 'freshcheck-runtime-v3';
 
-// Resources to cache immediately on install
+// Resources to cache immediately on install - critical path resources
 const PRECACHE_RESOURCES = [
   '/',
   '/index.html',
   '/src/index.css',
   '/favicon.ico',
-  '/apple-touch-icon.png',
-  '/manifest.json',
-  '/src/App.tsx',
-  '/src/main.tsx'
+  '/manifest.json'
 ];
 
 // Important URLs that should always come from the network if possible
@@ -66,7 +63,7 @@ const getCacheStrategy = (url) => {
   const urlObj = new URL(url);
   const pathname = urlObj.pathname;
   
-  // Always network first for API responses and dynamic routes
+  // Always network only for API responses
   if (pathname.startsWith('/api/')) {
     return 'network-only';
   }
@@ -83,6 +80,18 @@ const getCacheStrategy = (url) => {
   
   // Default strategy is stale-while-revalidate for HTML and other resources
   return 'stale-while-revalidate';
+};
+
+// Performance optimization: limit cache size
+const limitCacheSize = async (cacheName, maxItems) => {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  if (keys.length > maxItems) {
+    // Delete oldest items when cache gets too large
+    await cache.delete(keys[0]);
+    // Recursively trim until we're at max size
+    await limitCacheSize(cacheName, maxItems);
+  }
 };
 
 // Fetch event handler with optimized caching strategies
@@ -119,6 +128,8 @@ self.addEventListener('fetch', event => {
             const responseToCache = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => {
               cache.put(event.request, responseToCache);
+              // Limit cache size
+              limitCacheSize(RUNTIME_CACHE, 100);
             });
             return response;
           })
@@ -152,6 +163,8 @@ self.addEventListener('fetch', event => {
             const responseToCache = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => {
               cache.put(event.request, responseToCache);
+              // Limit cache size
+              limitCacheSize(RUNTIME_CACHE, 100);
             });
             return response;
           });
@@ -169,13 +182,13 @@ self.addEventListener('fetch', event => {
               // Update the cache with newest version
               caches.open(RUNTIME_CACHE).then(cache => {
                 cache.put(event.request, networkResponse.clone());
+                // Limit cache size
+                limitCacheSize(RUNTIME_CACHE, 50);
               });
               return networkResponse;
             })
             .catch(error => {
               console.error('Fetch failed in stale-while-revalidate:', error);
-              // If the fetch fails but we have a cached response, that's handled already
-              // This catch is mainly for logging
             });
           
           // Return the cached response immediately or wait for network

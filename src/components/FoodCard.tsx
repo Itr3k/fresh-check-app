@@ -47,9 +47,29 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
   const [imageLoaded, setImageLoaded] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Preload this image and any related foods
+  // Preload this image and any related foods - only when component is visible
   useEffect(() => {
-    preloadImage(id);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          preloadImage(id);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+    
+    const currentElement = document.getElementById(`food-card-${id}`);
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+    
+    return () => {
+      observer.disconnect();
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
   }, [id, preloadImage]);
   
   const handleImageError = () => {
@@ -98,12 +118,13 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
 
   return (
     <motion.div
+      id={`food-card-${id}`}
       initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.2) }}
       className="food-card-container"
     >
-      {/* Structured data for this food product */}
+      {/* Structured data for this food product - limit to first 10 for performance */}
       {index < 10 && (
         <script type="application/ld+json">
           {JSON.stringify(foodItemSchema)}
@@ -123,7 +144,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
               alt={`${name} - food storage information`}
               width="500"
               height="300"
-              className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               loading={index > 2 ? "lazy" : "eager"} 
               onError={handleImageError}
               onLoad={handleImageLoad}
