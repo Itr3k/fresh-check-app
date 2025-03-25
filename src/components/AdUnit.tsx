@@ -49,6 +49,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   useEffect(() => {
     const handleAdsenseLoaded = () => {
       if (adRef.current && initializedRef.current && !adLoaded) {
+        console.log(`AdUnit: AdSense loaded event for ${slotId}`);
         try {
           initializeAdSlot(
             adRef,
@@ -86,6 +87,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
       observerRef.current = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
+            console.log(`AdUnit: ${slotId} is now visible`);
             setIsVisible(true);
             observerRef.current?.disconnect();
             observerRef.current = null;
@@ -117,13 +119,16 @@ const AdUnit: React.FC<AdUnitProps> = ({
     if (!isVisible || initializedRef.current) return;
     
     initializedRef.current = true;
+    console.log(`AdUnit: Initializing ${slotId} (development: ${isDevelopment})`);
     
     if (isDevelopment) {
+      console.log(`AdUnit: In development mode, showing placeholder for ${slotId}`);
       setAdLoaded(true);
       return;
     }
     
     if (isAdSenseLoaded()) {
+      console.log(`AdUnit: AdSense already loaded, initializing ${slotId}`);
       try {
         initializeAdSlot(
           adRef,
@@ -137,9 +142,11 @@ const AdUnit: React.FC<AdUnitProps> = ({
         setIsError(true);
       }
     } else {
+      console.log(`AdUnit: AdSense not loaded, setting timeout for ${slotId}`);
       // Set a timeout to initialize the ad slot if AdSense is not yet loaded
       timeoutRef.current = setTimeout(() => {
         try {
+          console.log(`AdUnit: Trying to initialize ${slotId} after timeout`);
           initializeAdSlot(
             adRef,
             slotId,
@@ -165,6 +172,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      console.log(`AdUnit: Cleaning up ${slotId}`);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
@@ -175,7 +183,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
         observerRef.current = null;
       }
     };
-  }, []);
+  }, [slotId]);
 
   const defaultContentBefore = !contentBefore ? (
     <div className="mb-2 p-2 bg-secondary/10 rounded text-sm">

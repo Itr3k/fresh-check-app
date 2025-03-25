@@ -3,7 +3,9 @@ import { reportPerformance } from "@/lib/utils";
 
 // Check if AdSense is loaded
 export const isAdSenseLoaded = (): boolean => {
-  return typeof window.adsbygoogle !== 'undefined' && window.adsenseLoaded === true;
+  return typeof window !== 'undefined' && 
+         typeof window.adsbygoogle !== 'undefined' && 
+         window.adsenseLoaded === true;
 };
 
 // Initialize an ad slot
@@ -15,6 +17,7 @@ export const initializeAdSlot = (
   onError: () => void
 ): void => {
   if (!adRef.current || !document.body.contains(adRef.current)) {
+    console.log(`AdUnit: Skipping initialization for ${slotId}, container not ready`);
     return; // Skip if component unmounted
   }
   
@@ -24,6 +27,8 @@ export const initializeAdSlot = (
     
     // Only proceed if AdSense is loaded
     if (isAdSenseLoaded()) {
+      console.log(`AdUnit: Initializing ad slot ${slotId}`);
+      
       // Clear existing content
       if (adRef.current) {
         adRef.current.innerHTML = '';
@@ -58,14 +63,18 @@ export const initializeAdSlot = (
           
           // Track successful ad push
           reportPerformance(`ad-pushed-${slotId}`, performance.now());
+          console.log(`AdUnit: Successfully pushed ad ${slotId} to queue`);
         } catch (error) {
           console.warn('AdUnit: Error initializing ad slot', error);
           onError();
         }
       }
-    } else if (window.loadAdSense && typeof window.loadAdSense === 'function') {
-      // Try to load AdSense if not already loaded
-      window.loadAdSense();
+    } else {
+      console.log(`AdUnit: AdSense not loaded for ${slotId}, trying to load it`);
+      if (window.loadAdSense && typeof window.loadAdSense === 'function') {
+        // Try to load AdSense if not already loaded
+        window.loadAdSense();
+      }
     }
   } catch (error) {
     console.warn('AdUnit: Error creating ad element', error);

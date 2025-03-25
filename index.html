@@ -152,11 +152,17 @@
       window.MAX_ADSENSE_RETRIES = 3;
       
       const loadAdSense = () => {
-        if (window.adsenseLoaded || window.adsenseLoading) return;
+        if (window.adsenseLoaded || window.adsenseLoading) {
+          console.log('AdSense: Already loaded or loading');
+          return;
+        }
+        
         window.adsenseLoading = true;
+        console.log('AdSense: Starting load process');
         
         // Check if adsbygoogle already loaded
         if (typeof window.adsbygoogle !== 'undefined') {
+          console.log('AdSense: adsbygoogle already exists');
           window.adsenseLoaded = true;
           window.adsenseLoading = false;
           window.dispatchEvent(new CustomEvent('adsenseLoaded'));
@@ -178,6 +184,7 @@
         // Use test mode in non-production
         if (window.location.hostname !== 'freshcheck.app') {
           script.setAttribute('data-adtest', 'on');
+          console.log('AdSense: Using test mode');
         }
         
         script.onload = () => {
@@ -211,8 +218,9 @@
       // Expose loadAdSense globally
       window.loadAdSense = loadAdSense;
 
-      // Load AdSense after page content has been loaded
+      // Load AdSense after page content has loaded
       window.addEventListener('DOMContentLoaded', () => {
+        console.log('DOMContentLoaded: Scheduling AdSense load');
         // Delay loading to prioritize content
         setTimeout(loadAdSense, 1000);
       });
