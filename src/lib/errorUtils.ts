@@ -8,7 +8,7 @@ export const handleError = (error: unknown, context: string = 'unknown'): void =
   console.error(`[Error in ${context}]:`, error);
   
   // Report to analytics if available
-  if (typeof window.gtag === 'function') {
+  if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
     window.gtag('event', 'error', {
       error_message: error instanceof Error ? error.message : String(error),
       error_context: context,
