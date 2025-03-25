@@ -139,7 +139,7 @@ const FoodDetail: React.FC = () => {
         <div className="mb-6 text-center">
           <AdUnit 
             slotId="food-detail-top"
-            format="rectangle"
+            format="leaderboard"
             mobileFormat="rectangle"
             contentBefore={
               <p className="text-sm text-muted-foreground mb-2 text-center">
@@ -289,7 +289,7 @@ const FoodDetail: React.FC = () => {
         <div className="my-8 text-center">
           <AdUnit 
             slotId="food-detail-bottom"
-            format="rectangle"
+            format="leaderboard"
             mobileFormat="rectangle"
             contentBefore={
               <p className="text-sm text-muted-foreground mb-2 text-center">
