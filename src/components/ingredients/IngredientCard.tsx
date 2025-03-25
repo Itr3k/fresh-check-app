@@ -33,30 +33,31 @@ const IngredientCard: React.FC<IngredientCardProps> = ({
     avoid: "bg-red-100 text-red-800 hover:bg-red-200",
   };
 
+  // Default fallback image if none provided
+  const defaultImage = "https://images.unsplash.com/photo-1576473353338-d36dbc6b6d75?q=80&w=2664&auto=format&fit=crop";
+
   return (
     <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-md">
-      {imageUrl && (
-        <div className="relative w-full h-48 overflow-hidden">
-          <img
-            src={imageUrl}
-            alt={imageAlt || title}
-            className="object-cover w-full h-full transition-transform hover:scale-105"
-            loading="lazy"
-            width={400}
-            height={200}
-          />
-          {safetyLevel && (
-            <div className="absolute top-2 right-2">
-              <Badge className={safetyColors[safetyLevel]}>
-                {safetyLevel === 'safe' ? 'Generally Safe' : 
-                 safetyLevel === 'caution' ? 'Use with Caution' : 'Best to Avoid'}
-              </Badge>
-            </div>
-          )}
-        </div>
-      )}
+      <div className="relative w-full h-48 overflow-hidden">
+        <img
+          src={imageUrl || defaultImage}
+          alt={imageAlt || title}
+          className="object-cover w-full h-full transition-transform hover:scale-105"
+          loading="lazy"
+          width={400}
+          height={200}
+        />
+        {safetyLevel && (
+          <div className="absolute top-2 right-2">
+            <Badge className={safetyColors[safetyLevel]}>
+              {safetyLevel === 'safe' ? 'Generally Safe' : 
+               safetyLevel === 'caution' ? 'Use with Caution' : 'Best to Avoid'}
+            </Badge>
+          </div>
+        )}
+      </div>
       
-      <CardHeader className={imageUrl ? 'pt-4' : 'pt-6'}>
+      <CardHeader className="pt-4">
         {category && (
           <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
             {category}
