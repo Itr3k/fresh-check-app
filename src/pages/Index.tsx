@@ -202,6 +202,37 @@ const Index = () => {
             <HeroSection onSearch={handleSearch} />
           </div>
 
+          <div className="my-8 print:hidden w-full flex justify-center">
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
+              <AdUnit 
+                slotId="home-top-leaderboard" 
+                format="leaderboard" 
+                className="hidden md:block" 
+                lazyLoad={true} 
+                responsive={true}
+                contentBefore={
+                  <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
+                    <h3 className="text-sm font-medium">Food Shelf Life Guide</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Find accurate storage times for all your foods.</p>
+                  </div>
+                }
+              />
+              <AdUnit 
+                slotId="home-top-mobile-banner" 
+                format="mobile_banner" 
+                className="md:hidden" 
+                lazyLoad={true} 
+                responsive={true}
+                contentBefore={
+                  <div className="mb-3 p-3 bg-secondary/20 rounded-lg w-full text-center">
+                    <h3 className="text-sm font-medium">Food Shelf Life Guide</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Find accurate storage times for your foods.</p>
+                  </div>
+                }
+              />
+            </Suspense>
+          </div>
+
           <div className="flex flex-col lg:flex-row gap-6 mt-8">
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
@@ -212,9 +243,9 @@ const Index = () => {
                     className="hidden lg:block" 
                     responsive={false}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg text-center">
                         <h3 className="text-sm font-medium">Storage Guide</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Find storage times for different food items in your kitchen.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Find storage times for different food items.</p>
                       </div>
                     }
                   />
@@ -226,37 +257,6 @@ const Index = () => {
               <PopularFoods />
               
               <FoodLabelsPreview />
-
-              <div className="my-8 print:hidden w-full flex justify-center">
-                <Suspense fallback={<SkeletonLoader height="90px" />}>
-                  <AdUnit 
-                    slotId="home-leaderboard" 
-                    format="leaderboard" 
-                    className="hidden md:block" 
-                    lazyLoad={true} 
-                    responsive={true}
-                    contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                        <h3 className="text-sm font-medium">Food Safety Tips</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Learn about proper food storage techniques to extend shelf life.</p>
-                      </div>
-                    }
-                  />
-                  <AdUnit 
-                    slotId="home-mobile-banner" 
-                    format="mobile_banner" 
-                    className="md:hidden" 
-                    lazyLoad={true} 
-                    responsive={true}
-                    contentBefore={
-                      <div className="mb-3 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                        <h3 className="text-sm font-medium">Food Safety Tips</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Learn proper storage techniques.</p>
-                      </div>
-                    }
-                  />
-                </Suspense>
-              </div>
 
               <div id="browse-categories">
                 <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
@@ -329,9 +329,9 @@ const Index = () => {
                     className="hidden lg:block" 
                     responsive={false}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg text-center">
                         <h3 className="text-sm font-medium">Food Safety Resources</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Important information about food storage and handling.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Important information about food storage.</p>
                       </div>
                     }
                   />

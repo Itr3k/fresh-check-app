@@ -149,13 +149,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   const defaultContentBefore = !contentBefore ? (
     <div className="mb-2 p-2 bg-secondary/10 rounded text-sm">
-      <h4 className="text-xs font-medium">Food Storage Information</h4>
-      <p className="text-xs text-muted-foreground">Learn about safe storage times for your food.</p>
+      <h4 className="text-xs font-medium text-center">Food Storage Information</h4>
+      <p className="text-xs text-muted-foreground text-center">Learn about safe storage times for your food.</p>
     </div>
   ) : contentBefore;
 
   const defaultContentAfter = !contentAfter ? (
-    <div className="mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground">
+    <div className="mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground text-center">
       <p>Always check food for signs of spoilage before consuming.</p>
     </div>
   ) : contentAfter;
