@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { reportPerformance } from '@/lib/utils';
 
 /**
  * ScrollToTop component that scrolls the window to the top on route changes
@@ -10,14 +11,22 @@ const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    // Performance mark for page navigation
+    performance.mark(`page-navigation-${pathname}`);
+    
     // Don't scroll to top if there's a hash in the URL (anchor link)
     if (hash) return;
 
-    // Scroll to top when the pathname changes
-    window.scrollTo({
-      top: 0,
-      behavior: 'instant' // Use 'instant' instead of 'smooth' to avoid visual lag
-    });
+    // Use setTimeout to defer scrolling to next tick for better performance
+    const scrollTimer = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant' // Use 'instant' instead of 'smooth' to avoid visual lag
+      });
+      
+      // Report navigation performance
+      reportPerformance('page-navigation', performance.now());
+    }, 0);
     
     // Also report to analytics that a page navigation occurred
     if (typeof window.gtag === 'function') {
@@ -28,6 +37,8 @@ const ScrollToTop = () => {
         non_interaction: false
       });
     }
+    
+    return () => clearTimeout(scrollTimer);
   }, [pathname, hash]);
 
   return null; // This component doesn't render anything
