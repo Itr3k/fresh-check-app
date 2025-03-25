@@ -2,6 +2,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import AdUnit from '@/components/AdUnit';
 
 const FoodDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,6 +53,26 @@ const FoodDetail: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Ad placement with required publisher content */}
+        <div className="my-8">
+          <h3 className="text-xl font-medium mb-4">Recommended Storage Guidelines</h3>
+          <AdUnit 
+            slotId="food-detail-leaderboard"
+            format="leaderboard"
+            mobileFormat="rectangle"
+            contentBefore={
+              <p className="text-sm text-muted-foreground mb-2">
+                Proper storage is essential for food safety and reducing waste.
+              </p>
+            }
+            contentAfter={
+              <p className="text-xs text-muted-foreground mt-2">
+                These guidelines are general recommendations. Always use your best judgment.
+              </p>
+            }
+          />
         </div>
       </div>
     </div>
