@@ -12,6 +12,8 @@ export const handleError = (error: unknown, context: string = 'unknown'): void =
     window.gtag('event', 'error', {
       error_message: error instanceof Error ? error.message : String(error),
       error_context: context,
+      event_category: 'Error',
+      event_label: context,
       non_interaction: true
     });
   }
