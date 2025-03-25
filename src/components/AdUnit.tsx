@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -45,16 +45,22 @@ const AdUnit: React.FC<AdUnitProps> = ({
   
   const isDevelopment = isDevelopmentEnv();
   
+  // Handle ads that are already loaded when the component mounts
   useEffect(() => {
     const handleAdsenseLoaded = () => {
       if (adRef.current && initializedRef.current && !adLoaded) {
-        initializeAdSlot(
-          adRef,
-          slotId,
-          responsive,
-          () => setAdLoaded(true),
-          () => setIsError(true)
-        );
+        try {
+          initializeAdSlot(
+            adRef,
+            slotId,
+            responsive,
+            () => setAdLoaded(true),
+            () => setIsError(true)
+          );
+        } catch (e) {
+          console.error("Error initializing ad slot:", e);
+          setIsError(true);
+        }
       }
     };
 
@@ -64,8 +70,12 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [adLoaded, slotId, responsive]);
   
+  // Set up intersection observer for lazy loading
   useEffect(() => {
-    if (!lazyLoad || isVisible || !waitForViewport) return;
+    if (!lazyLoad || isVisible || !waitForViewport) {
+      setIsVisible(true);
+      return;
+    }
     
     try {
       if (observerRef.current) {
@@ -90,8 +100,8 @@ const AdUnit: React.FC<AdUnitProps> = ({
         observerRef.current.observe(adRef.current);
       }
     } catch (e) {
+      console.error("IntersectionObserver error:", e);
       setIsVisible(true);
-      console.warn("AdUnit: IntersectionObserver not available");
     }
     
     return () => {
@@ -102,6 +112,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [lazyLoad, isVisible, waitForViewport, slotId]);
   
+  // Initialize ad when visible
   useEffect(() => {
     if (!isVisible || initializedRef.current) return;
     
@@ -112,19 +123,36 @@ const AdUnit: React.FC<AdUnitProps> = ({
       return;
     }
     
-    setAdLoaded(true);
-    
-    const loadWaitTime = document.readyState === 'complete' ? 100 : 1000;
-    
-    timeoutRef.current = setTimeout(() => {
-      initializeAdSlot(
-        adRef,
-        slotId,
-        responsive,
-        () => setAdLoaded(true),
-        () => setIsError(true)
-      );
-    }, loadWaitTime);
+    if (isAdSenseLoaded()) {
+      try {
+        initializeAdSlot(
+          adRef,
+          slotId,
+          responsive,
+          () => setAdLoaded(true),
+          () => setIsError(true)
+        );
+      } catch (e) {
+        console.error("Error initializing ad slot:", e);
+        setIsError(true);
+      }
+    } else {
+      // Set a timeout to initialize the ad slot if AdSense is not yet loaded
+      timeoutRef.current = setTimeout(() => {
+        try {
+          initializeAdSlot(
+            adRef,
+            slotId,
+            responsive,
+            () => setAdLoaded(true),
+            () => setIsError(true)
+          );
+        } catch (e) {
+          console.error("Error initializing ad slot:", e);
+          setIsError(true);
+        }
+      }, document.readyState === 'complete' ? 100 : 1000);
+    }
     
     return () => {
       if (timeoutRef.current) {
@@ -134,6 +162,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [isVisible, isDevelopment, slotId, responsive]);
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
