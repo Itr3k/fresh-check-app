@@ -1,3 +1,4 @@
+
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -206,7 +207,18 @@ const Index = () => {
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
-                  <AdUnit slotId="left-sidebar" format="skyscraper" className="hidden lg:block" responsive={false} />
+                  <AdUnit 
+                    slotId="left-sidebar" 
+                    format="skyscraper" 
+                    className="hidden lg:block" 
+                    responsive={false}
+                    contentBefore={
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                        <h3 className="text-sm font-medium">Storage Guide</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Find storage times for different food items in your kitchen.</p>
+                      </div>
+                    }
+                  />
                 </Suspense>
               </div>
             </div>
@@ -224,6 +236,12 @@ const Index = () => {
                     className="hidden md:block" 
                     lazyLoad={true} 
                     responsive={true}
+                    contentBefore={
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                        <h3 className="text-sm font-medium">Food Safety Tips</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Learn about proper food storage techniques to extend shelf life.</p>
+                      </div>
+                    }
                   />
                   <AdUnit 
                     slotId="home-mobile-banner" 
@@ -231,6 +249,12 @@ const Index = () => {
                     className="md:hidden" 
                     lazyLoad={true} 
                     responsive={true}
+                    contentBefore={
+                      <div className="mb-3 p-3 bg-secondary/20 rounded-lg">
+                        <h3 className="text-sm font-medium">Food Safety Tips</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Learn proper storage techniques.</p>
+                      </div>
+                    }
                   />
                 </Suspense>
               </div>
@@ -258,6 +282,17 @@ const Index = () => {
                     format="leaderboard"
                     mobileFormat="rectangle" 
                     lazyLoad={true}
+                    contentBefore={
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                        <h3 className="text-sm font-medium">Expiration Date Calculator</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Use our calculator to determine how long your food will stay fresh.</p>
+                      </div>
+                    }
+                    contentAfter={
+                      <div className="mt-4 p-3 bg-secondary/20 rounded-lg">
+                        <p className="text-xs text-muted-foreground">Remember to always check for signs of spoilage before consuming food, regardless of the expiration date.</p>
+                      </div>
+                    }
                   />
                 </Suspense>
               </div>
@@ -289,7 +324,18 @@ const Index = () => {
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
-                  <AdUnit slotId="right-sidebar" format="skyscraper" className="hidden lg:block" responsive={false} />
+                  <AdUnit 
+                    slotId="right-sidebar" 
+                    format="skyscraper" 
+                    className="hidden lg:block" 
+                    responsive={false}
+                    contentBefore={
+                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg">
+                        <h3 className="text-sm font-medium">Food Safety Resources</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Important information about food storage and handling.</p>
+                      </div>
+                    }
+                  />
                 </Suspense>
               </div>
             </div>
