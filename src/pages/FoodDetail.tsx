@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { format, addDays } from 'date-fns';
 import { Calendar, Refrigerator, Snowflake, Home, AlertCircle, Clock } from 'lucide-react';
@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import StatusIndicator from '@/components/StatusIndicator';
+import BreadcrumbNav from '@/components/BreadcrumbNav';
 import { cn } from '@/lib/utils';
 
 interface StorageOption {
@@ -44,6 +45,14 @@ const FoodDetail: React.FC = () => {
     },
     spoilage: 'Look for mold, discoloration, sour smell, or slimy texture.'
   };
+
+  // Create breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Food Storage', href: '/#food-categories' },
+    { label: foodInfo.category, href: `/categories/${foodInfo.category.toLowerCase()}` },
+    { label: foodInfo.name, current: true }
+  ];
 
   // Storage options with icons
   const storageOptions: StorageOption[] = [
@@ -103,6 +112,8 @@ const FoodDetail: React.FC = () => {
       </Helmet>
 
       <div className="max-w-4xl mx-auto">
+        <BreadcrumbNav items={breadcrumbItems} className="mb-4" />
+        
         <h1 className="text-3xl font-bold mb-4">{foodInfo.name}</h1>
         <Card className="p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-6">
