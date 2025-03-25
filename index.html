@@ -6,35 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fresh Check - Food Storage Guide & Expiration Calculator</title>
     <meta name="description" content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator." />
-    <meta name="author" content="Fresh Check" />
     
-    <!-- Critical CSS Inline -->
+    <!-- Critical CSS -->
     <style>
-      /* Critical path CSS */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; }
-      img { max-width: 100%; height: auto; display: block; }
+      img { max-width: 100%; height: auto; display: block; aspect-ratio: 16/9; }
       .hidden { display: none; }
-      
-      /* Basic styling */
       .bg-primary { background-color: hsl(142, 71%, 45%); }
       .text-white { color: #fff; }
       h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-      
-      /* Layout optimization */
       .hero-section { min-height: 60vh; padding: 2rem 1rem; }
       .glass { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-      
-      /* Prevent CLS for images */
-      img, [class*="card-"] img { aspect-ratio: 16/9; }
     </style>
 
-    <!-- Resource Hints -->
+    <!-- Preconnects and Preloads -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-    
-    <!-- Preload critical fonts -->
     <link 
       rel="preload" 
       href="https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2" 
@@ -47,36 +36,28 @@
     <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
 
-    <!-- Google Verification -->
+    <!-- SEO & Meta Tags -->
+    <meta name="author" content="Fresh Check" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#4CAF50">
     <meta name="google-site-verification" content="your-verification-code" />
     <meta name="google-adsense-account" content="ca-pub-4704318106426851">
-
-    <!-- Open Graph / Facebook -->
+    
+    <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Fresh Check - Food Storage Guide & Expiration Calculator" />
     <meta property="og:description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item." />
     <meta property="og:image" content="https://freshcheck.app/og-image.png" />
     <meta property="og:url" content="https://freshcheck.app/" />
-    
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Fresh Check - Food Storage Guide & Expiration Calculator" />
-    <meta name="twitter:description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item." />
-    <meta name="twitter:image" content="https://freshcheck.app/og-image.png" />
     
     <!-- Favicon and App Icons -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
     <link rel="manifest" href="/manifest.json">
-    
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://freshcheck.app" />
-
-    <!-- Additional SEO meta tags -->
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="theme-color" content="#4CAF50">
     
-    <!-- Organization schema -->
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -88,7 +69,7 @@
     }
     </script>
     
-    <!-- AdSense script -->
+    <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851" crossorigin="anonymous"></script>
   </head>
 
