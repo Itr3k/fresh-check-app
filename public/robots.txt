@@ -29,8 +29,9 @@ Allow: /food/*
 Allow: /recalls/*
 Allow: /search
 
-# Ad-related directives
+# AdSense specific instructions
 Allow: /ads.txt
+Allow: /food/chicken-raw
 
 # Rate limiting for specific crawlers
 User-agent: AdsBot-Google
@@ -49,6 +50,7 @@ Crawl-delay: 2
 # Rules for specific directories with special handling
 User-agent: Googlebot
 Allow: /food-safety/
+Allow: /food/
 Crawl-delay: 1
 
 # Special instructions for mobile crawler

@@ -10,51 +10,51 @@
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-12-15T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-24T00:00:00+00:00</news:publication_date>
       <news:title>Current Food Recalls &amp; Safety Alerts</news:title>
     </news:news>
   </url>
   <url>
-    <loc>https://freshcheck.app/recalls/fish-recall-2023</loc>
+    <loc>https://freshcheck.app/recalls/fish-recall-2024</loc>
     <news:news>
       <news:publication>
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-12-10T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-20T00:00:00+00:00</news:publication_date>
       <news:title>Fish Products Recalled Due to Potential Listeria Contamination</news:title>
     </news:news>
   </url>
   <url>
-    <loc>https://freshcheck.app/recalls/chicken-recall-2023</loc>
+    <loc>https://freshcheck.app/recalls/chicken-recall-2024</loc>
     <news:news>
       <news:publication>
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-11-15T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-15T00:00:00+00:00</news:publication_date>
       <news:title>Chicken Products Recall Due to Potential Contamination</news:title>
     </news:news>
   </url>
   <url>
-    <loc>https://freshcheck.app/recalls/lettuce-recall-2023</loc>
+    <loc>https://freshcheck.app/recalls/lettuce-recall-2024</loc>
     <news:news>
       <news:publication>
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-11-05T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-05T00:00:00+00:00</news:publication_date>
       <news:title>Romaine Lettuce Recall Expanded to Additional States</news:title>
     </news:news>
   </url>
   <url>
-    <loc>https://freshcheck.app/recalls/peanut-butter-recall-2023</loc>
+    <loc>https://freshcheck.app/recalls/peanut-butter-recall-2024</loc>
     <news:news>
       <news:publication>
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-10-25T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-02-25T00:00:00+00:00</news:publication_date>
       <news:title>Peanut Butter Products Recalled Due to Potential Salmonella</news:title>
     </news:news>
   </url>
@@ -67,7 +67,7 @@
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-12-05T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-05T00:00:00+00:00</news:publication_date>
       <news:title>Understanding the Food Temperature Danger Zone</news:title>
     </news:news>
   </url>
@@ -78,7 +78,7 @@
         <news:name>FreshCheck</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>2023-12-01T00:00:00+00:00</news:publication_date>
+      <news:publication_date>2024-03-01T00:00:00+00:00</news:publication_date>
       <news:title>Holiday Food Safety: Essential Tips for Safe Celebrations</news:title>
     </news:news>
   </url>
