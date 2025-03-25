@@ -8,6 +8,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import ScrollToTop from './components/ScrollToTop.tsx'
+import { FOOD_IMAGES } from './components/FoodCard.tsx'
 
 // Performance monitoring
 if (process.env.NODE_ENV === 'development') {
