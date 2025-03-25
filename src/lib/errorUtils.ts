@@ -63,10 +63,5 @@ export const isBrowser = (): boolean => {
   return typeof window !== 'undefined';
 };
 
-// Declare gtag for TypeScript
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-    appLoaded?: boolean;
-  }
-}
+// Remove the conflicting declaration and rely on the one in src/types/gtag.d.ts
+// The global interface declaration was causing the TypeScript error
