@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -161,7 +162,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   ) : contentAfter;
 
   return (
-    <div className="ad-wrapper my-4 px-2 w-full flex flex-col items-center">
+    <div className="ad-wrapper my-4 w-full flex flex-col items-center">
       {defaultContentBefore}
       
       <div 
@@ -176,6 +177,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
             className="relative w-full flex justify-center items-center"
             style={{
               maxWidth: `${adDimensions.width}px`,
+              margin: '0 auto',
             }}
           >
             <AspectRatio 
@@ -207,6 +209,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
             style={{
               width: `${adDimensions.width}px`,
               height: `${adDimensions.height}px`,
+              margin: '0 auto',
             }}
           >
             {(isError || isDevelopment) && 

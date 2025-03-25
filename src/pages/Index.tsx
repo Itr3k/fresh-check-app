@@ -1,3 +1,4 @@
+
 import React, { useRef, lazy, Suspense, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -202,18 +203,19 @@ const Index = () => {
             <HeroSection onSearch={handleSearch} />
           </div>
 
-          <div className="my-8 print:hidden w-full flex justify-center">
+          {/* Top leaderboard ad after hero section */}
+          <div className="mt-6 mb-8 print:hidden flex justify-center">
             <Suspense fallback={<SkeletonLoader height="90px" />}>
               <AdUnit 
                 slotId="home-top-leaderboard" 
                 format="leaderboard" 
-                className="hidden md:block" 
-                lazyLoad={true} 
+                className="hidden md:flex" 
+                lazyLoad={false}
                 responsive={true}
                 contentBefore={
-                  <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                    <h3 className="text-sm font-medium">Food Shelf Life Guide</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Find accurate storage times for all your foods.</p>
+                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
+                    <h4 className="text-xs font-medium">Food Storage Guide</h4>
+                    <p className="text-xs text-muted-foreground">Find accurate storage times for all your foods</p>
                   </div>
                 }
               />
@@ -221,31 +223,32 @@ const Index = () => {
                 slotId="home-top-mobile-banner" 
                 format="mobile_banner" 
                 className="md:hidden" 
-                lazyLoad={true} 
+                lazyLoad={false}
                 responsive={true}
                 contentBefore={
-                  <div className="mb-3 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                    <h3 className="text-sm font-medium">Food Shelf Life Guide</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Find accurate storage times for your foods.</p>
+                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
+                    <h4 className="text-xs font-medium">Food Storage Guide</h4>
+                    <p className="text-xs text-muted-foreground">Find accurate storage times for your foods</p>
                   </div>
                 }
               />
             </Suspense>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6 mt-8">
+          <div className="flex flex-col lg:flex-row gap-6">
             <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
               <div className="sticky top-24">
                 <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
                   <AdUnit 
                     slotId="left-sidebar" 
                     format="skyscraper" 
-                    className="hidden lg:block" 
+                    className="hidden lg:flex" 
                     responsive={false}
+                    lazyLoad={false}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg text-center">
-                        <h3 className="text-sm font-medium">Storage Guide</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Find storage times for different food items.</p>
+                      <div className="mb-2 p-2 bg-secondary/10 rounded text-center">
+                        <h4 className="text-xs font-medium">Storage Guide</h4>
+                        <p className="text-xs text-muted-foreground">Find storage times for different food items</p>
                       </div>
                     }
                   />
@@ -274,22 +277,24 @@ const Index = () => {
                 <FoodSafetyFacts />
               </Suspense>
               
-              <div className="my-8 print:hidden w-full flex justify-center">
+              {/* Mid-content leaderboard ad */}
+              <div className="my-8 print:hidden flex justify-center">
                 <Suspense fallback={<SkeletonLoader height="90px" />}>
                   <AdUnit 
                     slotId="home-content-ad" 
                     format="leaderboard"
                     mobileFormat="rectangle" 
                     lazyLoad={true}
+                    responsive={true}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                        <h3 className="text-sm font-medium">Expiration Date Calculator</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Use our calculator to determine how long your food will stay fresh.</p>
+                      <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
+                        <h4 className="text-xs font-medium">Expiration Date Calculator</h4>
+                        <p className="text-xs text-muted-foreground">Use our calculator to determine how long your food will stay fresh</p>
                       </div>
                     }
                     contentAfter={
-                      <div className="mt-4 p-3 bg-secondary/20 rounded-lg w-full text-center">
-                        <p className="text-xs text-muted-foreground">Remember to always check for signs of spoilage before consuming food, regardless of the expiration date.</p>
+                      <div className="mt-2 p-2 bg-secondary/10 rounded w-full text-center">
+                        <p className="text-xs text-muted-foreground">Remember to always check for signs of spoilage before consuming food</p>
                       </div>
                     }
                   />
@@ -300,6 +305,7 @@ const Index = () => {
                 <SavedFoods />
               </Suspense>
 
+              {/* Search box at the bottom */}
               <div 
                 className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
                 onClick={scrollToSearch}
@@ -326,18 +332,38 @@ const Index = () => {
                   <AdUnit 
                     slotId="right-sidebar" 
                     format="skyscraper" 
-                    className="hidden lg:block" 
+                    className="hidden lg:flex" 
                     responsive={false}
+                    lazyLoad={false}
                     contentBefore={
-                      <div className="mb-4 p-3 bg-secondary/20 rounded-lg text-center">
-                        <h3 className="text-sm font-medium">Food Safety Resources</h3>
-                        <p className="text-xs text-muted-foreground mt-1">Important information about food storage.</p>
+                      <div className="mb-2 p-2 bg-secondary/10 rounded text-center">
+                        <h4 className="text-xs font-medium">Food Safety Resources</h4>
+                        <p className="text-xs text-muted-foreground">Important information about food storage</p>
                       </div>
                     }
                   />
                 </Suspense>
               </div>
             </div>
+          </div>
+
+          {/* Bottom leaderboard ad */}
+          <div className="mt-10 mb-4 print:hidden flex justify-center">
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
+              <AdUnit 
+                slotId="home-bottom-leaderboard" 
+                format="leaderboard"
+                mobileFormat="rectangle" 
+                lazyLoad={true}
+                responsive={true}
+                contentBefore={
+                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
+                    <h4 className="text-xs font-medium">Food Expiration Calculator</h4>
+                    <p className="text-xs text-muted-foreground">Calculate when your food will expire</p>
+                  </div>
+                }
+              />
+            </Suspense>
           </div>
         </main>
         
