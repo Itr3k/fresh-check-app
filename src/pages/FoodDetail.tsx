@@ -122,7 +122,7 @@ const FoodDetail: React.FC = () => {
                 </span>
               </div>
               <p className="text-gray-600 mb-4">
-                {foodInfo.description}
+                {foodInfo.description || 'No description available.'}
               </p>
               
               <div className="border-t pt-4 mt-4">
@@ -141,13 +141,12 @@ const FoodDetail: React.FC = () => {
                         {purchaseDate ? format(purchaseDate, 'PPP') : "Set purchase date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="end">
                       <CalendarComponent
                         mode="single"
                         selected={purchaseDate}
                         onSelect={setPurchaseDate}
                         initialFocus
-                        className={cn("p-3 pointer-events-auto")}
                       />
                     </PopoverContent>
                   </Popover>
@@ -164,7 +163,7 @@ const FoodDetail: React.FC = () => {
               <h2 className="text-xl font-semibold">Signs of Spoilage</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              {foodInfo.spoilage}
+              {foodInfo.spoilage || 'Look for mold, discoloration, sour smell, or slimy texture.'}
             </p>
 
             <div className="flex items-center mb-4">
