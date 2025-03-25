@@ -25,8 +25,9 @@ const FoodDetail: React.FC = () => {
   const foodItem = getFoodById(id || '');
   const foodName = id ? id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Food Item';
   
-  // Default food info if not found in database
+  // Default food info if not found in database - now includes id property to fix TypeScript error
   const foodInfo = foodItem || {
+    id: id || 'unknown',  // Add the required id property
     name: foodName,
     category: 'General',
     imageUrl: '/placeholder.svg',
