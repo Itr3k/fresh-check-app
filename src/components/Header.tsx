@@ -3,41 +3,9 @@ import { Search, AlertOctagon, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { memo } from "react";
 
-// Optimize icons to reduce bundle size
-const OptimizedIcons = {
-  Search: memo(Search),
-  AlertOctagon: memo(AlertOctagon),
-  Tag: memo(Tag)
-};
-
-// Extract navigation items to prevent unnecessary re-renders
-const foodSafetyLinks = [
-  {
-    to: "/food-safety/understanding-food-labels",
-    icon: <OptimizedIcons.Tag className="h-4 w-4 text-primary" />,
-    title: "Understanding Food Labels",
-    description: 'Learn the difference between "Best By," "Use By," and "Sell By" dates'
-  },
-  {
-    to: "/food-safety/temperature-danger-zone",
-    icon: <OptimizedIcons.AlertOctagon className="h-4 w-4 text-primary" />,
-    title: "Temperature Danger Zone",
-    description: "Safe food temperatures and avoiding bacterial growth"
-  }
-];
-
-// Memoize the header to prevent unnecessary rerenders
-const Header = memo(() => {
+// Optimize the component to avoid rendering issues
+const Header = () => {
   const isMobile = useIsMobile();
   
   return (
@@ -60,7 +28,7 @@ const Header = memo(() => {
                   size="sm" 
                   className="gap-1 px-3 py-1.5 rounded-full"
                 >
-                  <OptimizedIcons.AlertOctagon size={16} />
+                  <AlertOctagon size={16} />
                   <span className="text-xs font-medium">Recalls</span>
                 </Button>
               </Link>
@@ -69,7 +37,7 @@ const Header = memo(() => {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
                 aria-label="Food Labels Guide"
               >
-                <OptimizedIcons.Tag size={16} />
+                <Tag size={16} />
               </Link>
             </>
           ) : (
@@ -78,7 +46,7 @@ const Header = memo(() => {
                 to="/recalls" 
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-foreground/70 hover:text-foreground transition-colors"
               >
-                <OptimizedIcons.AlertOctagon size={16} />
+                <AlertOctagon size={16} />
                 <span className="text-sm font-medium">Recalls</span>
               </Link>
             </>
@@ -88,14 +56,12 @@ const Header = memo(() => {
             className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
             aria-label="Search for foods"
           >
-            <OptimizedIcons.Search size={20} />
+            <Search size={20} />
           </Link>
         </div>
       </div>
     </header>
   );
-});
-
-Header.displayName = "Header";
+};
 
 export default Header;
