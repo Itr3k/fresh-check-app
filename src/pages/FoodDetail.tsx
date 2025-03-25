@@ -1,11 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { addDays } from 'date-fns';
 import { Calendar, Refrigerator, Snowflake, Home, Printer, Info, Shield, ExternalLink } from 'lucide-react';
 import AdUnit from '@/components/AdUnit';
-import { getFoodById } from '@/data/foodData';
+import { getFoodById, foodData, FoodItem } from '@/data/foodData';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -22,13 +21,11 @@ const FoodDetail: React.FC = () => {
   const [selectedStorage, setSelectedStorage] = useState<string>("refrigerator");
   const [isOpened, setIsOpened] = useState<boolean>(false);
   
-  // Get food information from the database or use a formatted name from the ID
   const foodItem = getFoodById(id || '');
   const foodName = id ? id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Food Item';
   
-  // Default food info if not found in database - now includes id property to fix TypeScript error
   const foodInfo = foodItem || {
-    id: id || 'unknown',  // Add the required id property
+    id: id || 'unknown',
     name: foodName,
     category: 'General',
     imageUrl: '/placeholder.svg',
@@ -41,7 +38,6 @@ const FoodDetail: React.FC = () => {
     spoilage: 'Look for mold, discoloration, sour smell, or slimy texture.'
   };
 
-  // Create breadcrumb items
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Food Storage', href: '/#food-categories' },
@@ -49,7 +45,6 @@ const FoodDetail: React.FC = () => {
     { label: foodInfo.name, current: true }
   ];
 
-  // Storage options with icons
   const storageOptions: StorageOption[] = [
     {
       name: "refrigerator",
@@ -71,19 +66,16 @@ const FoodDetail: React.FC = () => {
     }
   ];
 
-  // Get the selected storage option details
   const getSelectedStorageOption = () => {
     return storageOptions.find(option => option.name === selectedStorage) || storageOptions[0];
   };
 
-  // Calculate days remaining
   const calculateDaysRemaining = () => {
     if (!purchaseDate) return 0;
     
     const storageOption = getSelectedStorageOption();
     let shelfLife = storageOption.shelfLife;
     
-    // Reduce shelf life if the package is opened
     if (isOpened && selectedStorage !== "freezer") {
       shelfLife = Math.floor(shelfLife / 2);
     }
@@ -99,13 +91,11 @@ const FoodDetail: React.FC = () => {
   const daysRemaining = calculateDaysRemaining();
   const selectedOption = getSelectedStorageOption();
 
-  // Generate specific spoilage text for the food item
   const getSpoilageText = () => {
     if (foodInfo.spoilage) {
       return foodInfo.spoilage;
     }
     
-    // Generate more specific spoilage info based on food category if none provided
     const categorySpecificSpoilage = {
       'Meat & Poultry': 'Look for discoloration, slimy texture, or a sour, ammonia-like smell. If the meat feels sticky or has a grayish color, it has likely spoiled.',
       'Seafood': 'Fresh fish should not smell fishy. Look for cloudy eyes, discoloration, slimy texture, or a strong ammonia-like odor.',
@@ -123,6 +113,12 @@ const FoodDetail: React.FC = () => {
       'Look for mold, discoloration, sour smell, or slimy texture. When in doubt, throw it out.';
   };
 
+  const relatedFoods = useMemo(() => {
+    return foodData
+      .filter(food => food.category === foodInfo.category && food.id !== foodInfo.id)
+      .slice(0, 3);
+  }, [foodInfo.id, foodInfo.category]);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Helmet>
@@ -135,7 +131,6 @@ const FoodDetail: React.FC = () => {
         
         <h1 className="text-3xl font-bold mb-4">{foodInfo.name}</h1>
         
-        {/* First ad space at the top */}
         <div className="mb-6 text-center">
           <AdUnit 
             slotId="food-detail-top"
@@ -179,7 +174,6 @@ const FoodDetail: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Second ad placement in the middle */}
         <div className="my-8 text-center">
           <h3 className="text-xl font-medium mb-4 text-center">Recommended Storage Guidelines</h3>
           <AdUnit 
@@ -229,39 +223,27 @@ const FoodDetail: React.FC = () => {
           </CardContent>
         </Card>
         
-        {/* Related Foods Section */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <h2 className="text-xl font-semibold mb-4">Related Foods</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Link to="/food/milk" className="flex items-center p-2 border rounded-md hover:bg-muted/30">
-                <img src="/placeholder.svg" alt="Milk" className="w-16 h-16 object-cover rounded-md mr-3" />
-                <div>
-                  <h3 className="font-medium">Milk</h3>
-                  <p className="text-sm text-muted-foreground">Dairy</p>
-                </div>
-              </Link>
-              
-              <Link to="/food/chicken" className="flex items-center p-2 border rounded-md hover:bg-muted/30">
-                <img src="/placeholder.svg" alt="Chicken" className="w-16 h-16 object-cover rounded-md mr-3" />
-                <div>
-                  <h3 className="font-medium">Chicken</h3>
-                  <p className="text-sm text-muted-foreground">Meat & Poultry</p>
-                </div>
-              </Link>
-              
-              <Link to="/food/bread" className="flex items-center p-2 border rounded-md hover:bg-muted/30">
-                <img src="/placeholder.svg" alt="Bread" className="w-16 h-16 object-cover rounded-md mr-3" />
-                <div>
-                  <h3 className="font-medium">Bread</h3>
-                  <p className="text-sm text-muted-foreground">Bakery</p>
-                </div>
-              </Link>
+              {relatedFoods.length > 0 ? (
+                relatedFoods.map((food) => (
+                  <Link key={food.id} to={`/food/${food.id}`} className="flex items-center p-2 border rounded-md hover:bg-muted/30">
+                    <img src={food.imageUrl} alt={food.name} className="w-16 h-16 object-cover rounded-md mr-3" />
+                    <div>
+                      <h3 className="font-medium">{food.name}</h3>
+                      <p className="text-sm text-muted-foreground">{food.category}</p>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-muted-foreground col-span-2 text-center py-4">No related foods found</p>
+              )}
             </div>
           </CardContent>
         </Card>
         
-        {/* External Resources Section */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <h2 className="text-xl font-semibold mb-4">External Resources</h2>
@@ -285,7 +267,6 @@ const FoodDetail: React.FC = () => {
           </CardContent>
         </Card>
         
-        {/* Third ad placement at the bottom */}
         <div className="my-8 text-center">
           <AdUnit 
             slotId="food-detail-bottom"
