@@ -23,6 +23,9 @@ const ScrollToTop = () => {
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'page_view', {
         page_path: pathname,
+        event_category: 'engagement',
+        event_label: `Page: ${pathname}`,
+        non_interaction: false
       });
     }
   }, [pathname, hash]);

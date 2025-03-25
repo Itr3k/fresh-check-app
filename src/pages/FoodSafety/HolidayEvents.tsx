@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Utensils, Clock, AlertTriangle, Check, Fridge } from 'lucide-react';
+import { Calendar, Utensils, Clock, AlertTriangle, Check, Refrigerator } from 'lucide-react';
 import FoodSafetyLayout from '@/components/FoodSafetyLayout';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AdUnit from '@/components/AdUnit';
@@ -254,7 +253,7 @@ const HolidayEvents = () => {
               contentBefore={
                 <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <h3 className="text-sm font-medium flex items-center gap-2">
-                    <Fridge className="h-4 w-4 text-blue-500" />
+                    <Refrigerator className="h-4 w-4 text-blue-500" />
                     <span>Leftover Food Storage Tips</span>
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1">
@@ -273,7 +272,7 @@ const HolidayEvents = () => {
           </div>
           
           <h2 className="text-xl font-semibold mb-4 mt-8 flex items-center gap-2">
-            <Fridge className="h-5 w-5 text-blue-500" />
+            <Refrigerator className="h-5 w-5 text-blue-500" />
             <span>Safely Handling Leftovers</span>
           </h2>
           

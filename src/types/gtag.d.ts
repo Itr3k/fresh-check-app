@@ -8,6 +8,7 @@ interface Window {
       event_category: string;
       event_label: string;
       non_interaction: boolean;
+      page_path?: string;
       [key: string]: any;
     }
   ) => void;
