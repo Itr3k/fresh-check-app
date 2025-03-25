@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import { RecallsProvider } from "./contexts/RecallsContext";
 import WebhookReceiver from "./components/WebhookReceiver";
 import { ImagesProvider } from './contexts/ImagesContext';
+import ScrollToTop from "./components/ScrollToTop";
 
 // Lazy load non-critical pages
 const FoodDetail = lazy(() => import("./pages/FoodDetail"));
@@ -55,6 +56,7 @@ function App() {
         <RecallsProvider>
           <ImagesProvider>
             <WebhookReceiver />
+            <ScrollToTop />
             <Toaster />
             <Sonner />
             <TooltipProvider>
