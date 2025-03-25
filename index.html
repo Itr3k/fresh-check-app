@@ -7,8 +7,7 @@
     <title>Fresh Check - Food Storage Guide & Expiration Calculator</title>
     <meta name="description" content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator." />
     <meta name="author" content="Fresh Check" />
-    <meta name="keywords" content="food storage, food expiration, expiration dates, food safety, leftovers, food storage guide, refrigerator storage, freezer storage, pantry storage, food freshness" />
-
+    
     <!-- Critical CSS Inline -->
     <style>
       /* Critical path CSS */
@@ -17,63 +16,24 @@
       img { max-width: 100%; height: auto; display: block; }
       .hidden { display: none; }
       
-      /* Add more critical CSS */
+      /* Basic styling */
       .bg-primary { background-color: hsl(142, 71%, 45%); }
       .text-white { color: #fff; }
       h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
       
-      /* Optimize LCP */
+      /* Layout optimization */
       .hero-section { min-height: 60vh; padding: 2rem 1rem; }
       .glass { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
       
       /* Prevent CLS for images */
       img, [class*="card-"] img { aspect-ratio: 16/9; }
-      
-      /* AdSense policy compliance */
-      .ad-wrapper { margin: 1.5rem 0; padding: 0.5rem; }
-      .ad-wrapper::before { content: 'Advertisement'; display: block; text-align: center; font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; }
-      
-      /* Font face declarations with font-display: swap */
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url('https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2') format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-      }
-      
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 500;
-        font-display: swap;
-        src: url('https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2') format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-      }
-      
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 600;
-        font-display: swap;
-        src: url('https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2') format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-      }
     </style>
 
-    <!-- Resource Hints - Preload & Preconnect -->
+    <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     
-    <!-- Added more resource hints for performance -->
-    <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin />
-    <link rel="preconnect" href="https://adservice.google.com" crossorigin />
-    <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
-    <link rel="dns-prefetch" href="https://adservice.google.com" />
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-
     <!-- Preload critical fonts -->
     <link 
       rel="preload" 
@@ -83,34 +43,28 @@
       crossorigin 
     />
 
-    <!-- Non-blocking CSS -->
+    <!-- Main CSS -->
     <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/src/index.css" /></noscript>
 
-    <!-- Google Search Console Verification -->
+    <!-- Google Verification -->
     <meta name="google-site-verification" content="your-verification-code" />
-
-    <!-- Google AdSense Verification -->
     <meta name="google-adsense-account" content="ca-pub-4704318106426851">
 
-    <!-- Open Graph / Facebook - Extended -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Fresh Check - Food Storage Guide & Expiration Calculator" />
     <meta property="og:description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item." />
     <meta property="og:image" content="https://freshcheck.app/og-image.png" />
     <meta property="og:url" content="https://freshcheck.app/" />
-    <meta property="og:site_name" content="FreshCheck" />
-    <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter - Extended -->
+    
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@freshcheck_app" />
     <meta name="twitter:title" content="Fresh Check - Food Storage Guide & Expiration Calculator" />
     <meta name="twitter:description" content="Find out if your food is still good to eat. Check expiration dates, storage tips, and freshness indicators for any food item." />
     <meta name="twitter:image" content="https://freshcheck.app/og-image.png" />
-    <meta name="twitter:creator" content="@freshcheck_app" />
     
-    <!-- Favicon -->
+    <!-- Favicon and App Icons -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
     <link rel="manifest" href="/manifest.json">
@@ -121,9 +75,8 @@
     <!-- Additional SEO meta tags -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="theme-color" content="#4CAF50">
-    <meta name="msapplication-TileColor" content="#4CAF50">
     
-    <!-- Organization schema for improved local SEO -->
+    <!-- Organization schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -131,100 +84,12 @@
       "name": "FreshCheck",
       "url": "https://freshcheck.app",
       "logo": "https://freshcheck.app/logo.png",
-      "sameAs": [
-        "https://twitter.com/freshcheck_app",
-        "https://facebook.com/freshcheckapp",
-        "https://instagram.com/freshcheck_app"
-      ],
       "description": "FreshCheck provides accurate food storage information, expiration dates, and food safety education to help reduce food waste and prevent foodborne illness."
     }
     </script>
     
-    <!-- Ad policy compliant AdSense code -->
+    <!-- AdSense script -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851" crossorigin="anonymous"></script>
-    
-    <!-- Optimized AdSense loader with modern browser features -->
-    <script>
-      // Improved AdSense loader with better error handling and retry mechanism
-      window.adsenseLoaded = false;
-      window.adsenseLoading = false;
-      window.adsenseRetries = 0;
-      window.MAX_ADSENSE_RETRIES = 3;
-      
-      const loadAdSense = () => {
-        if (window.adsenseLoaded || window.adsenseLoading) {
-          console.log('AdSense: Already loaded or loading');
-          return;
-        }
-        
-        window.adsenseLoading = true;
-        console.log('AdSense: Starting load process');
-        
-        // Check if adsbygoogle already loaded
-        if (typeof window.adsbygoogle !== 'undefined') {
-          console.log('AdSense: adsbygoogle already exists');
-          window.adsenseLoaded = true;
-          window.adsenseLoading = false;
-          window.dispatchEvent(new CustomEvent('adsenseLoaded'));
-          return;
-        }
-        
-        // Track performance
-        performance.mark('adsense-load-start');
-        
-        const script = document.createElement('script');
-        script.id = 'adsense-script';
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
-        script.async = true;
-        script.crossOrigin = "anonymous";
-        
-        // Set attributes for performance optimization
-        script.setAttribute('data-ad-frequency-hint', '30s');
-        
-        // Use test mode in non-production
-        if (window.location.hostname !== 'freshcheck.app') {
-          script.setAttribute('data-adtest', 'on');
-          console.log('AdSense: Using test mode');
-        }
-        
-        script.onload = () => {
-          window.adsenseLoaded = true;
-          window.adsenseLoading = false;
-          window.adsenseRetries = 0;
-          console.log('AdSense loaded successfully');
-          performance.mark('adsense-load-end');
-          performance.measure('adsense-load', 'adsense-load-start', 'adsense-load-end');
-          
-          // Notify components that AdSense is ready
-          window.dispatchEvent(new CustomEvent('adsenseLoaded'));
-        };
-        
-        script.onerror = (error) => {
-          window.adsenseLoading = false;
-          console.warn('AdSense failed to load:', error);
-          
-          // Implement retry logic with exponential backoff
-          if (window.adsenseRetries < window.MAX_ADSENSE_RETRIES) {
-            window.adsenseRetries++;
-            const backoffTime = Math.pow(2, window.adsenseRetries) * 1000;
-            console.log(`Retrying AdSense load (${window.adsenseRetries}/${window.MAX_ADSENSE_RETRIES}) in ${backoffTime}ms`);
-            setTimeout(loadAdSense, backoffTime);
-          }
-        };
-        
-        document.head.appendChild(script);
-      };
-
-      // Expose loadAdSense globally
-      window.loadAdSense = loadAdSense;
-
-      // Load AdSense after page content has loaded
-      window.addEventListener('DOMContentLoaded', () => {
-        console.log('DOMContentLoaded: Scheduling AdSense load');
-        // Delay loading to prioritize content
-        setTimeout(loadAdSense, 1000);
-      });
-    </script>
   </head>
 
   <body>
@@ -232,50 +97,5 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- AdSense policy compliance script -->
-    <script>
-      // Monitor ad blocking
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          // Check if any ads have been blocked
-          const adContainers = document.querySelectorAll('[data-ad-slot]');
-          const adsLoaded = document.querySelectorAll('.adsbygoogle[data-ad-status="filled"]').length > 0;
-          
-          // Log for debugging
-          console.log('Ad containers found:', adContainers.length);
-          console.log('Ads loaded status:', adsLoaded);
-          
-          // Create publisher content if none exists near ads
-          if (adContainers.length > 0 && !document.querySelector('.ad-wrapper')) {
-            adContainers.forEach(container => {
-              // Ensure each ad has publisher content
-              const parent = container.closest('.ad-unit');
-              if (parent && !parent.closest('.ad-wrapper')) {
-                // Create wrapper with publisher content if missing
-                const wrapper = document.createElement('div');
-                wrapper.className = 'ad-wrapper';
-                wrapper.innerHTML = '<p class="ad-label">Advertisement</p>';
-                
-                // Add meaningful publisher content
-                const beforeContent = document.createElement('div');
-                beforeContent.className = 'mb-2 p-2 bg-secondary/10 rounded text-sm';
-                beforeContent.innerHTML = '<h4 class="text-xs font-medium">Food Storage Information</h4><p class="text-xs text-muted-foreground">Learn about safe storage times for your food.</p>';
-                
-                const afterContent = document.createElement('div');
-                afterContent.className = 'mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground';
-                afterContent.innerHTML = '<p>Always check food for signs of spoilage before consuming.</p>';
-                
-                // Wrap the ad with publisher content
-                parent.parentNode?.insertBefore(wrapper, parent);
-                wrapper.appendChild(beforeContent);
-                wrapper.appendChild(parent);
-                wrapper.appendChild(afterContent);
-              }
-            });
-          }
-        }, 3000);
-      });
-    </script>
   </body>
 </html>
