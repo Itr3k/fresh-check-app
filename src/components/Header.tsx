@@ -45,7 +45,7 @@ const Header = memo(() => {
       <div className="glass px-6 py-4 mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <img 
-            src="/lovable-uploads/81217336-93b6-47da-a34f-7ad3f6b401e6.png" 
+            src="/lovable-uploads/faf93bc1-3201-4db9-90e7-9413db8d87b1.png" 
             alt="FreshCheck Logo" 
             className="h-10 w-auto"
           />
