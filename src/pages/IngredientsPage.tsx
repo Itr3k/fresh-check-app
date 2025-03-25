@@ -1,6 +1,9 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import PageTransition from '@/components/PageTransition';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
 import IngredientCard from '@/components/ingredients/IngredientCard';
@@ -24,6 +27,15 @@ const IngredientsPage: React.FC = () => {
       </Helmet>
 
       <div className="container px-4 py-8 mx-auto max-w-7xl">
+        <div className="mb-4">
+          <Link to="/" className="inline-block">
+            <Button variant="ghost" size="sm" className="gap-1">
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+        
         <BreadcrumbNav items={breadcrumbItems} className="mb-6" />
 
         <div className="space-y-6">
