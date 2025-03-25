@@ -44,10 +44,11 @@ const Header = memo(() => {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="glass px-6 py-4 mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">FC</span>
-          </div>
-          <h1 className="text-xl font-semibold tracking-tight">Fresh Check</h1>
+          <img 
+            src="/lovable-uploads/81217336-93b6-47da-a34f-7ad3f6b401e6.png" 
+            alt="FreshCheck Logo" 
+            className="h-10 w-auto"
+          />
         </Link>
         <div className="flex items-center space-x-4">
           {isMobile ? (
