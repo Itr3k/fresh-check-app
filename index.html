@@ -29,10 +29,6 @@
       /* Prevent CLS for images */
       img, [class*="card-"] img { aspect-ratio: 16/9; }
       
-      /* AdSense policy compliance */
-      .ad-wrapper { margin: 1.5rem 0; padding: 0.5rem; }
-      .ad-wrapper::before { content: 'Advertisement'; display: block; text-align: center; font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; }
-      
       /* Font face declarations with font-display: swap */
       @font-face {
         font-family: 'Inter';
@@ -140,9 +136,6 @@
     }
     </script>
     
-    <!-- Ad policy compliant AdSense code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851" crossorigin="anonymous"></script>
-    
     <!-- Optimized AdSense loader with modern browser features -->
     <script>
       // Improved AdSense loader with better error handling and retry mechanism
@@ -155,14 +148,6 @@
         if (window.adsenseLoaded || window.adsenseLoading) return;
         window.adsenseLoading = true;
         
-        // Check if adsbygoogle already loaded
-        if (typeof window.adsbygoogle !== 'undefined') {
-          window.adsenseLoaded = true;
-          window.adsenseLoading = false;
-          window.dispatchEvent(new CustomEvent('adsenseLoaded'));
-          return;
-        }
-        
         // Track performance
         performance.mark('adsense-load-start');
         
@@ -170,10 +155,13 @@
         script.id = 'adsense-script';
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4704318106426851';
         script.async = true;
-        script.crossOrigin = "anonymous";
+        script.crossOrigin = 'anonymous';
         
         // Set attributes for performance optimization
         script.setAttribute('data-ad-frequency-hint', '30s');
+        script.setAttribute('data-page-url', window.location.href);
+        script.setAttribute('data-overlays', '{"bottom": 0}');
+        script.setAttribute('data-ad-client', 'ca-pub-4704318106426851');
         
         // Use test mode in non-production
         if (window.location.hostname !== 'freshcheck.app') {
@@ -211,11 +199,37 @@
       // Expose loadAdSense globally
       window.loadAdSense = loadAdSense;
 
-      // Load AdSense after page content has been loaded
-      window.addEventListener('DOMContentLoaded', () => {
-        // Delay loading to prioritize content
-        setTimeout(loadAdSense, 1000);
-      });
+      // Smart loading strategy using Intersection Observer
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          rootMargin: '200px 0px',
+          threshold: 0.01
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+          const isVisible = entries.some(entry => entry.isIntersecting);
+          if (isVisible) {
+            loadAdSense();
+            observer.disconnect();
+          }
+        }, observerOptions);
+  
+        // Observe the first ad slot after DOM is ready
+        window.addEventListener('DOMContentLoaded', () => {
+          const adSlots = document.querySelectorAll('.ad-unit');
+          if (adSlots.length > 0) {
+            observer.observe(adSlots[0]);
+          } else {
+            // If no ad slots found on initial load, use delayed loading
+            setTimeout(loadAdSense, 3000);
+          }
+        });
+      } else {
+        // Fallback for no IO support - delay load to prioritize content
+        window.addEventListener('load', () => {
+          setTimeout(loadAdSense, 2000);
+        });
+      }
     </script>
   </head>
 
@@ -224,39 +238,5 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- AdSense policy compliance script -->
-    <script>
-      // Monitor ad blocking
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          // Check if any ads have been blocked
-          const adContainers = document.querySelectorAll('[data-ad-slot]');
-          const adsLoaded = document.querySelectorAll('.adsbygoogle[data-ad-status="filled"]').length > 0;
-          
-          // Log for debugging
-          console.log('Ad containers found:', adContainers.length);
-          console.log('Ads loaded status:', adsLoaded);
-          
-          // Create publisher content if none exists near ads
-          if (adContainers.length > 0 && !document.querySelector('.ad-wrapper')) {
-            adContainers.forEach(container => {
-              // Ensure each ad has publisher content
-              const parent = container.closest('.ad-unit');
-              if (parent && !parent.closest('.ad-wrapper')) {
-                // Create wrapper with publisher content if missing
-                const wrapper = document.createElement('div');
-                wrapper.className = 'ad-wrapper';
-                wrapper.innerHTML = '<p class="ad-label">Advertisement</p>';
-                
-                // Wrap the ad with publisher content
-                parent.parentNode?.insertBefore(wrapper, parent);
-                wrapper.appendChild(parent);
-              }
-            });
-          }
-        }, 3000);
-      });
-    </script>
   </body>
 </html>

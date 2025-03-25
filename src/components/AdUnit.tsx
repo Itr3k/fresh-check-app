@@ -24,8 +24,6 @@ interface AdUnitProps {
   responsive?: boolean;
   mobileFormat?: keyof typeof AD_FORMAT_DIMENSIONS;
   waitForViewport?: boolean;
-  contentBefore?: React.ReactNode;
-  contentAfter?: React.ReactNode;
 }
 
 const AdUnit: React.FC<AdUnitProps> = ({ 
@@ -35,9 +33,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
   mobileFormat = "rectangle",
   lazyLoad = true,
   responsive = true,
-  waitForViewport = true,
-  contentBefore,
-  contentAfter
+  waitForViewport = true
 }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
@@ -249,53 +245,28 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   // Use AspectRatio for responsive ads to prevent layout shifts
   return (
-    <div className="ad-wrapper">
-      {/* Required publisher content before ad */}
-      {contentBefore}
-      
-      <div 
-        className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
-        role="complementary" 
-        aria-label="Advertisement"
-        data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
-        data-ad-format={activeFormat}
-        style={{
-          width: '100%',
-          maxWidth: responsive ? undefined : `${adDimensions.width}px`,
-          margin: '0 auto'
-        }}
-      >
-        {responsive ? (
-          <div 
-            className="relative w-full"
-            style={{
-              maxWidth: `${adDimensions.width}px`,
-            }}
-          >
-            <AspectRatio 
-              ratio={adDimensions.width / adDimensions.height}
-              className="w-full"
-            >
-              {(isError || isDevelopment) && renderPlaceholder()}
-              
-              <div 
-                className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full ${
-                  isError || isDevelopment ? 'hidden' : ''
-                }`}
-                id={`ad-container-${slotId}`}
-                ref={adRef}
-                aria-hidden="true"
-                data-ad-slot={slotId}
-              />
-            </AspectRatio>
-          </div>
-        ) : (
-          <div 
-            className="relative"
-            style={{
-              width: `${adDimensions.width}px`,
-              height: `${adDimensions.height}px`,
-            }}
+    <div 
+      className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat}`} 
+      role="complementary" 
+      aria-label="Advertisement"
+      data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
+      data-ad-format={activeFormat}
+      style={{
+        width: '100%',
+        maxWidth: responsive ? undefined : `${adDimensions.width}px`,
+        margin: '0 auto'
+      }}
+    >
+      {responsive ? (
+        <div 
+          className="relative w-full"
+          style={{
+            maxWidth: `${adDimensions.width}px`,
+          }}
+        >
+          <AspectRatio 
+            ratio={adDimensions.width / adDimensions.height}
+            className="w-full"
           >
             {(isError || isDevelopment) && renderPlaceholder()}
             
@@ -308,12 +279,29 @@ const AdUnit: React.FC<AdUnitProps> = ({
               aria-hidden="true"
               data-ad-slot={slotId}
             />
-          </div>
-        )}
-      </div>
-      
-      {/* Required publisher content after ad */}
-      {contentAfter}
+          </AspectRatio>
+        </div>
+      ) : (
+        <div 
+          className="relative"
+          style={{
+            width: `${adDimensions.width}px`,
+            height: `${adDimensions.height}px`,
+          }}
+        >
+          {(isError || isDevelopment) && renderPlaceholder()}
+          
+          <div 
+            className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full ${
+              isError || isDevelopment ? 'hidden' : ''
+            }`}
+            id={`ad-container-${slotId}`}
+            ref={adRef}
+            aria-hidden="true"
+            data-ad-slot={slotId}
+          />
+        </div>
+      )}
     </div>
   );
 };
