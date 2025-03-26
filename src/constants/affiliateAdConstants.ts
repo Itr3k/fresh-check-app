@@ -73,7 +73,7 @@ export const COOKWARE_ADS: AffiliateAd[] = [
     id: 'target-pot-1',
     type: 'target',
     title: 'Stainless Steel Cookware Set',
-    description: '10-piece set for all your cooking needs',
+    description: 'All your cooking needs',
     linkUrl: 'https://www.target.com/p/stainless-steel-cookware-set/-/A-79591',
     couponCode: 'COOK20'
   }
