@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -7,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import PageTransition from '@/components/PageTransition';
 import BreadcrumbNav from '@/components/BreadcrumbNav';
 import PdfExportButton from '@/components/PdfExportButton';
-import AdManager from '@/components/AdManager';
+import AdUnit from '@/components/AdUnit';
 import { cn } from '@/lib/utils';
 
 export interface IngredientArticleProps {
@@ -154,13 +153,12 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
             {introduction}
           </div>
           
-          <AdManager
+          <AdUnit
             slotId="ingredient-intro-ad"
             format="leaderboard"
             mobileFormat="rectangle"
-            adType="mixed"
-            affiliateCategory="food-storage"
-            affiliateRatio={0.4}
+            lazyLoad={true}
+            responsive={true}
             contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
             contentAfter={null}
           />
@@ -175,13 +173,12 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
               </section>
               
               {index === 1 && (
-                <AdManager
+                <AdUnit
                   slotId="ingredient-middle-ad"
                   format="leaderboard"
                   mobileFormat="rectangle"
-                  adType="mixed"
-                  affiliateCategory="kitchen-tools"
-                  affiliateRatio={0.5}
+                  lazyLoad={true}
+                  responsive={true}
                   contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
                   contentAfter={null}
                 />
@@ -189,13 +186,12 @@ const IngredientArticleLayout: React.FC<IngredientArticleProps> = ({
             </React.Fragment>
           ))}
           
-          <AdManager
+          <AdUnit
             slotId="ingredient-conclusion-ad"
             format="leaderboard"
             mobileFormat="rectangle"
-            adType="mixed"
-            affiliateCategory="cookware"
-            affiliateRatio={0.3}
+            lazyLoad={true}
+            responsive={true}
             contentBefore={<div className="border-t border-b py-2 mt-8 mb-2 text-center text-xs text-muted-foreground">ADVERTISEMENT</div>}
             contentAfter={null}
           />
