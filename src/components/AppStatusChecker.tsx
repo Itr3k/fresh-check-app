@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from '../hooks/use-toast';
+import { handleError } from '@/lib/errorUtils';
 
 /**
  * Component that checks if the app is properly initialized and handles route changes
@@ -9,11 +10,37 @@ import { toast } from '../hooks/use-toast';
  */
 const AppStatusChecker = () => {
   const [initialized, setInitialized] = useState(false);
+  const [environment, setEnvironment] = useState<string>('unknown');
   const location = useLocation();
+
+  // Detect environment on mount
+  useEffect(() => {
+    try {
+      // Detect environment
+      const hostname = window.location.hostname;
+      let detectedEnv = 'unknown';
+      
+      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+        detectedEnv = 'local';
+      } else if (hostname.includes('lovableproject.com')) {
+        detectedEnv = 'lovable-sandbox';
+      } else if (hostname.includes('preview')) {
+        detectedEnv = 'preview';
+      } else if (hostname.includes('freshcheck.app')) {
+        detectedEnv = 'production';
+      }
+      
+      setEnvironment(detectedEnv);
+      console.log(`AppStatusChecker: Environment detected: ${detectedEnv}`);
+      
+    } catch (error) {
+      handleError(error, 'environment-detection');
+    }
+  }, []);
 
   useEffect(() => {
     try {
-      console.log('AppStatusChecker: App initialized on route:', location.pathname);
+      console.log(`AppStatusChecker: App initializing on route: ${location.pathname} in environment: ${environment}`);
       
       // Set a flag to indicate the app is running
       window.appLoaded = true;
@@ -41,24 +68,57 @@ const AppStatusChecker = () => {
           description: `Error parameter found: ${errorParam}`,
           variant: "destructive",
         });
-        console.warn("Error parameter found in URL:", errorParam);
+        console.warn(`Error parameter found in URL (${environment}):`, errorParam);
+        
+        // Report to analytics if available
+        if (window.gtag) {
+          window.gtag('event', 'error', {
+            event_category: 'URL Parameter Error',
+            event_label: errorParam,
+            non_interaction: true,
+            environment: environment
+          });
+        }
       }
+      
+      // Log successful initialization to analytics
+      if (window.gtag) {
+        window.gtag('event', 'app_initialized', {
+          event_category: 'App Lifecycle',
+          event_label: location.pathname,
+          non_interaction: true,
+          environment: environment
+        });
+      }
+      
     } catch (error) {
       console.error('Error in AppStatusChecker initialization:', error);
+      handleError(error, 'app-status-init');
     }
-  }, []);
+  }, [location.pathname, environment]);
 
   // Log route changes
   useEffect(() => {
     try {
-      console.log('AppStatusChecker: Route changed to:', location.pathname);
-      
-      // Reset scroll position on route change
-      window.scrollTo(0, 0);
+      if (initialized) {
+        console.log(`AppStatusChecker: Route changed to: ${location.pathname} in ${environment}`);
+        
+        // Reset scroll position on route change
+        window.scrollTo(0, 0);
+        
+        // Track page view in analytics
+        if (window.gtag) {
+          window.gtag('event', 'page_view', {
+            page_path: location.pathname,
+            environment: environment
+          });
+        }
+      }
     } catch (error) {
       console.error('Error in AppStatusChecker route change:', error);
+      handleError(error, 'route-change');
     }
-  }, [location.pathname]);
+  }, [location.pathname, initialized, environment]);
 
   return null; // This component doesn't render anything
 };
