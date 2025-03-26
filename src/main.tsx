@@ -13,6 +13,23 @@ import { handleError } from './lib/errorUtils'
 // Log app initialization for debugging
 console.log('Initializing application...')
 
+// Function to hide loader manually if event listener fails
+const hideLoader = () => {
+  const loader = document.getElementById('loading-indicator')
+  if (loader) {
+    loader.style.display = 'none'
+  }
+}
+
+// Function to show error UI
+const showErrorUI = () => {
+  const appError = document.getElementById('app-error')
+  if (appError) {
+    appError.classList.remove('hidden')
+  }
+  hideLoader()
+}
+
 // Get the root element - critical for application to load
 const rootElement = document.getElementById("root")
 
@@ -25,14 +42,6 @@ if (!rootElement) {
 
 // Create root once
 const root = createRoot(rootElement)
-
-// Function to hide loader manually if event listener fails
-const hideLoader = () => {
-  const loader = document.getElementById('loading-indicator')
-  if (loader) {
-    loader.style.display = 'none'
-  }
-}
 
 // Register service worker
 if ('serviceWorker' in navigator) {
@@ -55,12 +64,14 @@ try {
   window.addEventListener('error', (event) => {
     console.error('Global error caught:', event.error)
     handleError(event.error, 'window-onerror')
+    showErrorUI()
   })
   
   // Also handle unhandled promise rejections
   window.addEventListener('unhandledrejection', (event) => {
     console.error('Unhandled Promise rejection:', event.reason)
     handleError(event.reason, 'unhandled-promise')
+    showErrorUI()
   })
   
   root.render(
@@ -81,23 +92,36 @@ try {
 } catch (error) {
   console.error('Critical render error:', error)
   handleError(error, 'root-render')
-  hideLoader() // Hide loader even on error
+  showErrorUI()
   
   // Fallback render with minimal components
-  root.render(
-    <div className="p-8 max-w-md mx-auto my-8 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-medium text-red-600 mb-4">
-        Application failed to load
-      </h2>
-      <p className="text-gray-700 mb-4">
-        There was a problem loading the application. Please try refreshing the page.
-      </p>
-      <button
-        onClick={() => window.location.reload()}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        Refresh Page
-      </button>
-    </div>
-  )
+  try {
+    root.render(
+      <div className="p-8 max-w-md mx-auto my-8 bg-white rounded-lg shadow-md">
+        <h2 className="text-xl font-medium text-red-600 mb-4">
+          Application failed to load
+        </h2>
+        <p className="text-gray-700 mb-4">
+          There was a problem loading the application. Please try refreshing the page.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Refresh Page
+        </button>
+      </div>
+    )
+  } catch (fallbackError) {
+    console.error('Even fallback rendering failed:', fallbackError)
+    document.body.innerHTML = `
+      <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+        <h2 style="color: #e53e3e; margin-bottom: 1rem;">Critical Error</h2>
+        <p style="margin-bottom: 1rem;">The application failed to load. Please try refreshing the page.</p>
+        <button onclick="window.location.reload()" style="background: #3182ce; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
+          Refresh Page
+        </button>
+      </div>
+    `
+  }
 }

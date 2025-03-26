@@ -12,6 +12,8 @@ import Footer from './components/Footer'
 import SkipToContent from './components/SkipToContent'
 import ErrorBoundary from './components/ErrorBoundary'
 import AppStatusChecker from './components/AppStatusChecker'
+import { Toaster } from './components/ui/toaster'
+import WebhookReceiver from './components/WebhookReceiver'
 
 // Core pages
 import Index from './pages/Index'
@@ -109,6 +111,8 @@ function App() {
               </ErrorBoundary>
             </main>
             <Footer />
+            <Toaster />
+            <WebhookReceiver />
           </div>
         </ImagesProvider>
       </RecallsProvider>
