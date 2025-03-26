@@ -8,94 +8,120 @@ import { SpeedInsights } from '@vercel/speed-insights/react'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import ScrollToTop from './components/ScrollToTop.tsx'
-import { FOOD_IMAGES } from './components/FoodCard.tsx'
+import { handleError } from './lib/errorUtils'
 
-// Performance monitoring
-if (process.env.NODE_ENV === 'development') {
-  const reportWebVitals = (metric: any) => {
-    console.log(metric);
-  };
-  
-  // @ts-ignore - Making window.__reportWebVitals available for development
-  window.__reportWebVitals = reportWebVitals;
+// Log app initialization for debugging
+console.log('Initializing application...')
+
+// Function to hide loader manually if event listener fails
+const hideLoader = () => {
+  const loader = document.getElementById('loading-indicator')
+  if (loader) {
+    loader.style.display = 'none'
+  }
 }
 
-// Add performance marks for debugging
-performance.mark('app-start');
+// Function to show error UI
+const showErrorUI = () => {
+  const appError = document.getElementById('app-error')
+  if (appError) {
+    appError.classList.remove('hidden')
+  }
+  hideLoader()
+}
 
-// Get the root element once to avoid repeated DOM queries
-const rootElement = document.getElementById("root");
+// Get the root element - critical for application to load
+const rootElement = document.getElementById("root")
 
 if (!rootElement) {
-  throw new Error("Root element not found");
+  console.error("Root element not found - critical error")
+  // Add visible error message in case console isn't checked
+  document.body.innerHTML = '<div style="padding: 20px; color: red;">Failed to initialize: Root element not found</div>'
+  throw new Error("Root element not found")
 }
 
-const root = createRoot(rootElement);
+// Create root once
+const root = createRoot(rootElement)
 
-// Defer non-critical initialization
-const deferredInit = () => {
-  // Preload critical images after initial render in background
-  const preloadCriticalImages = () => {
-    const criticalImageUrls = [
-      FOOD_IMAGES.chicken,
-      FOOD_IMAGES.milk,
-      FOOD_IMAGES.eggs,
-      FOOD_IMAGES.bread,
-      FOOD_IMAGES.default
-    ];
-    
-    // Use requestIdleCallback to preload images when browser is idle
-    const preloader = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
-    
-    preloader(() => {
-      // Use Intersection Observer to detect when we should preload images
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          criticalImageUrls.forEach(url => {
-            if (url && url.startsWith('http')) {
-              const link = document.createElement('link');
-              link.rel = 'preload';
-              link.as = 'image';
-              link.href = url;
-              document.head.appendChild(link);
-            }
-          });
-          observer.disconnect();
-        }
-      });
-      
-      // Observe the root element to start preloading when app is visible
-      observer.observe(rootElement);
-    });
-  };
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful:', registration.scope)
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error)
+      })
+  })
+}
 
-  // Start preloading after initial render is complete
-  preloadCriticalImages();
+// Render with error handling
+try {
+  console.log('Rendering application...')
   
-  // Measure initial render performance
-  performance.mark('app-rendered');
-  performance.measure('app-startup', 'app-start', 'app-rendered');
-};
-
-// Render the app first, then perform deferred operations
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ScrollToTop />
-      <HelmetProvider>
-        <App />
-        <Analytics />
-        <SpeedInsights />
-      </HelmetProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
-
-// Schedule non-critical operations after initial render
-if (typeof window !== 'undefined') {
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(deferredInit, { timeout: 1000 });
-  } else {
-    setTimeout(deferredInit, 200);
+  // Create a global error handler for uncaught errors
+  window.addEventListener('error', (event) => {
+    console.error('Global error caught:', event.error)
+    handleError(event.error, 'window-onerror')
+    showErrorUI()
+  })
+  
+  // Also handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise rejection:', event.reason)
+    handleError(event.reason, 'unhandled-promise')
+    showErrorUI()
+  })
+  
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <ScrollToTop />
+        <HelmetProvider>
+          <App />
+          <Analytics />
+          <SpeedInsights />
+        </HelmetProvider>
+      </BrowserRouter>
+    </React.StrictMode>
+  )
+  
+  // App rendered successfully, hide loader after a short delay
+  setTimeout(hideLoader, 500)
+} catch (error) {
+  console.error('Critical render error:', error)
+  handleError(error, 'root-render')
+  showErrorUI()
+  
+  // Fallback render with minimal components
+  try {
+    root.render(
+      <div className="p-8 max-w-md mx-auto my-8 bg-white rounded-lg shadow-md">
+        <h2 className="text-xl font-medium text-red-600 mb-4">
+          Application failed to load
+        </h2>
+        <p className="text-gray-700 mb-4">
+          There was a problem loading the application. Please try refreshing the page.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Refresh Page
+        </button>
+      </div>
+    )
+  } catch (fallbackError) {
+    console.error('Even fallback rendering failed:', fallbackError)
+    document.body.innerHTML = `
+      <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+        <h2 style="color: #e53e3e; margin-bottom: 1rem;">Critical Error</h2>
+        <p style="margin-bottom: 1rem;">The application failed to load. Please try refreshing the page.</p>
+        <button onclick="window.location.reload()" style="background: #3182ce; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
+          Refresh Page
+        </button>
+      </div>
+    `
   }
 }
