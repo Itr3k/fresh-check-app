@@ -20,6 +20,22 @@ const OptimizedIcons = {
   Tag: memo(Tag)
 };
 
+// Extract navigation items to prevent unnecessary re-renders
+const foodSafetyLinks = [
+  {
+    to: "/food-safety/understanding-food-labels",
+    icon: <OptimizedIcons.Tag className="h-4 w-4 text-primary" />,
+    title: "Understanding Food Labels",
+    description: 'Learn the difference between "Best By," "Use By," and "Sell By" dates'
+  },
+  {
+    to: "/food-safety/temperature-danger-zone",
+    icon: <OptimizedIcons.AlertOctagon className="h-4 w-4 text-primary" />,
+    title: "Temperature Danger Zone",
+    description: "Safe food temperatures and avoiding bacterial growth"
+  }
+];
+
 // Memoize the header to prevent unnecessary rerenders
 const Header = memo(() => {
   const isMobile = useIsMobile();

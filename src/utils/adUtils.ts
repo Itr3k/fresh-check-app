@@ -1,3 +1,4 @@
+
 import { reportPerformance } from "@/lib/utils";
 
 // Check if AdSense is loaded
@@ -138,3 +139,16 @@ export const detectAdBlocker = (callback: (blocked: boolean) => void): void => {
     callback(blocked);
   }, 100);
 };
+
+// Add window augmentation for TypeScript
+declare global {
+  interface Window {
+    adsbygoogle: any[];
+    loadAdSense: () => void;
+    adsenseLoading: boolean;
+    adsenseLoaded: boolean;
+    adsenseRetries: number;
+    MAX_ADSENSE_RETRIES: number;
+    doNotTrack?: string;
+  }
+}

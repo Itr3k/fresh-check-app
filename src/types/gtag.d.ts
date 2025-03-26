@@ -12,12 +12,4 @@ interface Window {
       [key: string]: any;
     }
   ) => void;
-  appLoaded?: boolean;
-  adsenseLoaded?: boolean;
-  adsenseLoading?: boolean;
-  adsenseRetries?: number;
-  MAX_ADSENSE_RETRIES?: number;
-  loadAdSense?: () => void;
-  adsbygoogle?: any[];
-  doNotTrack?: string;
 }
