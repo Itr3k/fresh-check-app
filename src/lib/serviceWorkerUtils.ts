@@ -6,6 +6,25 @@
 import { handleError } from './errorUtils';
 
 /**
+ * Get the current environment name
+ */
+export const getEnvironmentName = (): string => {
+  const hostname = window.location.hostname;
+  
+  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+    return 'local';
+  } else if (hostname.includes('lovableproject.com')) {
+    return 'lovable-sandbox';
+  } else if (hostname.includes('preview')) {
+    return 'preview';
+  } else if (hostname.includes('freshcheck.app')) {
+    return 'production';
+  }
+  
+  return 'unknown';
+};
+
+/**
  * Attempt to register the service worker for production environments,
  * but bypass it in development and preview environments
  */
@@ -24,7 +43,7 @@ export const registerServiceWorker = async (): Promise<void> => {
         hostname.includes('lovableproject.com') ||
         hostname.includes('preview')) {
       console.log('Skipping service worker registration in development/preview environment');
-      unregisterServiceWorker(); // Unregister existing service workers in dev
+      await unregisterServiceWorker(); // Unregister existing service workers in dev
       return;
     }
     
@@ -81,28 +100,6 @@ export const unregisterServiceWorker = async (): Promise<void> => {
  * Check if the app is running in a production environment
  */
 export const isProductionEnvironment = (): boolean => {
-  const hostname = window.location.hostname;
-  return !hostname.includes('localhost') && 
-         !hostname.includes('127.0.0.1') && 
-         !hostname.includes('lovableproject.com') &&
-         !hostname.includes('preview');
+  return getEnvironmentName() === 'production';
 };
 
-/**
- * Get the current environment name
- */
-export const getEnvironmentName = (): string => {
-  const hostname = window.location.hostname;
-  
-  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-    return 'local';
-  } else if (hostname.includes('lovableproject.com')) {
-    return 'lovable-sandbox';
-  } else if (hostname.includes('preview')) {
-    return 'preview';
-  } else if (hostname.includes('freshcheck.app')) {
-    return 'production';
-  }
-  
-  return 'unknown';
-};

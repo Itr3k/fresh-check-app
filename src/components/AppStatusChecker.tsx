@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from '../hooks/use-toast';
 import { handleError } from '@/lib/errorUtils';
+import { getEnvironmentName } from '@/lib/serviceWorkerUtils';
 
 /**
  * Component that checks if the app is properly initialized and handles route changes
@@ -16,23 +17,9 @@ const AppStatusChecker = () => {
   // Detect environment on mount
   useEffect(() => {
     try {
-      // Detect environment
-      const hostname = window.location.hostname;
-      let detectedEnv = 'unknown';
-      
-      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-        detectedEnv = 'local';
-      } else if (hostname.includes('lovableproject.com')) {
-        detectedEnv = 'lovable-sandbox';
-      } else if (hostname.includes('preview')) {
-        detectedEnv = 'preview';
-      } else if (hostname.includes('freshcheck.app')) {
-        detectedEnv = 'production';
-      }
-      
+      const detectedEnv = getEnvironmentName();
       setEnvironment(detectedEnv);
       console.log(`AppStatusChecker: Environment detected: ${detectedEnv}`);
-      
     } catch (error) {
       handleError(error, 'environment-detection');
     }

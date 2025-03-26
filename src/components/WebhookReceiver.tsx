@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRecalls } from '../contexts/RecallsContext';
 import { toast } from '../hooks/use-toast';
 import { handleError } from '@/lib/errorUtils';
+import { getEnvironmentName } from '@/lib/serviceWorkerUtils';
 
 const WebhookReceiver = () => {
   const { processWebhookData } = useRecalls();
@@ -11,19 +12,7 @@ const WebhookReceiver = () => {
   useEffect(() => {
     // Detect environment
     try {
-      const hostname = window.location.hostname;
-      let detectedEnv = 'unknown';
-      
-      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-        detectedEnv = 'local';
-      } else if (hostname.includes('lovableproject.com')) {
-        detectedEnv = 'lovable-sandbox';
-      } else if (hostname.includes('preview')) {
-        detectedEnv = 'preview';
-      } else if (hostname.includes('freshcheck.app')) {
-        detectedEnv = 'production';
-      }
-      
+      const detectedEnv = getEnvironmentName();
       setEnvironment(detectedEnv);
       console.log(`WebhookReceiver: Environment detected: ${detectedEnv}`);
     } catch (error) {

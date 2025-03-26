@@ -1,4 +1,6 @@
 
+import { getEnvironmentName } from './serviceWorkerUtils';
+
 /**
  * Safely handles errors and logs them for debugging
  * @param error The error to handle
@@ -53,11 +55,7 @@ export const withErrorHandling = <T extends (...args: any[]) => Promise<any>>(
  * Helper to check if the app is running in production
  */
 export const isProduction = (): boolean => {
-  const hostname = window.location.hostname;
-  return !hostname.includes('localhost') && 
-         !hostname.includes('127.0.0.1') && 
-         !hostname.includes('lovableproject.com') &&
-         !hostname.includes('preview');
+  return getEnvironmentName() === 'production';
 };
 
 /**
