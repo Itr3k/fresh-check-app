@@ -9,7 +9,23 @@ import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import ScrollToTop from './components/ScrollToTop.tsx'
 import { handleError } from './lib/errorUtils'
-import { registerServiceWorker, getEnvironmentName } from './lib/serviceWorkerUtils'
+
+// Get the current environment
+const getEnvironmentName = (): string => {
+  const hostname = window.location.hostname;
+  
+  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+    return 'local';
+  } else if (hostname.includes('lovableproject.com')) {
+    return 'lovable-sandbox';
+  } else if (hostname.includes('preview')) {
+    return 'preview';
+  } else if (hostname.includes('freshcheck.app')) {
+    return 'production';
+  }
+  
+  return 'unknown';
+};
 
 // Log app initialization for debugging with environment info
 const environment = getEnvironmentName();
@@ -50,6 +66,62 @@ const showErrorUI = (errorMessage?: string) => {
   }
   hideLoader();
 }
+
+// Register service worker - but only in production
+const registerServiceWorker = async (): Promise<void> => {
+  if (!('serviceWorker' in navigator)) {
+    console.log('Service workers are not supported in this browser');
+    return;
+  }
+
+  try {
+    const hostname = window.location.hostname;
+    
+    // Skip service worker registration in development environments
+    if (hostname.includes('localhost') || 
+        hostname.includes('127.0.0.1') || 
+        hostname.includes('lovableproject.com') ||
+        hostname.includes('preview')) {
+      console.log('Skipping service worker registration in development/preview environment');
+      
+      // Unregister existing service workers in dev
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        
+        for (const registration of registrations) {
+          await registration.unregister();
+          console.log('ServiceWorker unregistered');
+        }
+      }
+      return;
+    }
+    
+    // Only register in production environments
+    const registration = await navigator.serviceWorker.register('/sw.js');
+    console.log('ServiceWorker registration successful:', registration.scope);
+    
+    // Set the app build ID for debugging
+    if (registration.active) {
+      try {
+        const message = { type: 'GET_VERSION' };
+        const messageChannel = new MessageChannel();
+        registration.active.postMessage(message, [messageChannel.port2]);
+        
+        messageChannel.port1.onmessage = (event) => {
+          if (event.data && event.data.version) {
+            window.appBuildId = event.data.version;
+            console.log('Service worker version:', event.data.version);
+          }
+        };
+      } catch (error) {
+        console.error('Error getting service worker version:', error);
+      }
+    }
+  } catch (error) {
+    console.error('ServiceWorker registration failed:', error);
+    handleError(error, 'sw-registration');
+  }
+};
 
 // Get the root element - critical for application to load
 const rootElement = document.getElementById("root");

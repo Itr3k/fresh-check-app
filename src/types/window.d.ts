@@ -9,4 +9,5 @@ interface Window {
   adsenseLoaded?: boolean;
   loadAdSense?: () => void;
   __reportWebVitals?: (metric: any) => void;
+  doNotTrack?: string;
 }
