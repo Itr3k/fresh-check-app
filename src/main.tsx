@@ -17,7 +17,7 @@ console.log(`Initializing application in ${environment} environment...`);
 
 // Store environment in window for debugging
 window.appEnvironment = environment;
-window.appVersion = process.env.npm_package_version || '0.0.0';
+window.appVersion = import.meta.env.VITE_APP_VERSION || '0.0.0';
 
 // Function to hide loader manually if event listener fails
 const hideLoader = () => {

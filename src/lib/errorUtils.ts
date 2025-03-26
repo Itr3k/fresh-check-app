@@ -53,7 +53,11 @@ export const withErrorHandling = <T extends (...args: any[]) => Promise<any>>(
  * Helper to check if the app is running in production
  */
 export const isProduction = (): boolean => {
-  return process.env.NODE_ENV === 'production';
+  const hostname = window.location.hostname;
+  return !hostname.includes('localhost') && 
+         !hostname.includes('127.0.0.1') && 
+         !hostname.includes('lovableproject.com') &&
+         !hostname.includes('preview');
 };
 
 /**
@@ -62,6 +66,3 @@ export const isProduction = (): boolean => {
 export const isBrowser = (): boolean => {
   return typeof window !== 'undefined';
 };
-
-// Remove the conflicting declaration and rely on the one in src/types/gtag.d.ts
-// The global interface declaration was causing the TypeScript error

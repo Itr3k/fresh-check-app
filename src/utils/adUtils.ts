@@ -1,3 +1,4 @@
+
 import { reportPerformance } from "@/lib/utils";
 
 // Check if AdSense is loaded
@@ -10,7 +11,12 @@ export const isAdSenseLoaded = (): boolean => {
 // Check if we're in an environment where ads should be shown
 export const shouldShowAds = (): boolean => {
   // Don't show ads in development or if user opted out
-  if (process.env.NODE_ENV === 'development') {
+  const hostname = window.location.hostname;
+  const isDevelopment = hostname.includes('localhost') || 
+                        hostname.includes('127.0.0.1') ||
+                        hostname.includes('lovableproject.com');
+                        
+  if (isDevelopment) {
     return false;
   }
   
