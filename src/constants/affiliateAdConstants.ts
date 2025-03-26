@@ -45,7 +45,7 @@ export const KITCHEN_TOOL_ADS: AffiliateAd[] = [
   {
     id: 'amazon-knife-1',
     type: 'amazon',
-    title: 'Chef's Knife Set',
+    title: "Chef's Knife Set",
     description: 'Professional 8-inch knife with sharpener',
     linkUrl: 'https://www.amazon.com/dp/B085LVL1QF?tag=freshcheck-20',
     imageUrl: '/affiliate-ads/chef-knife.jpg'
