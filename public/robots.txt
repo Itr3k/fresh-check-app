@@ -24,13 +24,8 @@ Allow: /food-safety/holiday-events
 Allow: /food-safety/science-of-spoilage
 Allow: /food-safety/emergency
 Allow: /food-safety/understanding-food-labels
-Allow: /ingredients/bha-butylated-hydroxyanisole
-Allow: /ingredients/red-40-food-coloring
-Allow: /ingredients/natural-flavors
-Allow: /ingredients/aspartame
 Allow: /categories/*
 Allow: /food/*
-Allow: /food/chicken-raw
 Allow: /recalls/*
 Allow: /search
 
@@ -56,7 +51,6 @@ Crawl-delay: 2
 User-agent: Googlebot
 Allow: /food-safety/
 Allow: /food/
-Allow: /ingredients/
 Crawl-delay: 1
 
 # Special instructions for mobile crawler

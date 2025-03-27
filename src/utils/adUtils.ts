@@ -11,12 +11,7 @@ export const isAdSenseLoaded = (): boolean => {
 // Check if we're in an environment where ads should be shown
 export const shouldShowAds = (): boolean => {
   // Don't show ads in development or if user opted out
-  const hostname = window.location.hostname;
-  const isDevelopment = hostname.includes('localhost') || 
-                        hostname.includes('127.0.0.1') ||
-                        hostname.includes('lovableproject.com');
-                        
-  if (isDevelopment) {
+  if (process.env.NODE_ENV === 'development') {
     return false;
   }
   
@@ -144,3 +139,16 @@ export const detectAdBlocker = (callback: (blocked: boolean) => void): void => {
     callback(blocked);
   }, 100);
 };
+
+// Add window augmentation for TypeScript
+declare global {
+  interface Window {
+    adsbygoogle: any[];
+    loadAdSense: () => void;
+    adsenseLoading: boolean;
+    adsenseLoaded: boolean;
+    adsenseRetries: number;
+    MAX_ADSENSE_RETRIES: number;
+    doNotTrack?: string;
+  }
+}

@@ -12,12 +12,7 @@ export function reportPerformance(metricName: string, value: number): void {
     window.performance.mark(`${metricName}-start`);
     
     // Report to analytics in production
-    const hostname = window.location.hostname;
-    const isProduction = !hostname.includes('localhost') && 
-                       !hostname.includes('127.0.0.1') && 
-                       !hostname.includes('lovableproject.com');
-    
-    if (isProduction) {
+    if (process.env.NODE_ENV === 'production') {
       try {
         // Use Web Vitals API if available
         const metric = {

@@ -11,7 +11,7 @@ export const AD_FORMAT_DIMENSIONS = {
 
 // Environment helper
 export const isDevelopmentEnv = (): boolean => {
-  return window.location.hostname === 'localhost' ||
-         window.location.hostname.includes('127.0.0.1') ||
+  return process.env.NODE_ENV === 'development' || 
+         window.location.hostname === 'localhost' ||
          window.location.hostname.includes('lovableproject.com');
 };

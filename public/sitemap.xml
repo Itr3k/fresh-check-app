@@ -1,68 +1,15 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <!-- Homepage -->
   <url>
     <loc>https://freshcheck.app/</loc>
-    <lastmod>2024-05-17</lastmod>
+    <lastmod>2024-03-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://freshcheck.app/og-image.png</image:loc>
       <image:title>FreshCheck Homepage</image:title>
-    </image:image>
-  </url>
-  
-  <!-- Food Ingredients Pages -->
-  <url>
-    <loc>https://freshcheck.app/ingredients</loc>
-    <lastmod>2024-05-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://freshcheck.app/ingredient-images/ingredients-guide.jpg</image:loc>
-      <image:title>Food Ingredients Guide</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://freshcheck.app/ingredients/bha-butylated-hydroxyanisole</loc>
-    <lastmod>2024-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1618160702438-9b02ab6515c9</image:loc>
-      <image:title>BHA Food Preservative</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://freshcheck.app/ingredients/red-40-food-coloring</loc>
-    <lastmod>2024-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1506744038136-46273834b3fb</image:loc>
-      <image:title>Red 40 Food Coloring</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://freshcheck.app/ingredients/natural-flavors</loc>
-    <lastmod>2024-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07</image:loc>
-      <image:title>Natural Flavors in Food</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://freshcheck.app/ingredients/aspartame</loc>
-    <lastmod>2024-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://images.unsplash.com/photo-1500673922987-e212871fec22</image:loc>
-      <image:title>Aspartame Artificial Sweetener</image:title>
     </image:image>
   </url>
   
