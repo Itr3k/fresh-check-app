@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { getFoodById } from '@/data/foodData';
