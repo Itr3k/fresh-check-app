@@ -1,5 +1,5 @@
 
-import { createContext, useContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
 import { FOOD_IMAGES } from '../components/FoodCard';
 
 type ImagesContextType = {

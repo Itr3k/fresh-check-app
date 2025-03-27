@@ -66,6 +66,24 @@ try {
 try {
   console.log("Attempting to render React application");
   
+  // Test render a simple element to verify React is working
+  const TestComponent = () => <div>React test render</div>;
+  
+  try {
+    const testDiv = document.createElement('div');
+    testDiv.id = 'react-test-element';
+    testDiv.style.display = 'none';
+    document.body.appendChild(testDiv);
+    
+    const testRoot = createRoot(testDiv);
+    testRoot.render(<TestComponent />);
+    console.log("Test render successful");
+    document.body.removeChild(testDiv);
+  } catch (testError) {
+    console.error("React test render failed:", testError);
+    throw new Error(`React test render failed: ${testError instanceof Error ? testError.message : String(testError)}`);
+  }
+  
   // Defer non-critical initialization
   const deferredInit = () => {
     // Preload critical images after initial render in background
@@ -118,21 +136,6 @@ try {
     const startupPerformance = performance.getEntriesByName('app-startup')[0];
     console.log("App startup performance:", startupPerformance.duration.toFixed(2) + "ms");
   };
-
-  // Create a simple test element to verify rendering capabilities
-  const testDiv = document.createElement('div');
-  testDiv.id = 'react-test-element';
-  testDiv.style.display = 'none';
-  document.body.appendChild(testDiv);
-  
-  try {
-    const testRoot = createRoot(testDiv);
-    testRoot.render(<div>Test render successful</div>);
-    console.log("Test render successful");
-    document.body.removeChild(testDiv);
-  } catch (testError) {
-    console.error("Test render failed:", testError);
-  }
 
   // Render the app first, then perform deferred operations
   console.log("Rendering React application");

@@ -13,6 +13,28 @@ import WebhookReceiver from "./components/WebhookReceiver";
 import { ImagesProvider } from './contexts/ImagesContext';
 import ScrollToTop from "./components/ScrollToTop";
 import Debug from "./components/Debug";
+import DiagnosticPage from "./pages/DiagnosticPage";
+
+// Add a visible debug component to help identify if any rendering is happening
+const DebugRender = () => {
+  console.log('DebugRender component mounted');
+  return (
+    <div style={{
+      position: 'fixed',
+      top: '10px',
+      left: '10px',
+      zIndex: 9999,
+      background: 'green',
+      color: 'white',
+      padding: '10px',
+      borderRadius: '5px',
+      fontFamily: 'monospace',
+      fontSize: '12px'
+    }}>
+      React is rendering (timestamp: {new Date().toISOString()})
+    </div>
+  );
+};
 
 // Lazy load non-critical pages
 const FoodDetail = lazy(() => import("./pages/FoodDetail"));
@@ -59,6 +81,8 @@ function App() {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <RecallsProvider>
           <ImagesProvider>
+            {/* Add debug render component in development */}
+            {process.env.NODE_ENV === 'development' && <DebugRender />}
             {process.env.NODE_ENV === 'development' && <Debug />}
             <WebhookReceiver />
             <ScrollToTop />
@@ -74,6 +98,7 @@ function App() {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/recalls" element={<RecallsPage />} />
                   <Route path="/recalls/:id" element={<RecallDetailPage />} />
+                  <Route path="/diagnostic" element={<DiagnosticPage />} />
                   
                   {/* Food Safety Educational Pages */}
                   <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
