@@ -1,5 +1,5 @@
 
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,9 +15,17 @@ import ScrollToTop from "./components/ScrollToTop";
 import Debug from "./components/Debug";
 import DiagnosticPage from "./pages/DiagnosticPage";
 
-// Add a visible debug component to help identify if any rendering is happening
+// Enhanced debug component to ensure React is rendering
 const DebugRender = () => {
-  console.log('DebugRender component mounted');
+  const timestamp = new Date().toISOString();
+  
+  useEffect(() => {
+    console.log(`DebugRender component mounted at ${timestamp}`);
+    return () => {
+      console.log(`DebugRender component unmounted`);
+    };
+  }, [timestamp]);
+  
   return (
     <div style={{
       position: 'fixed',
@@ -29,9 +37,10 @@ const DebugRender = () => {
       padding: '10px',
       borderRadius: '5px',
       fontFamily: 'monospace',
-      fontSize: '12px'
+      fontSize: '12px',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
     }}>
-      React is rendering (timestamp: {new Date().toISOString()})
+      React is rendering (timestamp: {timestamp})
     </div>
   );
 };
@@ -75,6 +84,13 @@ const queryClient = new QueryClient({
 
 function App() {
   console.log("App component rendering");
+  
+  useEffect(() => {
+    console.log("App component mounted");
+    return () => {
+      console.log("App component unmounted");
+    };
+  }, []);
   
   return (
     <QueryClientProvider client={queryClient}>
