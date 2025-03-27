@@ -10,8 +10,9 @@ export const isAdSenseLoaded = (): boolean => {
 
 // Check if we're in an environment where ads should be shown
 export const shouldShowAds = (): boolean => {
-  // Don't show ads in development or if user opted out
-  if (process.env.NODE_ENV === 'development') {
+  // Don't show ads in development
+  if (window.location.hostname === 'localhost' || 
+      window.location.hostname.includes('lovableproject.com')) {
     return false;
   }
   

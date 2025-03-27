@@ -185,25 +185,13 @@ const AdUnit: React.FC<AdUnitProps> = ({
     };
   }, [slotId]);
 
-  const defaultContentBefore = !contentBefore ? (
-    <div className="mb-2 p-2 bg-secondary/10 rounded text-sm">
-      <h4 className="text-xs font-medium text-center">Food Storage Information</h4>
-      <p className="text-xs text-muted-foreground text-center">Learn about safe storage times for your food.</p>
-    </div>
-  ) : contentBefore;
-
-  const defaultContentAfter = !contentAfter ? (
-    <div className="mt-2 p-2 bg-secondary/10 rounded text-xs text-muted-foreground text-center">
-      <p>Always check food for signs of spoilage before consuming.</p>
-    </div>
-  ) : contentAfter;
-
+  // Match the new design for ad containers
   return (
-    <div className="ad-wrapper my-4 w-full flex flex-col items-center">
-      {defaultContentBefore}
+    <div className="ad-wrapper py-3 w-full flex flex-col items-center">
+      {contentBefore && <div className="mb-2 text-center w-full">{contentBefore}</div>}
       
       <div 
-        className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat} w-full`} 
+        className={`flex justify-center items-center overflow-hidden ${className} print:hidden ad-unit ad-${activeFormat} w-full rounded-md border border-gray-200`}
         role="complementary" 
         aria-label="Advertisement"
         data-ad-pending={isVisible && !adLoaded ? "true" : undefined}
@@ -230,7 +218,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
               }
               
               <div 
-                className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full flex items-center justify-center ${
+                className={`bg-gray-100 overflow-hidden h-full w-full flex items-center justify-center ${
                   isError || isDevelopment ? 'hidden' : ''
                 }`}
                 id={`ad-container-${slotId}`}
@@ -258,7 +246,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
             }
             
             <div 
-              className={`bg-secondary/20 border border-border/30 rounded-lg overflow-hidden h-full w-full flex items-center justify-center ${
+              className={`bg-gray-100 overflow-hidden h-full w-full flex items-center justify-center ${
                 isError || isDevelopment ? 'hidden' : ''
               }`}
               id={`ad-container-${slotId}`}
@@ -270,7 +258,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
         )}
       </div>
       
-      {defaultContentAfter}
+      {contentAfter && <div className="mt-2 text-center w-full">{contentAfter}</div>}
     </div>
   );
 };

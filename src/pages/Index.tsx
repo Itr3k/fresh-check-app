@@ -54,6 +54,7 @@ const Index = () => {
     }
   }, [navigate]);
 
+  // Schema.org structured data
   const foodItemSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -201,117 +202,75 @@ const Index = () => {
             <HeroSection onSearch={handleSearch} />
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Left sidebar ad */}
-            <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
-              <div className="sticky top-24">
-                <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
-                  <AdUnit 
-                    slotId="left-sidebar" 
-                    format="skyscraper" 
-                    className="hidden lg:flex" 
-                    responsive={false}
-                    lazyLoad={false}
-                    contentBefore={
-                      <div className="mb-2 p-2 bg-secondary/10 rounded text-center">
-                        <h4 className="text-xs font-medium">Storage Guide</h4>
-                        <p className="text-xs text-muted-foreground">Find storage times for different food items</p>
-                      </div>
-                    }
-                  />
-                </Suspense>
-              </div>
+          <div className="mb-8">
+            <PopularFoods />
+          </div>
+
+          {/* Mid-content ad unit */}
+          <div className="my-6 print:hidden flex justify-center">
+            <Suspense fallback={<SkeletonLoader height="90px" />}>
+              <AdUnit 
+                slotId="home-content-ad" 
+                format="leaderboard"
+                mobileFormat="rectangle" 
+                lazyLoad={true}
+                responsive={true}
+                contentBefore={
+                  <div className="text-xs text-center text-green-600 uppercase tracking-wider font-medium mb-1">
+                    Advertisement
+                  </div>
+                }
+              />
+            </Suspense>
+          </div>
+          
+          <div id="browse-categories" className="my-10">
+            <h2 className="text-2xl font-bold mb-6 text-left">Explore Food Categories</h2>
+            <Suspense fallback={<SkeletonLoader height="300px" />}>
+              <CategoryCards />
+            </Suspense>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
+            <div id="food-safety-education">
+              <h2 className="text-2xl font-bold mb-6 text-left">Food Safety Education</h2>
+              <Suspense fallback={<SkeletonLoader height="200px" />}>
+                <FoodSafetyEducation />
+              </Suspense>
             </div>
-
-            {/* Main content area */}
-            <div className="flex-1">
-              <PopularFoods />
-              
-              <FoodLabelsPreview />
-
-              <div id="browse-categories">
-                <Suspense fallback={<SkeletonLoader height="300px" className="mt-8" />}>
-                  <CategoryCards />
-                </Suspense>
-              </div>
-              
-              <div id="food-safety-education">
-                <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
-                  <FoodSafetyEducation />
-                </Suspense>
-              </div>
-
-              <Suspense fallback={<SkeletonLoader height="250px" className="mt-8" />}>
+            
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-left">Food Safety Facts</h2>
+              <Suspense fallback={<SkeletonLoader height="200px" />}>
                 <FoodSafetyFacts />
               </Suspense>
-              
-              {/* Mid-content ad unit with proper spacing */}
-              <div className="my-8 print:hidden flex justify-center">
-                <Suspense fallback={<SkeletonLoader height="90px" />}>
-                  <AdUnit 
-                    slotId="home-content-ad" 
-                    format="leaderboard"
-                    mobileFormat="rectangle" 
-                    lazyLoad={true}
-                    responsive={true}
-                    contentBefore={
-                      <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
-                        <h4 className="text-xs font-medium">Expiration Date Calculator</h4>
-                        <p className="text-xs text-muted-foreground">Use our calculator to determine how long your food will stay fresh</p>
-                      </div>
-                    }
-                    contentAfter={
-                      <div className="mt-2 p-2 bg-secondary/10 rounded w-full text-center">
-                        <p className="text-xs text-muted-foreground">Remember to always check for signs of spoilage before consuming food</p>
-                      </div>
-                    }
-                  />
-                </Suspense>
-              </div>
-              
-              <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
-                <SavedFoods />
-              </Suspense>
-
-              {/* Search prompt */}
-              <div 
-                className="mt-8 p-4 bg-secondary/30 rounded-lg cursor-pointer"
-                onClick={scrollToSearch}
-                ref={searchRef}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/20 p-2 rounded-lg">
-                    <Search size={20} className="text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-medium mb-1">Can't find what you're looking for?</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Try searching for a specific food or browse our categories. We have storage
-                      information for hundreds of food items.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
+          </div>
+          
+          <div className="my-10">
+            <FoodLabelsPreview />
+          </div>
+          
+          <Suspense fallback={<SkeletonLoader height="200px" className="mt-8" />}>
+            <SavedFoods />
+          </Suspense>
 
-            {/* Right sidebar ad */}
-            <div className="hidden lg:block lg:w-[180px] flex-shrink-0">
-              <div className="sticky top-24">
-                <Suspense fallback={<SkeletonLoader height="600px" className="w-[160px]" />}>
-                  <AdUnit 
-                    slotId="right-sidebar" 
-                    format="skyscraper" 
-                    className="hidden lg:flex" 
-                    responsive={false}
-                    lazyLoad={false}
-                    contentBefore={
-                      <div className="mb-2 p-2 bg-secondary/10 rounded text-center">
-                        <h4 className="text-xs font-medium">Food Safety Resources</h4>
-                        <p className="text-xs text-muted-foreground">Important information about food storage</p>
-                      </div>
-                    }
-                  />
-                </Suspense>
+          {/* Search prompt */}
+          <div 
+            className="mt-8 p-6 bg-white rounded-lg shadow-sm cursor-pointer border border-gray-100"
+            onClick={scrollToSearch}
+            ref={searchRef}
+          >
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded-lg">
+                <Search size={20} className="text-primary" />
+              </div>
+              <div className="text-left">
+                <h2 className="text-lg font-medium mb-1">Can't find what you're looking for?</h2>
+                <p className="text-sm text-muted-foreground">
+                  Try searching for a specific food or browse our categories. We have storage
+                  information for hundreds of food items.
+                </p>
               </div>
             </div>
           </div>
@@ -326,9 +285,8 @@ const Index = () => {
                 lazyLoad={true}
                 responsive={true}
                 contentBefore={
-                  <div className="mb-2 p-2 bg-secondary/10 rounded w-full text-center">
-                    <h4 className="text-xs font-medium">Food Expiration Calculator</h4>
-                    <p className="text-xs text-muted-foreground">Calculate when your food will expire</p>
+                  <div className="text-xs text-center text-green-600 uppercase tracking-wider font-medium mb-1">
+                    Advertisement
                   </div>
                 }
               />

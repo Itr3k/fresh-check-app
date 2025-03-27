@@ -9,9 +9,8 @@ export const AD_FORMAT_DIMENSIONS = {
   billboard: { width: 970, height: 250, name: "Billboard" }
 };
 
-// Environment helper
+// Environment helper - using hostname detection instead of process.env
 export const isDevelopmentEnv = (): boolean => {
-  return process.env.NODE_ENV === 'development' || 
-         window.location.hostname === 'localhost' ||
+  return window.location.hostname === 'localhost' ||
          window.location.hostname.includes('lovableproject.com');
 };

@@ -14,15 +14,15 @@ const PlaceholderAd: React.FC<PlaceholderAdProps> = ({ adName, width, height }) 
   const Icon = isRectangular ? Rows3 : Square;
   
   return (
-    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-secondary/20 rounded-lg border border-border/40">
-      <p className="text-xs text-muted-foreground mb-1 font-medium">
+    <div className="text-center p-3 h-full w-full flex flex-col items-center justify-center bg-gray-100 rounded-md">
+      <p className="text-xs text-gray-500 mb-1">
         Advertisement
       </p>
       <div className="flex flex-col items-center justify-center w-full h-full">
-        <div className="flex items-center justify-center w-[90%] h-[70%] bg-secondary/30 rounded-md border border-dashed border-border/50">
-          <Icon className="w-6 h-6 text-muted-foreground/60" />
+        <div className="flex items-center justify-center w-[90%] h-[70%] bg-gray-200 rounded-md border border-dashed border-gray-300">
+          <Icon className="w-6 h-6 text-gray-400" />
         </div>
-        <p className="text-xs text-muted-foreground mt-2 italic">
+        <p className="text-xs text-gray-400 mt-2 italic">
           {adName} ({width}×{height})
         </p>
       </div>
