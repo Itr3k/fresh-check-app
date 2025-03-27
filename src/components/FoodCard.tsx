@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState, useEffect, memo, useRef } from "react";
@@ -148,8 +147,7 @@ const FoodCard = memo(({ id, name, imageUrl, category, index = 0 }: FoodCardProp
               loading={index > 2 ? "lazy" : "eager"} 
               onError={handleImageError}
               onLoad={handleImageLoad}
-              // Fix: Use lowercase fetchpriority instead of fetchPriority
-              fetchpriority={index < 3 ? "high" : "auto"}
+              fetchPriority={index < 3 ? "high" : "auto"}
               decoding={index < 3 ? "sync" : "async"}
             />
           </div>
