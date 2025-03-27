@@ -10,11 +10,19 @@ import { HelmetProvider } from 'react-helmet-async'
 import ScrollToTop from './components/ScrollToTop.tsx'
 import { FOOD_IMAGES } from './components/FoodCard.tsx'
 
+// Add more detailed error logging
+console.log("Application initialization started");
+
 // Add error boundary for the entire application
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error);
   // Prevent the error from being swallowed
   event.preventDefault();
+});
+
+// Add unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled Promise Rejection:', event.reason);
 });
 
 // Performance monitoring
@@ -29,19 +37,30 @@ if (process.env.NODE_ENV === 'development') {
 
 // Add performance marks for debugging
 performance.mark('app-start');
+console.log("Performance mark: app-start");
 
 // Get the root element once to avoid repeated DOM queries
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
   console.error("Root element not found in the DOM");
+  document.body.innerHTML = '<div style="color: red; padding: 20px;">Error: Root element (#root) not found</div>';
   throw new Error("Root element not found");
 }
 
 // Verify DOM is ready before rendering
 console.log("DOM ready, root element found:", rootElement);
 
-const root = createRoot(rootElement);
+// Create the root instance in a try-catch block
+let root;
+try {
+  root = createRoot(rootElement);
+  console.log("React root created successfully");
+} catch (error) {
+  console.error("Failed to create React root:", error);
+  document.body.innerHTML = '<div style="color: red; padding: 20px;">Failed to initialize React</div>';
+  throw error;
+}
 
 // Render with error handling
 try {
@@ -62,6 +81,8 @@ try {
       // Filter out any undefined or non-string URLs
       const validUrls = criticalImageUrls.filter(url => typeof url === 'string' && url.startsWith('http'));
       
+      console.log("Preloading critical images:", validUrls.length);
+      
       // Use requestIdleCallback to preload images when browser is idle
       const preloader = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
       
@@ -77,6 +98,7 @@ try {
               document.head.appendChild(link);
             });
             observer.disconnect();
+            console.log("Critical images preloaded");
           }
         });
         
@@ -93,7 +115,24 @@ try {
     // Measure initial render performance
     performance.mark('app-rendered');
     performance.measure('app-startup', 'app-start', 'app-rendered');
+    const startupPerformance = performance.getEntriesByName('app-startup')[0];
+    console.log("App startup performance:", startupPerformance.duration.toFixed(2) + "ms");
   };
+
+  // Create a simple test element to verify rendering capabilities
+  const testDiv = document.createElement('div');
+  testDiv.id = 'react-test-element';
+  testDiv.style.display = 'none';
+  document.body.appendChild(testDiv);
+  
+  try {
+    const testRoot = createRoot(testDiv);
+    testRoot.render(<div>Test render successful</div>);
+    console.log("Test render successful");
+    document.body.removeChild(testDiv);
+  } catch (testError) {
+    console.error("Test render failed:", testError);
+  }
 
   // Render the app first, then perform deferred operations
   console.log("Rendering React application");
