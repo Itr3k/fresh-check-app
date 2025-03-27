@@ -1,7 +1,15 @@
 
 import React from 'react';
 import StatusIndicator from '@/components/StatusIndicator';
-import { StorageOption } from './StorageOptions';
+
+// Define the StorageOption type to match what's used in the component
+export interface StorageOption {
+  id: string;
+  name: string;
+  shelfLife: number;
+  description: string;
+  icon?: React.ReactNode;
+}
 
 interface StorageRecommendationProps {
   selectedOption: StorageOption;
