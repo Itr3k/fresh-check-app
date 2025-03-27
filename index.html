@@ -7,49 +7,8 @@
     <title>Fresh Check - Food Storage Guide & Expiration Calculator</title>
     <meta name="description" content="Learn how long food lasts in the refrigerator, freezer, and pantry. Get accurate storage times, spoilage indicators, and a free expiration calculator." />
     
-    <!-- Critical CSS Inline -->
-    <style>
-      /* Critical path CSS */
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; }
-      img { max-width: 100%; height: auto; display: block; }
-      .hidden { display: none; }
-      
-      /* Add more critical CSS */
-      .bg-primary { background-color: hsl(142, 71%, 45%); }
-      .text-white { color: #fff; }
-      h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-      
-      /* Optimize LCP */
-      .hero-section { min-height: 60vh; padding: 2rem 1rem; }
-      .glass { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-      
-      /* Prevent CLS for images */
-      img, [class*="card-"] img { aspect-ratio: 16/9; }
-      
-      /* Add error display styles */
-      #root:empty::before {
-        content: 'Application failed to load. Please check the console for errors.';
-        display: block;
-        color: red;
-        padding: 20px;
-        text-align: center;
-        font-family: system-ui, sans-serif;
-      }
-      
-      #error-display {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #f44336;
-        color: white;
-        padding: 10px;
-        z-index: 9999;
-        text-align: center;
-        display: none;
-      }
-    </style>
+    <!-- Critical CSS -->
+    <link rel="stylesheet" href="/critical.css">
 
     <!-- Resource Hints - Preload & Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
@@ -64,29 +23,7 @@
     <link rel="icon" href="/favicon.ico" />
     
     <!-- Error handling script -->
-    <script>
-      // Early error detection
-      window.addEventListener('error', function(e) {
-        console.error('Global error caught:', e.error || e.message);
-        const errorDisplay = document.getElementById('error-display');
-        if (errorDisplay) {
-          errorDisplay.textContent = 'Error: ' + (e.error?.message || e.message || 'Unknown error');
-          errorDisplay.style.display = 'block';
-        }
-      });
-      
-      // Check if the page is being loaded
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM fully loaded');
-        setTimeout(function() {
-          const root = document.getElementById('root');
-          // Check if root has any children after a short delay
-          if (root && root.children.length === 0) {
-            console.warn('Root element exists but has no children after 2 seconds');
-          }
-        }, 2000);
-      });
-    </script>
+    <script src="/error-handling.js"></script>
   </head>
 
   <body>
@@ -111,24 +48,6 @@
     </noscript>
     
     <!-- Debugging script -->
-    <script>
-      console.log('HTML loaded, checking application status');
-      
-      // Add a timeout to check if React has rendered
-      setTimeout(function() {
-        const root = document.getElementById('root');
-        if (root && (root.children.length === 0 || root.innerHTML === '')) {
-          console.error('React application failed to render after 5 seconds');
-          root.innerHTML = `
-            <div style="padding: 20px; text-align: center; font-family: system-ui, sans-serif;">
-              <h2>Application failed to load</h2>
-              <p>Please check the browser console for errors or try refreshing the page.</p>
-            </div>
-          `;
-        } else {
-          console.log('React application rendered successfully');
-        }
-      }, 5000);
-    </script>
+    <script src="/debug.js"></script>
   </body>
 </html>
