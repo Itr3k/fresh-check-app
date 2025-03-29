@@ -1,71 +1,69 @@
 
 import React from 'react';
-import { CheckCircle2, Snowflake, Timer } from 'lucide-react';
+import { Refrigerator, Snowflake, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 export interface StorageOption {
-  id: string;
   name: string;
+  icon: React.ReactNode;
   shelfLife: number;
   description: string;
-  icon: React.ReactNode;
 }
 
 interface StorageOptionsProps {
-  selectedOption: string;
-  onOptionChange: (option: string) => void;
-  options?: StorageOption[];
+  selectedStorage: string;
+  setSelectedStorage: (storage: string) => void;
+  isOpened: boolean;
+  setIsOpened: (opened: boolean) => void;
+  storageOptions: StorageOption[];
 }
 
-const defaultOptions: StorageOption[] = [
-  {
-    id: 'refrigerator',
-    name: 'refrigerator',
-    shelfLife: 7,
-    description: 'Keep refrigerated at 40°F (4°C) or below',
-    icon: <Timer className="h-5 w-5" />
-  },
-  {
-    id: 'freezer',
-    name: 'freezer',
-    shelfLife: 90,
-    description: 'Store at 0°F (-18°C) to maintain quality',
-    icon: <Snowflake className="h-5 w-5" />
-  },
-  {
-    id: 'pantry',
-    name: 'pantry',
-    shelfLife: 14,
-    description: 'Store in a cool, dry place away from sunlight',
-    icon: <CheckCircle2 className="h-5 w-5" />
-  }
-];
-
 const StorageOptions: React.FC<StorageOptionsProps> = ({
-  selectedOption,
-  onOptionChange,
-  options = defaultOptions
+  selectedStorage,
+  setSelectedStorage,
+  isOpened,
+  setIsOpened,
+  storageOptions
 }) => {
-  console.log('StorageOptions rendering, selected:', selectedOption);
-  
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
-      {options.map((option) => (
-        <button
-          key={option.id}
-          onClick={() => onOptionChange(option.id)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
-            selectedOption === option.id
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-          }`}
-          aria-pressed={selectedOption === option.id}
-        >
-          <span className={selectedOption === option.id ? 'text-primary-foreground' : 'text-primary'}>
+    <div>
+      <div className="flex items-center mb-4">
+        <h2 className="text-xl font-semibold">Storage Options</h2>
+      </div>
+      <p className="text-gray-600 mb-4">
+        Select storage method to see detailed recommendations
+      </p>
+      
+      <div className="flex flex-wrap gap-3 mb-4">
+        {storageOptions.map((option) => (
+          <Button
+            key={option.name}
+            variant={selectedStorage === option.name ? "default" : "outline"}
+            className="gap-2"
+            onClick={() => setSelectedStorage(option.name)}
+          >
             {option.icon}
-          </span>
-          <span className="capitalize">{option.name}</span>
-        </button>
-      ))}
+            {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
+          </Button>
+        ))}
+      </div>
+      
+      <div className="flex items-center gap-2 mb-6">
+        <Label htmlFor="opened-toggle" className="cursor-pointer">Opened/Cut</Label>
+        <div className="relative inline-block w-10 mr-2 align-middle select-none">
+          <input
+            type="checkbox"
+            id="opened-toggle"
+            checked={isOpened}
+            onChange={() => setIsOpened(!isOpened)}
+            className="sr-only"
+          />
+          <div className={`block h-6 rounded-full w-10 ${isOpened ? 'bg-primary' : 'bg-gray-300'}`}>
+            <div className={`absolute left-0.5 top-0.5 bg-white rounded-full h-5 w-5 transition-transform ${isOpened ? 'transform translate-x-4' : ''}`} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,7 +11,6 @@ import { RecallsProvider } from "./contexts/RecallsContext";
 import WebhookReceiver from "./components/WebhookReceiver";
 import { ImagesProvider } from './contexts/ImagesContext';
 import ScrollToTop from "./components/ScrollToTop";
-import Debug from "./components/Debug";
 
 // Lazy load non-critical pages
 const FoodDetail = lazy(() => import("./pages/FoodDetail"));
@@ -52,14 +50,11 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  console.log("App component rendering");
-  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <RecallsProvider>
           <ImagesProvider>
-            {process.env.NODE_ENV === 'development' && <Debug />}
             <WebhookReceiver />
             <ScrollToTop />
             <Toaster />
