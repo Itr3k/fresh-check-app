@@ -1,14 +1,14 @@
 
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import ScrollToTop from './components/ScrollToTop.tsx';
-import { FOOD_IMAGES } from './components/FoodCard.tsx';
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
+import { BrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import ScrollToTop from './components/ScrollToTop.tsx'
+import { FOOD_IMAGES } from './components/FoodCard.tsx'
 
 // Add more detailed error logging
 console.log("Application initialization started");
@@ -16,17 +16,13 @@ console.log("Application initialization started");
 // Add error boundary for the entire application
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error);
-  // Log detailed error information
-  console.error('Error message:', event.error?.message);
-  console.error('Error stack:', event.error?.stack);
-  console.error('Error type:', typeof event.error);
-  // Don't prevent default to ensure errors are visible
+  // Prevent the error from being swallowed
+  event.preventDefault();
 });
 
 // Add unhandled promise rejection handler
 window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled Promise Rejection:', event.reason);
-  console.error('Rejection stack:', event.reason?.stack);
 });
 
 // Performance monitoring
@@ -70,26 +66,76 @@ try {
 try {
   console.log("Attempting to render React application");
   
-  // Test render a simple element first to verify React is working
-  const TestComponent = () => <div>React test render</div>;
+  // Defer non-critical initialization
+  const deferredInit = () => {
+    // Preload critical images after initial render in background
+    const preloadCriticalImages = () => {
+      const criticalImageUrls = [
+        FOOD_IMAGES.chicken,
+        FOOD_IMAGES.milk,
+        FOOD_IMAGES.eggs,
+        FOOD_IMAGES.bread,
+        FOOD_IMAGES.default
+      ];
+      
+      // Filter out any undefined or non-string URLs
+      const validUrls = criticalImageUrls.filter(url => typeof url === 'string' && url.startsWith('http'));
+      
+      console.log("Preloading critical images:", validUrls.length);
+      
+      // Use requestIdleCallback to preload images when browser is idle
+      const preloader = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+      
+      preloader(() => {
+        // Use Intersection Observer to detect when we should preload images
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            validUrls.forEach(url => {
+              const link = document.createElement('link');
+              link.rel = 'preload';
+              link.as = 'image';
+              link.href = url;
+              document.head.appendChild(link);
+            });
+            observer.disconnect();
+            console.log("Critical images preloaded");
+          }
+        });
+        
+        // Observe the root element to start preloading when app is visible
+        if (rootElement) {
+          observer.observe(rootElement);
+        }
+      });
+    };
+
+    // Start preloading after initial render is complete
+    preloadCriticalImages();
+    
+    // Measure initial render performance
+    performance.mark('app-rendered');
+    performance.measure('app-startup', 'app-start', 'app-rendered');
+    const startupPerformance = performance.getEntriesByName('app-startup')[0];
+    console.log("App startup performance:", startupPerformance.duration.toFixed(2) + "ms");
+  };
+
+  // Create a simple test element to verify rendering capabilities
+  const testDiv = document.createElement('div');
+  testDiv.id = 'react-test-element';
+  testDiv.style.display = 'none';
+  document.body.appendChild(testDiv);
   
   try {
-    const testDiv = document.createElement('div');
-    testDiv.id = 'react-test-element';
-    testDiv.style.display = 'none';
-    document.body.appendChild(testDiv);
-    
     const testRoot = createRoot(testDiv);
-    testRoot.render(<TestComponent />);
+    testRoot.render(<div>Test render successful</div>);
     console.log("Test render successful");
     document.body.removeChild(testDiv);
   } catch (testError) {
-    console.error("React test render failed:", testError);
-    throw new Error(`React test render failed: ${testError instanceof Error ? testError.message : String(testError)}`);
+    console.error("Test render failed:", testError);
   }
-  
-  // If test render succeeds, render the actual application
-  console.log("Rendering React application now");
+
+  // Render the app first, then perform deferred operations
+  console.log("Rendering React application");
   root.render(
     <React.StrictMode>
       <BrowserRouter>
@@ -108,17 +154,9 @@ try {
   // Schedule non-critical operations after initial render
   if (typeof window !== 'undefined') {
     if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => {
-        console.log("Executing deferred initialization");
-        performance.mark('app-rendered');
-        performance.measure('app-startup', 'app-start', 'app-rendered');
-      }, { timeout: 1000 });
+      window.requestIdleCallback(deferredInit, { timeout: 1000 });
     } else {
-      setTimeout(() => {
-        console.log("Executing deferred initialization (setTimeout fallback)");
-        performance.mark('app-rendered');
-        performance.measure('app-startup', 'app-start', 'app-rendered');
-      }, 200);
+      setTimeout(deferredInit, 200);
     }
   }
 } catch (error) {

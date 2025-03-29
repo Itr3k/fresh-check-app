@@ -1,5 +1,5 @@
 
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,37 +13,6 @@ import WebhookReceiver from "./components/WebhookReceiver";
 import { ImagesProvider } from './contexts/ImagesContext';
 import ScrollToTop from "./components/ScrollToTop";
 import Debug from "./components/Debug";
-import DiagnosticPage from "./pages/DiagnosticPage";
-
-// Enhanced debug component to ensure React is rendering
-const DebugRender = () => {
-  const timestamp = new Date().toISOString();
-  
-  useEffect(() => {
-    console.log(`DebugRender component mounted at ${timestamp}`);
-    return () => {
-      console.log(`DebugRender component unmounted`);
-    };
-  }, [timestamp]);
-  
-  return (
-    <div style={{
-      position: 'fixed',
-      top: '10px',
-      left: '10px',
-      zIndex: 9999,
-      background: 'green',
-      color: 'white',
-      padding: '10px',
-      borderRadius: '5px',
-      fontFamily: 'monospace',
-      fontSize: '12px',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
-    }}>
-      React is rendering (timestamp: {timestamp})
-    </div>
-  );
-};
 
 // Lazy load non-critical pages
 const FoodDetail = lazy(() => import("./pages/FoodDetail"));
@@ -85,20 +54,11 @@ const queryClient = new QueryClient({
 function App() {
   console.log("App component rendering");
   
-  useEffect(() => {
-    console.log("App component mounted");
-    return () => {
-      console.log("App component unmounted");
-    };
-  }, []);
-  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <RecallsProvider>
           <ImagesProvider>
-            {/* Add debug render component in development */}
-            {process.env.NODE_ENV === 'development' && <DebugRender />}
             {process.env.NODE_ENV === 'development' && <Debug />}
             <WebhookReceiver />
             <ScrollToTop />
@@ -114,7 +74,6 @@ function App() {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/recalls" element={<RecallsPage />} />
                   <Route path="/recalls/:id" element={<RecallDetailPage />} />
-                  <Route path="/diagnostic" element={<DiagnosticPage />} />
                   
                   {/* Food Safety Educational Pages */}
                   <Route path="/food-safety/temperature-danger-zone" element={<TemperatureDangerZone />} />
